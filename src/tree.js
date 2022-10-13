@@ -1,6 +1,9 @@
 import {gl} from "./gl/gl.js";
+import {Color} from "./color.js";
 
 export class Tree {
+    static #COLOR_BACKGROUND = new Color("#0000FF");
+
     #width;
     #height;
 
