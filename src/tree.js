@@ -10,6 +10,8 @@ export class Tree {
     constructor(width, height, canvas) {
         this.#width = width;
         this.#height = height;
+
+        gl.clearColor(Tree.#COLOR_BACKGROUND.r, Tree.#COLOR_BACKGROUND.g, Tree.#COLOR_BACKGROUND.b, 1);
     }
 
     update() {
