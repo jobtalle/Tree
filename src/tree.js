@@ -24,6 +24,12 @@ export class Tree {
     #parameters = new Parameters();
     #network = new Network(this.#random.fork(), this.#parameters);
 
+    /**
+     * Construct the tree grower
+     * @param {number} width The viewport width
+     * @param {number} height The viewport height
+     * @param {HTMLCanvasElement} canvas The canvas that is being rendered to
+     */
     constructor(width, height, canvas) {
         this.#width = width;
         this.#height = height;
@@ -73,10 +79,17 @@ export class Tree {
         });
     }
 
+    /**
+     * Update the state
+     */
     update() {
         this.#cameraController.update();
     }
 
+    /**
+     * Update before rendering
+     * @param {number} time The time interpolation in the range [0, 1]
+     */
     render(time) {
         this.#cameraController.render(time);
         this.#camera.updateVP();

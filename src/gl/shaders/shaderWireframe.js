@@ -20,6 +20,9 @@ export class ShaderWireframe extends Shader {
         }
         `;
 
+    /**
+     * Construct the wireframe shader
+     */
     constructor() {
         super(ShaderWireframe.#VERTEX, ShaderWireframe.#FRAGMENT, [
             ["COLOR", Shader.makeVec3(ShaderWireframe.#COLOR)]]);
