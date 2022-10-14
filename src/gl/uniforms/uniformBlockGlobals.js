@@ -10,7 +10,7 @@ export class UniformBlockGlobals extends UniformBlock {
      * Construct the global variables
      */
     constructor() {
-        super(88, UniformBlockGlobals.BINDING);
+        super(64, UniformBlockGlobals.BINDING);
 
         this.#floats = new Float32Array(this.bytes);
     }

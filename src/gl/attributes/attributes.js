@@ -14,6 +14,7 @@ export class Attributes {
         switch (type) {
             default:
             case gl.FLOAT:
+            case gl.UNSIGNED_INT:
                 return 4;
             case gl.UNSIGNED_SHORT:
                 return 2;
@@ -95,6 +96,10 @@ export class Attributes {
                 switch (this.#formats[element]) {
                     case gl.FLOAT:
                         view.setFloat32(byte, this.array[index + element], true);
+
+                        break;
+                    case gl.UNSIGNED_INT:
+                        view.setUint32(byte, this.array[index + element], true);
 
                         break;
                     case gl.UNSIGNED_SHORT:

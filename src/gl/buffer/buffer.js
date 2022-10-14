@@ -31,7 +31,6 @@ export class Buffer {
      */
     upload(attributes) {
         const bytes = attributes.format();
-
         if (this.capacity < bytes.byteLength)
             this.double(this.doublesUntil(bytes.byteLength));
         else
