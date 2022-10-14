@@ -30,7 +30,7 @@ export class Network {
 
             while (tips.length !== 0) {
                 const newTips = [];
-
+                console.log("Level");
                 // TODO: Shuffle tips?
 
                 for (const tip of tips)

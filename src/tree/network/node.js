@@ -1,4 +1,6 @@
 import {Camera} from "../../camera/camera.js";
+import {Matrix3} from "../../math/matrix3.js";
+import {Vector3} from "../../math/vector3.js";
 
 export class Node {
     #position;
@@ -31,8 +33,22 @@ export class Node {
         if (radius < parameters.radiusThreshold)
             return this.#children;
 
+        const matrix = new Matrix3(this.direction);
 
-        // Spawn children
+        for (let i = 0; i < parameters.extendTries; ++i) {
+            const extendPitch = Math.sqrt(random.float) * parameters.extendAngle;
+            const extendRadial = random.float * Math.PI * 2;
+            const position = matrix.apply(new Vector3(
+                Math.cos(extendPitch),
+                Math.sin(extendRadial) * Math.sin(extendPitch),
+                Math.cos(extendRadial) * Math.sin(extendPitch))).add(this.#position);
+
+            if (collision.fits(position, radius)) {
+                collision.add(position, radius);
+
+                this.#children.push(new Node(position, radius, this));
+            }
+        }
 
         return this.#children;
     }

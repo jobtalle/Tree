@@ -1,5 +1,8 @@
 export class Parameters {
     radiusInitial = .1;
-    radiusDecay = .95;
-    radiusThreshold = .02;
+    radiusDecay = .8;
+    radiusThreshold = .05;
+
+    extendTries = 5;
+    extendAngle = 1;
 }
