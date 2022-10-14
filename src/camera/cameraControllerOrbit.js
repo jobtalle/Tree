@@ -8,9 +8,9 @@ export class CameraControllerOrbit extends CameraController {
     #down = false;
     #anchor = new Vector2();
     #from = new Vector3();
-    #pivot = new Vector3();
+    #pivot = new Vector3(0, .35, 0);
     #angle = 0;
-    #pitch = .6;
+    #pitch = 0;
     #zoom;
 
     /**

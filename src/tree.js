@@ -2,13 +2,9 @@ import {gl} from "./gl/gl.js";
 import {Color} from "./color.js";
 import {Shaders} from "./gl/shaders/shaders.js";
 import {Renderables} from "./gl/renderable/renderables.js";
-import {AttributesWireframe} from "./gl/attributes/attributesWireframe.js";
-import {AttributesIndices} from "./gl/attributes/attributesIndices.js";
-import {Vector3} from "./math/vector3.js";
 import {Uniforms} from "./gl/uniforms/uniforms.js";
 import {Camera} from "./camera/camera.js";
 import {CameraControllerOrbit} from "./camera/cameraControllerOrbit.js";
-import {Vector2} from "./math/vector2.js";
 import {Network} from "./tree/network/network.js";
 import {Parameters} from "./tree/parameters.js";
 import {Random} from "./math/random.js";
@@ -18,7 +14,7 @@ export class Tree {
 
     #width;
     #height;
-    #camera = new Camera(new Vector2(0, .25));
+    #camera = new Camera();
     #cameraController = new CameraControllerOrbit(this.#camera);
     #random = new Random();
     #parameters = new Parameters();
