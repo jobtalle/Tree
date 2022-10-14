@@ -1,5 +1,5 @@
 import {gl} from "../gl.js";
-import {Buffer} from "../buffer.js";
+import {Buffer} from "../buffer/buffer.js";
 
 export class UniformBlock extends Buffer {
     #index;

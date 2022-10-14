@@ -48,8 +48,16 @@ export class Attributes {
      * Get the number of attribute sets
      * @returns {number} The number of attribute sets
      */
-    get count() {
+    get attributeCount() {
         return this.array.length / this.stride;
+    }
+
+    /**
+     * Get the number of attribute  values
+     * @returns {number} The number of attribute values
+     */
+    get elementCount() {
+        return this.array.length;
     }
 
     /**
