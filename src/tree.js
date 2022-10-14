@@ -6,40 +6,77 @@ import {AttributesWireframe} from "./gl/attributes/attributesWireframe.js";
 import {AttributesIndices} from "./gl/attributes/attributesIndices.js";
 import {Vector3} from "./math/vector3.js";
 import {Uniforms} from "./gl/uniforms/uniforms.js";
-import {Matrix4} from "./math/matrix4.js";
+import {Camera} from "./camera/camera.js";
+import {CameraControllerOrbit} from "./camera/cameraControllerOrbit.js";
 
 export class Tree {
     static #COLOR_BACKGROUND = new Color("#336997");
 
     #width;
     #height;
+    #camera = new Camera();
+    #cameraController = new CameraControllerOrbit(this.#camera);
 
     constructor(width, height, canvas) {
         this.#width = width;
         this.#height = height;
+        this.#camera.updateProjection(width / height);
 
         gl.clearColor(Tree.#COLOR_BACKGROUND.r, Tree.#COLOR_BACKGROUND.g, Tree.#COLOR_BACKGROUND.b, 1);
 
         const wireframeAttributes = new AttributesWireframe();
         const wireframeIndices = new AttributesIndices();
 
-        wireframeAttributes.push(new Vector3());
-        wireframeAttributes.push(new Vector3(Math.random(), Math.random(), Math.random()));
+        wireframeAttributes.push(new Vector3(-1, 0, 0));
+        wireframeAttributes.push(new Vector3(1, 0, 0));
+
+        wireframeAttributes.push(new Vector3(0, 0, -1));
+        wireframeAttributes.push(new Vector3(0, 0, 1));
 
         wireframeIndices.push(0);
         wireframeIndices.push(1);
+        wireframeIndices.push(2);
+        wireframeIndices.push(3);
 
         Renderables.WIREFRAME.upload(wireframeAttributes, wireframeIndices);
 
-        Uniforms.GLOBALS.setVP(new Matrix4());
-        Uniforms.GLOBALS.upload();
+        canvas.addEventListener("mousedown", event => {
+            this.#cameraController.mouseDown(
+                event.clientX / canvas.clientHeight,
+                event.clientY / canvas.clientHeight);
+        });
+
+        canvas.addEventListener("mousemove", event => {
+            this.#cameraController.mouseMove(
+                event.clientX / canvas.clientHeight,
+                event.clientY / canvas.clientHeight);
+        });
+
+        canvas.addEventListener("mouseup", () => {
+            this.#cameraController.mouseUp();
+        });
+
+        canvas.addEventListener("wheel", event => {
+            if (event.deltaY > 0)
+                this.#cameraController.scrollDown();
+            else if (event.deltaY < 0)
+                this.#cameraController.scrollUp();
+        }, {
+            passive: true
+        });
     }
 
     update() {
-
+        this.#cameraController.update();
     }
 
     render(time) {
+        this.#cameraController.render(time);
+        this.#camera.updateVP();
+
+        Uniforms.GLOBALS.setVP(this.#camera.vp);
+        Uniforms.GLOBALS.upload();
+
         gl.viewport(0, 0, this.#width, this.#height);
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
