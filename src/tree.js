@@ -37,22 +37,6 @@ export class Tree {
 
         gl.clearColor(Tree.#COLOR_BACKGROUND.r, Tree.#COLOR_BACKGROUND.g, Tree.#COLOR_BACKGROUND.b, 1);
 
-        const wireframeAttributes = new AttributesWireframe();
-        const wireframeIndices = new AttributesIndices();
-
-        wireframeAttributes.push(new Vector3(-1, 0, 0));
-        wireframeAttributes.push(new Vector3(1, 0, 0));
-
-        wireframeAttributes.push(new Vector3(0, 0, -1));
-        wireframeAttributes.push(new Vector3(0, 0, 1));
-
-        wireframeIndices.push(0);
-        wireframeIndices.push(1);
-        wireframeIndices.push(2);
-        wireframeIndices.push(3);
-
-        Renderables.WIREFRAME.upload(wireframeAttributes, wireframeIndices);
-
         canvas.addEventListener("mousedown", event => {
             this.#cameraController.mouseDown(
                 event.clientX / canvas.clientHeight,

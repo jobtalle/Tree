@@ -1,6 +1,10 @@
 import {Node} from "./node.js";
 import {Collision} from "../collision.js";
 import {Vector3} from "../../math/vector3.js";
+import {ModellerWireframe} from "../../modellers/modellerWireframe.js";
+import {AttributesWireframe} from "../../gl/attributes/attributesWireframe.js";
+import {AttributesIndices} from "../../gl/attributes/attributesIndices.js";
+import {Renderables} from "../../gl/renderable/renderables.js";
 
 export class Network {
     #collision = new Collision();
@@ -30,7 +34,6 @@ export class Network {
 
             while (tips.length !== 0) {
                 const newTips = [];
-                console.log("Level");
                 // TODO: Shuffle tips?
 
                 for (const tip of tips)
@@ -39,7 +42,12 @@ export class Network {
                 tips = newTips;
             }
 
-            // TODO: Model root
+            const attributes = new AttributesWireframe();
+            const indices = new AttributesIndices();
+
+            new ModellerWireframe(attributes, indices, root).model();
+
+            Renderables.WIREFRAME.upload(attributes, indices);
         }
     }
 }

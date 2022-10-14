@@ -1,4 +1,6 @@
 export class Collision {
+    static EPSILON = .001;
+
     #spheres = [];
     #radii = [];
 
@@ -11,7 +13,7 @@ export class Collision {
     fits(center, radius) {
         for (let sphere = 0, sphereCount = this.#spheres.length; sphere < sphereCount; ++sphere)
             if (center.squaredDistanceTo(this.#spheres[sphere]) <
-                (radius + this.#radii[sphere]) * (radius + this.#radii[sphere]))
+                (radius + this.#radii[sphere]) * (radius + this.#radii[sphere]) - Collision.EPSILON)
                 return false;
 
         return true;

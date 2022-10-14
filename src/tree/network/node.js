@@ -41,7 +41,9 @@ export class Node {
             const position = matrix.apply(new Vector3(
                 Math.cos(extendPitch),
                 Math.sin(extendRadial) * Math.sin(extendPitch),
-                Math.cos(extendRadial) * Math.sin(extendPitch))).add(this.#position);
+                Math.cos(extendRadial) * Math.sin(extendPitch))).multiply(
+                    this.#radius + radius).add(
+                        this.#position);
 
             if (collision.fits(position, radius)) {
                 collision.add(position, radius);
@@ -77,6 +79,14 @@ export class Node {
         if (this.#parent)
             return this.#position.copy().subtract(this.#parent.position).normalize();
 
-        return Camera.UP;
+        return Vector3.UP;
+    }
+
+    /**
+     * Get the child nodes
+     * @returns {Node[]} The child nodes
+     */
+    get children() {
+        return this.#children;
     }
 }

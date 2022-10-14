@@ -62,24 +62,10 @@ export class Attributes {
     }
 
     /**
-     * Map a normalized float to a number of bits
-     * @param {number} float A number in the range [0, 1]
-     * @param {number} [bits] The number of bits, 8 by default
-     * @param {number} [max] The integer value that maps to 1
-     * @returns {number} The unsigned integer
+     * Clear the attributes
      */
-    normalizedFloatToBits(float, bits = 8, max = (1 << bits) - 1) {
-        return Math.floor(max * float);
-    }
-
-    /**
-     * Map a byte to a normalized float
-     * @param {number} number An unsigned integer
-     * @param {number} [bits] The number of bits, 8 by default
-     * @returns {number} A number in the range [0, 1]
-     */
-    bitsToNormalizedFloat(number, bits = 8) {
-        return (number & ((1 << bits) - 1)) / ((1 << bits) - 1);
+    clear() {
+        this.array.length = 0;
     }
 
     /**
