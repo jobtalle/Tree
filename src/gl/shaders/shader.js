@@ -1,17 +1,48 @@
 import {gl} from "../gl.js";
+import {Vector3} from "../../math/vector3.js";
 
 export class Shader {
     #program;
 
     /**
+     * Make the GLSL code for preprocessor defines
+     * @param {String[][]} [defines] An optional array of preprocessor defines
+     * @returns {String} Preprocessor defines
+     */
+    static makeDefines(defines) {
+        let glsl = "";
+
+        for (const define of defines)
+            glsl += "#define " + define[0] + " " + define[1] + "\n";
+
+        return glsl;
+    }
+
+    /**
+     * Make a vec3
+     * @param {Vector3 | Color} vector A value to convert to a vec3
+     * @returns {string} The vec3
+     */
+    static makeVec3(vector) {
+        if (vector instanceof Vector3)
+            return "vec3(" + vector.x + "," + vector.y + "," + vector.z + ")";
+        else
+            return "vec3(" + vector.r + "," + vector.g + "," + vector.b + ")";
+    }
+
+    /**
      * Construct a shader
      * @param {String} vertex The vertex shader
      * @param {String} fragment The fragment shader
+     * @param {String[][]} [defines] An optional array of preprocessor defines
      */
-    constructor(vertex, fragment) {
+    constructor(vertex, fragment, defines = null) {
         const shaderVertex = gl.createShader(gl.VERTEX_SHADER);
         const shaderFragment = gl.createShader(gl.FRAGMENT_SHADER);
-        let prefix = "#version 300 es\nprecision highp float;";
+        let prefix = "#version 300 es\nprecision highp float;\n";
+
+        if (defines)
+            prefix += Shader.makeDefines(defines);
 
         this.#program = gl.createProgram();
 
