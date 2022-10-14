@@ -1,4 +1,7 @@
 export class Vector3 {
+    static UP = Object.freeze(new Vector3(0, 1, 0));
+    static UP_ALT = Object.freeze(new Vector3(.1, 1, 0).normalize());
+
     x;
     y;
     z;
@@ -21,6 +24,30 @@ export class Vector3 {
      */
     copy() {
         return new Vector3(this.x, this.y, this.z);
+    }
+
+    /**
+     * Make a vector that is a tangent of this vector
+     * @returns {Vector3} A new vector that is a tangent of this vector
+     */
+    tangent() {
+        if (this.equals(Vector3.UP))
+            return new Vector3().cross(this, Vector3.UP_ALT).normalize();
+
+        return new Vector3().crossUp(this).normalize();
+    }
+
+    /**
+     * Calculate the cross product a vector and the up vector
+     * @param {Vector3} vector A vector
+     * @returns {Vector3} The modified vector containing the cross product
+     */
+    crossUp(vector) {
+        this.x = -vector.y;
+        this.y = vector.x;
+        this.z = 0;
+
+        return this;
     }
 
     /**

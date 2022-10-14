@@ -26,8 +26,18 @@ export class Network {
     grow(start) {
         if (this.#collision.fits(start, this.#parameters.radiusInitial)) {
             const root = new Node(start, this.#parameters.radiusInitial);
+            let tips = root.grow(this.#parameters, this.#collision, this.#random);
 
-            root.grow(this.#parameters, this.#collision, this.#random);
+            while (tips.length !== 0) {
+                const newTips = [];
+
+                // TODO: Shuffle tips?
+
+                for (const tip of tips)
+                    newTips.push(...tip.grow(this.#parameters, this.#collision, this.#random));
+
+                tips = newTips;
+            }
 
             // TODO: Model root
         }

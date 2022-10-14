@@ -116,6 +116,6 @@ export class CameraControllerOrbit extends CameraController {
         this.#from.y = this.#pivot.y + Math.sin(this.#pitch) * this.#zoom;
         this.#from.z = this.#pivot.z + Math.sin(this.#angle) * Math.cos(this.#pitch) * this.#zoom;
 
-        this.camera.view.lookAt(this.#from, this.#pivot, Camera.UP);
+        this.camera.view.lookAt(this.#from, this.#pivot, Vector3.UP);
     }
 }
