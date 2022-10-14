@@ -4,8 +4,8 @@ import {Vector2} from "../math/vector2.js";
 
 export class Camera {
     static UP = Object.freeze(new Vector3(0, 1, 0));
-    static #Z_NEAR = .02;
-    static #Z_FAR = 50;
+    static #Z_NEAR = .001;
+    static #Z_FAR = 10;
 
     #projection = new Matrix4();
     #shift;

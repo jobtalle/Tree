@@ -8,14 +8,21 @@ import {Vector3} from "./math/vector3.js";
 import {Uniforms} from "./gl/uniforms/uniforms.js";
 import {Camera} from "./camera/camera.js";
 import {CameraControllerOrbit} from "./camera/cameraControllerOrbit.js";
+import {Vector2} from "./math/vector2.js";
+import {Network} from "./tree/network/network.js";
+import {Parameters} from "./tree/parameters.js";
+import {Random} from "./math/random.js";
 
 export class Tree {
     static #COLOR_BACKGROUND = new Color("#336997");
 
     #width;
     #height;
-    #camera = new Camera();
+    #camera = new Camera(new Vector2(0, .25));
     #cameraController = new CameraControllerOrbit(this.#camera);
+    #random = new Random();
+    #parameters = new Parameters();
+    #network = new Network(this.#random.fork(), this.#parameters);
 
     constructor(width, height, canvas) {
         this.#width = width;

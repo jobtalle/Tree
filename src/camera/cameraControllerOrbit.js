@@ -19,7 +19,7 @@ export class CameraControllerOrbit extends CameraController {
      * @param {number} [zoom] The initial zoom level
      * @param {number} [sensitivity] The mouse sensitivity
      */
-    constructor(camera, zoom = 2.2, sensitivity = 4) {
+    constructor(camera, zoom = 2, sensitivity = 4) {
         super(camera);
 
         this.#sensitivity = sensitivity;
