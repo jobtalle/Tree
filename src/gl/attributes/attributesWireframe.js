@@ -10,6 +10,7 @@ export class AttributesWireframe extends Attributes {
             [
                 gl.FLOAT,
                 gl.FLOAT,
+                gl.FLOAT,
                 gl.FLOAT
             ]);
     }
@@ -17,8 +18,9 @@ export class AttributesWireframe extends Attributes {
     /**
      * Push a vector to the wireframe
      * @param {Vector3} vector The vector
+     * @param {number} distance The distance from the root
      */
-    push(vector) {
-        this.array.push(vector.x, vector.y, vector.z);
+    push(vector, distance) {
+        this.array.push(vector.x, vector.y, vector.z, distance);
     }
 }

@@ -10,9 +10,17 @@ export class UniformBlockGlobals extends UniformBlock {
      * Construct the global variables
      */
     constructor() {
-        super(64, UniformBlockGlobals.BINDING);
+        super(68, UniformBlockGlobals.BINDING);
 
         this.#floats = new Float32Array(this.bytes);
+    }
+
+    /**
+     * Set the growth threshold to cap the structure at
+     * @param {number} growth The growth threshold
+     */
+    setGrowth(growth) {
+        this.#floats[16] = growth;
     }
 
     /**
@@ -27,4 +35,5 @@ export class UniformBlockGlobals extends UniformBlock {
 export const glslGlobals = `
     uniform ` + UniformBlockGlobals.NAME + ` {
         mat4 vp;
+        float growth;
     };`;

@@ -29,6 +29,19 @@ export class Network {
     }
 
     /**
+     * Get the maximum depth of all structures in this network
+     * @returns {number} The depth
+     */
+    get depth() {
+        let depth = 0;
+
+        for (const root of this.#roots) if (root.depth > depth)
+            depth = root.depth;
+
+        return depth;
+    }
+
+    /**
      * Grow a network
      * @param {Vector3} start The network origin
      */

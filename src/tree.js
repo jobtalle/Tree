@@ -22,10 +22,13 @@ export class Tree {
     #camera = new Camera();
     #cameraController = new CameraControllerOrbit(this.#camera);
     #random = new Random();
-    #configuration = new Configuration();
-    #interface = new Interface(this.#configuration, this.execute.bind(this));
     #network = null;
     #updated = true;
+    #configuration = new Configuration();
+    #interface = new Interface(
+        this.#configuration,
+        this.updateConfigurationUniforms.bind(this),
+        this.remodel.bind(this));
 
     /**
      * Construct the tree grower
@@ -65,21 +68,30 @@ export class Tree {
         window.addEventListener("keydown", event => {
             switch (event.key) {
                 case " ":
-                    this.execute();
+                    this.#random.float;
+                    this.remodel();
 
                     break;
             }
         })
 
-        this.execute();
+        this.remodel();
+        this.updateConfigurationUniforms();
+    }
+
+    /**
+     * Update uniforms read from configuration
+     */
+    updateConfigurationUniforms() {
+        Uniforms.GLOBALS.setGrowth(this.#configuration.growth * this.#network.depth);
+
+        this.#updated = true;
     }
 
     /**
      * Execute the algorithm with current parameters
      */
-    execute() {
-        this.#random.float;
-
+    remodel() {
         this.#network = new Network(this.#random.fork(), this.#configuration);
 
         const attributes = new AttributesWireframe();

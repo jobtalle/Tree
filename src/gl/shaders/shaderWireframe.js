@@ -6,16 +6,25 @@ export class ShaderWireframe extends Shader {
     static #COLOR = new Color("#ffffff");
 
     static #VERTEX = glslGlobals + `
-        in vec3 position;
+        in vec4 position;
+        
+        out float distance;
         
         void main() {
-            gl_Position = vp * vec4(position, 1.);
+            distance = position.w;
+            
+            gl_Position = vp * vec4(position.xyz, 1.);
         }
         `;
-    static #FRAGMENT = `
+    static #FRAGMENT = glslGlobals + `
+        in float distance;
+        
         out vec4 color;
         
         void main() {
+            if (distance > growth)
+                discard;
+                
             color = vec4(COLOR, 1.);
         }
         `;

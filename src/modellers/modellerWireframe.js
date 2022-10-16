@@ -23,7 +23,7 @@ export class ModellerWireframe extends Modeller {
     modelNode(node, first = false) {
         const index = this.attributes.attributeCount;
 
-        this.attributes.push(node.position);
+        this.attributes.push(node.position, node.distance);
 
         if (!first)
             this.indices.push(index);
