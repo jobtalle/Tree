@@ -1,15 +1,12 @@
 import {Node} from "./node.js";
 import {Collision} from "../collision.js";
 import {Vector3} from "../../math/vector3.js";
-import {ModellerWireframe} from "../../modellers/modellerWireframe.js";
-import {AttributesWireframe} from "../../gl/attributes/attributesWireframe.js";
-import {AttributesIndices} from "../../gl/attributes/attributesIndices.js";
-import {Renderables} from "../../gl/renderable/renderables.js";
 
 export class Network {
     #collision = new Collision();
     #random;
     #parameters;
+    #roots = [];
 
     /**
      * Construct a tree network
@@ -21,6 +18,14 @@ export class Network {
         this.#parameters = parameters;
 
         this.grow(new Vector3());
+    }
+
+    /**
+     * Get the tree roots
+     * @returns {Node[]} All tree roots
+     */
+    get roots() {
+        return this.#roots;
     }
 
     /**
@@ -42,12 +47,7 @@ export class Network {
                 tips = newTips;
             }
 
-            const attributes = new AttributesWireframe();
-            const indices = new AttributesIndices();
-
-            new ModellerWireframe(attributes, indices, root).model();
-
-            Renderables.WIREFRAME.upload(attributes, indices);
+            this.#roots = [root];
         }
     }
 }

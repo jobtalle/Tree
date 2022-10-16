@@ -8,6 +8,9 @@ import {CameraControllerOrbit} from "./camera/cameraControllerOrbit.js";
 import {Network} from "./tree/network/network.js";
 import {Parameters} from "./tree/parameters.js";
 import {Random} from "./math/random.js";
+import {AttributesWireframe} from "./gl/attributes/attributesWireframe.js";
+import {AttributesIndices} from "./gl/attributes/attributesIndices.js";
+import {ModellerWireframe} from "./modellers/modellerWireframe.js";
 
 export class Tree {
     static #COLOR_BACKGROUND = new Color("#336997");
@@ -18,7 +21,7 @@ export class Tree {
     #cameraController = new CameraControllerOrbit(this.#camera);
     #random = new Random();
     #parameters = new Parameters();
-    #network = new Network(this.#random.fork(), this.#parameters);
+    #network = null;
     #updated = true;
 
     /**
@@ -58,6 +61,36 @@ export class Tree {
         }, {
             passive: true
         });
+
+        window.addEventListener("keydown", event => {
+            switch (event.key) {
+                case " ":
+                    this.execute();
+
+                    break;
+            }
+        })
+
+        this.execute();
+    }
+
+    /**
+     * Execute the algorithm with current parameters
+     */
+    execute() {
+        this.#random.float;
+
+        this.#network = new Network(this.#random.fork(), this.#parameters);
+
+        const attributes = new AttributesWireframe();
+        const indices = new AttributesIndices();
+
+        for (const root of this.#network.roots)
+            new ModellerWireframe(attributes, indices, root).model();
+
+        Renderables.WIREFRAME.upload(attributes, indices);
+
+        this.#updated = true;
     }
 
     /**
