@@ -12,6 +12,7 @@ export class CameraControllerOrbit extends CameraController {
     #angle = 0;
     #pitch = 0;
     #zoom;
+    #updated = false;
 
     /**
      * Construct a camera controller
@@ -26,6 +27,19 @@ export class CameraControllerOrbit extends CameraController {
         this.#zoom = zoom;
 
         this.moved();
+    }
+
+    /**
+     * Update before rendering
+     * @param {number} time The time interpolation in the range [0, 1]
+     * @returns {boolean} True if the camera updated
+     */
+    render(time) {
+        const updated = this.#updated;
+
+        this.#updated = false;
+
+        return updated;
     }
 
     /**
@@ -117,5 +131,7 @@ export class CameraControllerOrbit extends CameraController {
         this.#from.z = this.#pivot.z + Math.sin(this.#angle) * Math.cos(this.#pitch) * this.#zoom;
 
         this.camera.view.lookAt(this.#from, this.#pivot, Vector3.UP);
+
+        this.#updated = true;
     }
 }

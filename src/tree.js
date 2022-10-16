@@ -19,6 +19,7 @@ export class Tree {
     #random = new Random();
     #parameters = new Parameters();
     #network = new Network(this.#random.fork(), this.#parameters);
+    #updated = true;
 
     /**
      * Construct the tree grower
@@ -71,7 +72,11 @@ export class Tree {
      * @param {number} time The time interpolation in the range [0, 1]
      */
     render(time) {
-        this.#cameraController.render(time);
+        if (this.#updated || this.#cameraController.render(time))
+            this.#updated = false;
+        else
+            return;
+
         this.#camera.updateVP();
 
         Uniforms.GLOBALS.setVP(this.#camera.vp);

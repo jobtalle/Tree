@@ -3,7 +3,7 @@ import {glslGlobals, UniformBlockGlobals} from "../uniforms/uniformBlockGlobals.
 import {Color} from "../../color.js";
 
 export class ShaderWireframe extends Shader {
-    static #COLOR = new Color("#9fbee1");
+    static #COLOR = new Color("#ffffff");
 
     static #VERTEX = glslGlobals + `
         in vec3 position;

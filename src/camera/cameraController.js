@@ -1,4 +1,6 @@
 export class CameraController {
+    camera;
+
     /**
      * Construct a camera controller
      * @param {Camera} camera The camera to control
@@ -17,9 +19,10 @@ export class CameraController {
     /**
      * Update before rendering
      * @param {number} time The time interpolation in the range [0, 1]
+     * @returns {boolean} True if the camera updated
      */
     render(time) {
-
+        return false;
     }
 
     /**
