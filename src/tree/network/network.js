@@ -5,17 +5,17 @@ import {Vector3} from "../../math/vector3.js";
 export class Network {
     #collision = new Collision();
     #random;
-    #parameters;
+    #configuration;
     #roots = [];
 
     /**
      * Construct a tree network
      * @param {Random} random The randomizer
-     * @param {Parameters} parameters The parameters
+     * @param {Configuration} configuration The configuration
      */
-    constructor(random, parameters) {
+    constructor(random, configuration) {
         this.#random = random;
-        this.#parameters = parameters;
+        this.#configuration = configuration;
 
         this.grow(new Vector3());
     }
@@ -33,16 +33,16 @@ export class Network {
      * @param {Vector3} start The network origin
      */
     grow(start) {
-        if (this.#collision.fits(start, this.#parameters.radiusInitial)) {
-            const root = new Node(start, this.#parameters.radiusInitial);
-            let tips = root.grow(this.#parameters, this.#collision, this.#random);
+        if (this.#collision.fits(start, this.#configuration.radiusInitial)) {
+            const root = new Node(start, this.#configuration.radiusInitial);
+            let tips = root.grow(this.#configuration, this.#collision, this.#random);
 
             while (tips.length !== 0) {
                 const newTips = [];
                 // TODO: Shuffle tips?
 
                 for (const tip of tips)
-                    newTips.push(...tip.grow(this.#parameters, this.#collision, this.#random));
+                    newTips.push(...tip.grow(this.#configuration, this.#collision, this.#random));
 
                 tips = newTips;
             }

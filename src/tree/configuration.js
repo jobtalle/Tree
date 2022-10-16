@@ -1,4 +1,4 @@
-export class Parameters {
+export class Configuration {
     radiusInitial = .1;
     radiusDecay = .85;
     radiusThreshold = .02;

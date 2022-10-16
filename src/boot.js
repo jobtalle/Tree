@@ -1,19 +1,19 @@
 import {Tree} from "./tree.js";
 
 export function boot(canvas, fps) {
-    const game = new Tree(canvas.width, canvas.height, canvas);
+    const tree = new Tree();
 
     const updateRate = 1 / fps;
     let lastTime = performance.now();
     let updateTime = 0;
 
     const loop = time => {
-        game.render(updateTime / updateRate);
+        tree.render(updateTime / updateRate);
 
         updateTime += Math.min(.1, .001 * Math.max(0, time - lastTime));
 
         while (updateTime > updateRate) {
-            game.update();
+            tree.update();
 
             updateTime -= updateRate;
         }

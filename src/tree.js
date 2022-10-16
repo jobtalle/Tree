@@ -6,13 +6,15 @@ import {Uniforms} from "./gl/uniforms/uniforms.js";
 import {Camera} from "./camera/camera.js";
 import {CameraControllerOrbit} from "./camera/cameraControllerOrbit.js";
 import {Network} from "./tree/network/network.js";
-import {Parameters} from "./tree/parameters.js";
+import {Configuration} from "./tree/configuration.js";
 import {Random} from "./math/random.js";
 import {AttributesWireframe} from "./gl/attributes/attributesWireframe.js";
 import {AttributesIndices} from "./gl/attributes/attributesIndices.js";
 import {ModellerWireframe} from "./modellers/modellerWireframe.js";
+import {Interface} from "./interface/interface.js";
 
 export class Tree {
+    static #CANVAS = document.getElementById("renderer");
     static #COLOR_BACKGROUND = new Color("#336997");
 
     #width;
@@ -20,40 +22,38 @@ export class Tree {
     #camera = new Camera();
     #cameraController = new CameraControllerOrbit(this.#camera);
     #random = new Random();
-    #parameters = new Parameters();
+    #configuration = new Configuration();
+    #interface = new Interface(this.#configuration, this.execute.bind(this));
     #network = null;
     #updated = true;
 
     /**
      * Construct the tree grower
-     * @param {number} width The viewport width
-     * @param {number} height The viewport height
-     * @param {HTMLCanvasElement} canvas The canvas that is being rendered to
      */
-    constructor(width, height, canvas) {
-        this.#width = width;
-        this.#height = height;
-        this.#camera.updateProjection(width / height);
+    constructor() {
+        this.#width = Tree.#CANVAS.width;
+        this.#height = Tree.#CANVAS.height;
+        this.#camera.updateProjection(this.#width / this.#height);
 
         gl.clearColor(Tree.#COLOR_BACKGROUND.r, Tree.#COLOR_BACKGROUND.g, Tree.#COLOR_BACKGROUND.b, 1);
 
-        canvas.addEventListener("mousedown", event => {
+        Tree.#CANVAS.addEventListener("mousedown", event => {
             this.#cameraController.mouseDown(
-                event.clientX / canvas.clientHeight,
-                event.clientY / canvas.clientHeight);
+                event.clientX / Tree.#CANVAS.clientHeight,
+                event.clientY / Tree.#CANVAS.clientHeight);
         });
 
-        canvas.addEventListener("mousemove", event => {
+        Tree.#CANVAS.addEventListener("mousemove", event => {
             this.#cameraController.mouseMove(
-                event.clientX / canvas.clientHeight,
-                event.clientY / canvas.clientHeight);
+                event.clientX / Tree.#CANVAS.clientHeight,
+                event.clientY / Tree.#CANVAS.clientHeight);
         });
 
-        canvas.addEventListener("mouseup", () => {
+        Tree.#CANVAS.addEventListener("mouseup", () => {
             this.#cameraController.mouseUp();
         });
 
-        canvas.addEventListener("wheel", event => {
+        Tree.#CANVAS.addEventListener("wheel", event => {
             if (event.deltaY > 0)
                 this.#cameraController.scrollDown();
             else if (event.deltaY < 0)
@@ -80,7 +80,7 @@ export class Tree {
     execute() {
         this.#random.float;
 
-        this.#network = new Network(this.#random.fork(), this.#parameters);
+        this.#network = new Network(this.#random.fork(), this.#configuration);
 
         const attributes = new AttributesWireframe();
         const indices = new AttributesIndices();
