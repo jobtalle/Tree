@@ -2,6 +2,7 @@ import {Modeller} from "./modeller.js";
 
 export class ModellerWireframe extends Modeller {
     attributes;
+    indices;
 
     /**
      * Construct a wireframe modeller
@@ -10,13 +11,14 @@ export class ModellerWireframe extends Modeller {
      * @param {Node} root The root node
      */
     constructor(attributes, indices, root) {
-        super(indices, root);
+        super(root);
 
         this.attributes = attributes;
+        this.indices = indices;
     }
 
     /**
-     * Model a node
+     * Model a node and its children
      * @param {Node} node The node to model
      * @param [first] True if this is the first node
      */

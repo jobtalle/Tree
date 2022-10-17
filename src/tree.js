@@ -11,6 +11,8 @@ import {AttributesWireframe} from "./gl/attributes/attributesWireframe.js";
 import {AttributesIndices} from "./gl/attributes/attributesIndices.js";
 import {ModellerWireframe} from "./modellers/modellerWireframe.js";
 import {Interface} from "./interface/interface.js";
+import {AttributesSpheres} from "./gl/attributes/attributesSpheres.js";
+import {ModellerSpheres} from "./modellers/modellerSpheres.js";
 
 export class Tree {
     static #CANVAS = document.getElementById("renderer");
@@ -80,13 +82,20 @@ export class Tree {
     remodel() {
         this.#network = new Network(this.#configuration);
 
-        const attributes = new AttributesWireframe();
-        const indices = new AttributesIndices();
+        // const attributes = new AttributesWireframe();
+        // const indices = new AttributesIndices();
+        //
+        // for (const root of this.#network.roots)
+        //     new ModellerWireframe(attributes, indices, root).model();
+        //
+        // Renderables.WIREFRAME.upload(attributes, indices);
+
+        const attributes = new AttributesSpheres();
 
         for (const root of this.#network.roots)
-            new ModellerWireframe(attributes, indices, root).model();
+            new ModellerSpheres(attributes, root).model();
 
-        Renderables.WIREFRAME.upload(attributes, indices);
+        Renderables.SPHERES.uploadInstances(attributes);
     }
 
     /**
@@ -130,7 +139,10 @@ export class Tree {
         gl.viewport(0, 0, this.#width, this.#height);
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-        Shaders.WIREFRAME.use();
-        Renderables.WIREFRAME.draw();
+        // Shaders.WIREFRAME.use();
+        // Renderables.WIREFRAME.draw();
+
+        Shaders.SPHERES.use();
+        Renderables.SPHERES.draw();
     }
 }

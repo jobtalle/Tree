@@ -1,14 +1,11 @@
 export class Modeller {
-    indices;
     root;
 
     /**
      * Construct a modeller
-     * @param {AttributesIndices} indices The indices
      * @param {Node} root The root node
      */
-    constructor(indices, root) {
-        this.indices = indices;
+    constructor(root) {
         this.root = root;
     }
 

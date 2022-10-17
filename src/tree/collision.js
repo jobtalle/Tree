@@ -1,6 +1,6 @@
 export class Collision {
     static SIZE = 2;
-    static SUBDIVISION = 8;
+    static SUBDIVISION = 16;
     static INVERSE_CELL_SIZE = Collision.SUBDIVISION / Collision.SIZE;
     static RADIUS_MAX = .12;
     static #EPSILON = .001;
@@ -28,8 +28,6 @@ export class Collision {
             vector.x > Collision.SIZE ||
             vector.y > Collision.SIZE ||
             vector.z > Collision.SIZE);
-
-
     }
 
     /**
@@ -66,25 +64,26 @@ export class Collision {
             return false;
 
         const xStart = Math.max(0,
-            Math.floor((center.x - Collision.RADIUS_MAX * 2) * Collision.INVERSE_CELL_SIZE));
+            Math.floor((center.x - Collision.RADIUS_MAX - radius) * Collision.INVERSE_CELL_SIZE));
         const yStart = Math.max(0,
-            Math.floor((center.y - Collision.RADIUS_MAX * 2) * Collision.INVERSE_CELL_SIZE));
+            Math.floor((center.y - Collision.RADIUS_MAX - radius) * Collision.INVERSE_CELL_SIZE));
         const zStart = Math.max(0,
-            Math.floor((center.z - Collision.RADIUS_MAX * 2) * Collision.INVERSE_CELL_SIZE));
+            Math.floor((center.z - Collision.RADIUS_MAX - radius) * Collision.INVERSE_CELL_SIZE));
         const xEnd = Math.min(Collision.SUBDIVISION - 1,
-            Math.floor((center.x + Collision.RADIUS_MAX * 2) * Collision.INVERSE_CELL_SIZE));
+            Math.floor((center.x + Collision.RADIUS_MAX + radius) * Collision.INVERSE_CELL_SIZE));
         const yEnd = Math.min(Collision.SUBDIVISION - 1,
-            Math.floor((center.y + Collision.RADIUS_MAX * 2) * Collision.INVERSE_CELL_SIZE));
+            Math.floor((center.y + Collision.RADIUS_MAX + radius) * Collision.INVERSE_CELL_SIZE));
         const zEnd = Math.min(Collision.SUBDIVISION - 1,
-            Math.floor((center.z + Collision.RADIUS_MAX * 2) * Collision.INVERSE_CELL_SIZE));
+            Math.floor((center.z + Collision.RADIUS_MAX + radius) * Collision.INVERSE_CELL_SIZE));
 
         for (let z = zStart; z <= zEnd; ++z) for (let y = yStart; y <= yEnd; ++y) for (let x = xStart; x <= xEnd; ++x) {
             const cell = this.#coordinateToIndex(x, y, z);
 
             for (let sphere = 0, sphereCount = this.#spheres[cell].length; sphere < sphereCount; ++sphere)
-                if (center.squaredDistanceTo(this.#spheres[cell][sphere]) <
-                    (radius + this.#radii[cell][sphere]) * (radius + this.#radii[cell][sphere]) - Collision.#EPSILON)
-                    return false;
+                if (center.manhattanDistanceTo(this.#spheres[cell][sphere]) < radius + this.#radii[cell][sphere])
+                    if (center.squaredDistanceTo(this.#spheres[cell][sphere]) <
+                        (radius + this.#radii[cell][sphere]) * (radius + this.#radii[cell][sphere]) - Collision.#EPSILON)
+                        return false;
         }
 
         return true;

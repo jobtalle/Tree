@@ -14,12 +14,10 @@ export class Renderable {
      * A renderable
      * @param {Function} configureVAO A function that configures the VAO
      * @param {GLenum} type The geometry type
-     * @param {Buffer} [instances] Optional instance data
      * @param {Function} [configureInstances] Optional instance buffer configuration
      */
-    constructor(configureVAO, type, instances = null, configureInstances = null) {
+    constructor(configureVAO, type, configureInstances = null) {
         this.#type = type;
-        this.#instances = instances;
 
         gl.bindVertexArray(this.#vao);
 
@@ -28,8 +26,10 @@ export class Renderable {
 
         configureVAO();
 
-        if (instances) {
-            gl.bindBuffer(gl.ARRAY_BUFFER, this.#instances);
+        if (configureInstances) {
+            this.#instances = new Buffer(gl.ARRAY_BUFFER);
+
+            gl.bindBuffer(gl.ARRAY_BUFFER, this.#instances.buffer);
 
             configureInstances();
         }
@@ -56,7 +56,7 @@ export class Renderable {
     uploadInstances(attributes) {
         if (this.#instances) {
             this.#instances.upload(attributes);
-            this.#instanceCount = attributes.elementCount;
+            this.#instanceCount = attributes.attributeCount;
         }
     }
 
@@ -64,11 +64,16 @@ export class Renderable {
      * Draw
      */
     draw() {
-        if (this.#indexCount === 0)
+        if (this.#instanceCount === 0 && this.#indexCount === 0)
             return;
 
         gl.bindVertexArray(this.#vao);
-        gl.drawElements(this.#type, this.#indexCount, gl.UNSIGNED_INT, 0);
+
+        if (this.#instanceCount > 0)
+            gl.drawElementsInstanced(this.#type, this.#indexCount, gl.UNSIGNED_INT, 0, this.#instanceCount);
+        else
+            gl.drawElements(this.#type, this.#indexCount, gl.UNSIGNED_INT, 0);
+
         gl.bindVertexArray(null);
     }
 
