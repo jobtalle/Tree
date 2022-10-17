@@ -26,6 +26,8 @@ export class Interface {
         this.#addFieldSlider("Radius at root", new Vector2(.05, .25), "radiusInitial", true);
         this.#addFieldSlider("Radius decay", new Vector2(.5, .9), "radiusDecay", true);
         this.#addFieldSlider("Radius threshold", new Vector2(.01, .5), "radiusThreshold", true);
+        this.#addFieldSlider("Extend tries", new Vector2(1, 30), "extendTries", true, true);
+        this.#addFieldSlider("Extend angle", new Vector2(.1, 1.5), "extendAngle", true);
     }
 
     /**
@@ -33,10 +35,16 @@ export class Interface {
      * @param {string} title The field title
      * @param {Vector2} range The range
      * @param {string} key The key in the configuration to bind this range to
+     * @param {boolean} [round] True if the value should be rounded
      * @param {number} [decimals] The number of decimals to display
      * @returns {{HTMLTrElement}, {HTMLInputElement}} The row and input elements
      */
-    #addField(title, range, key, decimals = Interface.#RANGE_DECIMALS) {
+    #addField(
+        title,
+        range,
+        key,
+        round = false,
+        decimals = Interface.#RANGE_DECIMALS) {
         const row = Interface.#TABLE.appendChild(document.createElement("tr"));
 
         row.appendChild(document.createElement("td")).appendChild(
@@ -47,7 +55,7 @@ export class Interface {
             row.appendChild(document.createElement("td")).appendChild(
                 document.createElement("input")),
             {
-                value: this.#configuration[key].toFixed(decimals),
+                value: round ? this.#configuration[key].toString() : this.#configuration[key].toFixed(decimals),
                 readOnly: true
             })];
     }
@@ -58,9 +66,15 @@ export class Interface {
      * @param {Vector2} range The range
      * @param {string} key The key in the configuration to bind this range to
      * @param {boolean} [remodel] True if this change requires remodelling
+     * @param {boolean} [round] True if the value should be rounded
      */
-    #addFieldSlider(title, range, key, remodel = true) {
-        const [row, field] = this.#addField(title, range, key);
+    #addFieldSlider(
+        title,
+        range,
+        key,
+        remodel = true,
+        round = false) {
+        const [row, field] = this.#addField(title, range, key, round);
 
         Object.assign(
             row.appendChild(document.createElement("td")).appendChild(
@@ -69,11 +83,13 @@ export class Interface {
                 type: "range",
                 min: range.x,
                 max: range.y,
-                step: ((range.y - range.x) / Interface.#RANGE_STEPS).toString(),
+                step: round ? 1 : ((range.y - range.x) / Interface.#RANGE_STEPS).toString(),
                 value: this.#configuration[key].toString(),
                 oninput: event => {
-                    field.value = (this.#configuration[key] = Number.parseFloat(event.target.value)).toFixed(
-                        Interface.#RANGE_DECIMALS);
+                    field.value = round ?
+                        this.#configuration[key] = Number.parseInt(event.target.value) :
+                        (this.#configuration[key] = Number.parseFloat(event.target.value)).toFixed(
+                            Interface.#RANGE_DECIMALS);
 
                     if (remodel)
                         this.#onRemodel();
@@ -90,8 +106,12 @@ export class Interface {
      * @param {string} key The key in the configuration to bind this range to
      * @param {boolean} [remodel] True if this change requires remodelling
      */
-    #addFieldRandomizer(title, range, key, remodel = true) {
-        const [row, field] = this.#addField(title, range, key, 0);
+    #addFieldRandomizer(
+        title,
+        range,
+        key,
+        remodel = true) {
+        const [row, field] = this.#addField(title, range, key, true, 0);
 
         Object.assign(
             row.appendChild(document.createElement("td")).appendChild(
