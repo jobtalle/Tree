@@ -1,6 +1,7 @@
 import {Node} from "./node.js";
 import {Collision} from "../collision.js";
 import {Vector3} from "../../math/vector3.js";
+import {Random} from "../../math/random.js";
 
 export class Network {
     #collision = new Collision();
@@ -10,11 +11,10 @@ export class Network {
 
     /**
      * Construct a tree network
-     * @param {Random} random The randomizer
      * @param {Configuration} configuration The configuration
      */
-    constructor(random, configuration) {
-        this.#random = random;
+    constructor(configuration) {
+        this.#random = new Random(configuration.seed);
         this.#configuration = configuration;
 
         this.grow(new Vector3());

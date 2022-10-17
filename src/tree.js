@@ -21,7 +21,6 @@ export class Tree {
     #height;
     #camera = new Camera();
     #cameraController = new CameraControllerOrbit(this.#camera);
-    #random = new Random();
     #network = null;
     #updated = true;
     #configuration = new Configuration();
@@ -65,16 +64,6 @@ export class Tree {
             passive: true
         });
 
-        window.addEventListener("keydown", event => {
-            switch (event.key) {
-                case " ":
-                    this.#random.float;
-                    this.remodel();
-
-                    break;
-            }
-        })
-
         this.remodel();
         this.updateConfigurationUniforms();
     }
@@ -92,7 +81,7 @@ export class Tree {
      * Execute the algorithm with current parameters
      */
     remodel() {
-        this.#network = new Network(this.#random.fork(), this.#configuration);
+        this.#network = new Network(this.#configuration);
 
         const attributes = new AttributesWireframe();
         const indices = new AttributesIndices();

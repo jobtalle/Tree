@@ -27,12 +27,18 @@ export class Random {
     }
 
     /**
+     * Get a randomized integer in the range [0, 0xFFFFFFFF]
+     * @returns {number} A random integer
+     */
+    get integer() {
+        return this.n = (Random.#MULTIPLIER * this.n++) % Random.#MODULUS;
+    }
+
+    /**
      * Get a randomized number in the range [0, 1]
      * @returns {number} A random number
      */
     get float() {
-        this.n = (Random.#MULTIPLIER * this.n++) % Random.#MODULUS;
-
-        return this.n / Random.#MODULUS;
+        return this.integer / Random.#MODULUS;
     }
 }

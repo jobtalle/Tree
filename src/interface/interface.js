@@ -21,27 +21,47 @@ export class Interface {
         this.#onUpdate = onUpdate;
         this.#onRemodel = onRemodel;
 
-        this.addFieldRange("Growth", new Vector2(0, 1), "growth", false);
+        this.#addFieldRandomizer("Seed", new Vector2(0, 0xFFFFFFFF), "seed", true);
+        this.#addFieldSlider("Growth", new Vector2(0, 1), "growth", false);
     }
 
     /**
-     * Add a range field
+     * Add a field
      * @param {string} title The field title
      * @param {Vector2} range The range
      * @param {string} key The key in the configuration to bind this range to
-     * @param {boolean} [remodel] True if this change requires remodelling
+     * @param {number} [decimals] The number of decimals to display
+     * @returns {{HTMLTrElement}, {HTMLInputElement}} The row and input elements
      */
-    addFieldRange(title, range, key, remodel = true) {
+    #addField(title, range, key, decimals = Interface.#RANGE_DECIMALS) {
         const row = Interface.#TABLE.appendChild(document.createElement("tr"));
-        let field;
 
         row.appendChild(document.createElement("td")).appendChild(
             document.createElement("label")).appendChild(
             document.createTextNode(title + ":"));
 
+        return [row, Object.assign(
+            row.appendChild(document.createElement("td")).appendChild(
+                document.createElement("input")),
+            {
+                value: this.#configuration[key].toFixed(decimals),
+                readOnly: true
+            })];
+    }
+
+    /**
+     * Add a field with a slider
+     * @param {string} title The field title
+     * @param {Vector2} range The range
+     * @param {string} key The key in the configuration to bind this range to
+     * @param {boolean} [remodel] True if this change requires remodelling
+     */
+    #addFieldSlider(title, range, key, remodel = true) {
+        const [row, field] = this.#addField(title, range, key);
+
         Object.assign(
             row.appendChild(document.createElement("td")).appendChild(
-            document.createElement("input")),
+                document.createElement("input")),
             {
                 type: "range",
                 min: range.x,
@@ -58,13 +78,35 @@ export class Interface {
                         this.#onUpdate();
                 }
             });
+    }
 
-        field = Object.assign(
+    /**
+     * Add a field with a randomizer
+     * @param {string} title The field title
+     * @param {Vector2} range The range
+     * @param {string} key The key in the configuration to bind this range to
+     * @param {boolean} [remodel] True if this change requires remodelling
+     */
+    #addFieldRandomizer(title, range, key, remodel = true) {
+        const [row, field] = this.#addField(title, range, key, 0);
+
+        Object.assign(
             row.appendChild(document.createElement("td")).appendChild(
-            document.createElement("input")),
+                Object.assign(
+                    document.createElement("button"),
+                    {
+                        innerText: "Randomize"
+                    })),
             {
-                value: this.#configuration[key].toFixed(Interface.#RANGE_DECIMALS),
-                readOnly: true
+                onclick: () => {
+                    field.value = (this.#configuration[key] =
+                        range.x + Math.floor((range.y - range.x + 1) * Math.random()));
+
+                    if (remodel)
+                        this.#onRemodel();
+                    else
+                        this.#onUpdate();
+                }
             });
     }
 }
