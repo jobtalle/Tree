@@ -51,7 +51,6 @@ export class Matrix3 {
         const _y = vector.y;
         const _z = vector.z;
 
-
         vector.x = this.buffer[0] * _x + this.buffer[3] * _y + this.buffer[6] * _z;
         vector.y = this.buffer[1] * _x + this.buffer[4] * _y + this.buffer[7] * _z;
         vector.z = this.buffer[2] * _x + this.buffer[5] * _y + this.buffer[8] * _z;

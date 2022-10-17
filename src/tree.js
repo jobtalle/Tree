@@ -13,10 +13,12 @@ import {ModellerWireframe} from "./modellers/modellerWireframe.js";
 import {Interface} from "./interface/interface.js";
 import {AttributesSpheres} from "./gl/attributes/attributesSpheres.js";
 import {ModellerSpheres} from "./modellers/modellerSpheres.js";
+import {Vector3} from "./math/vector3.js";
 
 export class Tree {
     static #CANVAS = document.getElementById("renderer");
-    static #COLOR_BACKGROUND = new Color("#336997");
+    static #COLOR_BACKGROUND = new Color("#6790d2");
+    static #SUN = new Vector3(-1, -1, 0).normalize();
 
     #width;
     #height;
@@ -66,7 +68,7 @@ export class Tree {
             passive: true
         });
 
-        this.remodel();
+        Uniforms.GLOBALS.setSun(Tree.#SUN);
     }
 
     /**
@@ -119,8 +121,7 @@ export class Tree {
             this.updateConfigurationUniforms();
 
             update = true;
-        }
-        else if (this.#updateUniforms) {
+        } else if (this.#updateUniforms) {
             this.#updateUniforms = false;
 
             this.updateConfigurationUniforms();
@@ -142,7 +143,13 @@ export class Tree {
         // Shaders.WIREFRAME.use();
         // Renderables.WIREFRAME.draw();
 
+        gl.enable(gl.DEPTH_TEST);
+        gl.enable(gl.CULL_FACE);
+
         Shaders.SPHERES.use();
         Renderables.SPHERES.draw();
+
+        gl.disable(gl.DEPTH_TEST);
+        gl.disable(gl.CULL_FACE);
     }
 }

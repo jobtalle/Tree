@@ -233,32 +233,6 @@ export class Vector3 {
     }
 
     /**
-     * Calculate the squared distance from this vector to another distance
-     * @param {Vector3} other The other vector
-     * @returns {number} The squared distance
-     */
-    squaredDistanceTo(other) {
-        const dx = other.x - this.x;
-        const dy = other.y - this.y;
-        const dz = other.z - this.z;
-
-        return dx * dx + dy * dy + dz * dz;
-    }
-
-    /**
-     * Calculate the manhattan distance from this vector to another distance
-     * @param {Vector3} other The other vector
-     * @returns {number} The manhattan distance
-     */
-    manhattanDistanceTo(other) {
-        const dx = other.x - this.x;
-        const dy = other.y - this.y;
-        const dz = other.z - this.z;
-
-        return Math.abs(dx) + Math.abs(dy) + Math.abs(dz);
-    }
-
-    /**
      * Get the length of this vector
      * @returns {number} The length of this vector
      */

@@ -1,6 +1,6 @@
 export class Collision {
-    static SIZE = 2;
-    static SUBDIVISION = 16;
+    static SIZE = 3;
+    static SUBDIVISION = 24;
     static INVERSE_CELL_SIZE = Collision.SUBDIVISION / Collision.SIZE;
     static RADIUS_MAX = .12;
     static #EPSILON = .001;
@@ -80,10 +80,9 @@ export class Collision {
             const cell = this.#coordinateToIndex(x, y, z);
 
             for (let sphere = 0, sphereCount = this.#spheres[cell].length; sphere < sphereCount; ++sphere)
-                if (center.manhattanDistanceTo(this.#spheres[cell][sphere]) < radius + this.#radii[cell][sphere])
-                    if (center.squaredDistanceTo(this.#spheres[cell][sphere]) <
-                        (radius + this.#radii[cell][sphere]) * (radius + this.#radii[cell][sphere]) - Collision.#EPSILON)
-                        return false;
+                if (center.distanceTo(this.#spheres[cell][sphere]) <
+                    radius + this.#radii[cell][sphere] - Collision.#EPSILON)
+                    return false;
         }
 
         return true;
@@ -97,9 +96,7 @@ export class Collision {
     add(center, radius) {
         const index = this.#cellIndex(center);
 
-        if (index !== -1) {
-            this.#spheres[index].push(center);
-            this.#radii[index].push(radius);
-        }
+        this.#spheres[index].push(center);
+        this.#radii[index].push(radius);
     }
 }

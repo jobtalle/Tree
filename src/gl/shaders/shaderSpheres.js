@@ -1,9 +1,12 @@
 import {Shader} from "./shader.js";
 import {Color} from "../../color.js";
 import {glslGlobals, UniformBlockGlobals} from "../uniforms/uniformBlockGlobals.js";
+import {glslPhong} from "./glsl/glslPhong.js";
+import {Vector3} from "../../math/vector3.js";
 
 export class ShaderSpheres extends Shader {
-    static #COLOR = new Color("#ad9c56");
+    static #COLOR = new Color("#729d70");
+    static #MATERIAL = new Vector3(.2, .8, 12);
 
     static #VERTEX = glslGlobals + `
         in vec3 vertex;
@@ -19,13 +22,13 @@ export class ShaderSpheres extends Shader {
         }
         `;
 
-    static #FRAGMENT = glslGlobals + `
+    static #FRAGMENT = glslGlobals + glslPhong + `
         in vec3 iNormal;
         
         out vec4 color;
         
         void main() {
-            color = vec4(COLOR, 1.);
+            color = vec4(phong(COLOR, normalize(iNormal), sun, MATERIAL), 1.);
         }
         `;
 
@@ -34,7 +37,8 @@ export class ShaderSpheres extends Shader {
      */
     constructor() {
         super(ShaderSpheres.#VERTEX, ShaderSpheres.#FRAGMENT, [
-            ["COLOR", Shader.makeVec3(ShaderSpheres.#COLOR)]]);
+            ["COLOR", Shader.makeVec3(ShaderSpheres.#COLOR)],
+            ["MATERIAL", Shader.makeVec3(ShaderSpheres.#MATERIAL)]]);
 
         this.use();
         this.bindUniformBlock(UniformBlockGlobals.NAME, UniformBlockGlobals.BINDING);

@@ -48,11 +48,13 @@ export class Network {
      * @param {Vector3} start The network origin
      */
     grow(start) {
-        let nodeCount = 1;
-
         if (this.#collision.fits(start, this.#configuration.radiusInitial)) {
             const root = new Node(start, this.#configuration.radiusInitial);
+
+            this.#collision.add(start, this.#configuration.radiusInitial);
+
             let tips = root.grow(this.#configuration, this.#collision, this.#random);
+            let nodeCount = tips.length + 1;
 
             while (tips.length !== 0) {
                 const newTips = [];

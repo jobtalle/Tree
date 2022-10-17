@@ -10,9 +10,19 @@ export class UniformBlockGlobals extends UniformBlock {
      * Construct the global variables
      */
     constructor() {
-        super(68, UniformBlockGlobals.BINDING);
+        super(80, UniformBlockGlobals.BINDING);
 
         this.#floats = new Float32Array(this.bytes);
+    }
+
+    /**
+     * Set the sun direction
+     * @param {Vector3} sun The normalized sun direction
+     */
+    setSun(sun) {
+        this.#floats[16] = sun.x;
+        this.#floats[17] = sun.y;
+        this.#floats[18] = sun.z;
     }
 
     /**
@@ -20,7 +30,7 @@ export class UniformBlockGlobals extends UniformBlock {
      * @param {number} growth The growth threshold
      */
     setGrowth(growth) {
-        this.#floats[16] = growth;
+        this.#floats[19] = growth;
     }
 
     /**
@@ -35,5 +45,6 @@ export class UniformBlockGlobals extends UniformBlock {
 export const glslGlobals = `
     uniform ` + UniformBlockGlobals.NAME + ` {
         mat4 vp;
+        vec3 sun;
         float growth;
     };`;
