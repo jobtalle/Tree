@@ -26,8 +26,8 @@ export class Interface {
         this.#addFieldSlider("Growth", new Vector2(0, 1), "growth", false);
         this.#addFieldSlider("Radius at root", new Vector2(.05, Collision.RADIUS_MAX), "radiusInitial", true);
         this.#addFieldSlider("Radius decay", new Vector2(.7, .9), "radiusDecay", true);
-        this.#addFieldSlider("Radius threshold", new Vector2(.01, .2), "radiusThreshold", true);
-        this.#addFieldSlider("Extend tries", new Vector2(1, 30), "extendTries", true, true);
+        this.#addFieldSlider("Radius threshold", new Vector2(.015, .1), "radiusThreshold", true);
+        this.#addFieldSlider("Extend tries", new Vector2(1, 20), "extendTries", true, true);
         this.#addFieldSlider("Extend angle", new Vector2(.1, 1.5), "extendAngle", true);
     }
 

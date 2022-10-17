@@ -4,9 +4,9 @@ export class Configuration {
     seed = Math.floor(Math.random() * 0x100000000);
 
     radiusInitial = .1;
-    radiusDecay = .85;
-    radiusThreshold = .02;
+    radiusDecay = .89;
+    radiusThreshold = .015;
 
-    extendTries = 15;
+    extendTries = 3;
     extendAngle = .7;
 }

@@ -6,8 +6,7 @@ export class AttributesWireframe extends Attributes {
      * Wireframe attributes
      */
     constructor() {
-        super(
-            [
+        super([
                 gl.FLOAT,
                 gl.FLOAT,
                 gl.FLOAT,
