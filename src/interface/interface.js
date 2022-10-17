@@ -23,6 +23,9 @@ export class Interface {
 
         this.#addFieldRandomizer("Seed", new Vector2(0, 0xFFFFFFFF), "seed", true);
         this.#addFieldSlider("Growth", new Vector2(0, 1), "growth", false);
+        this.#addFieldSlider("Radius at root", new Vector2(.05, .25), "radiusInitial", true);
+        this.#addFieldSlider("Radius decay", new Vector2(.5, .9), "radiusDecay", true);
+        this.#addFieldSlider("Radius threshold", new Vector2(.01, .5), "radiusThreshold", true);
     }
 
     /**

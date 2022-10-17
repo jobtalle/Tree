@@ -4,6 +4,8 @@ import {Vector3} from "../../math/vector3.js";
 import {Random} from "../../math/random.js";
 
 export class Network {
+    static #MAX_NODES = 10000;
+
     #collision = new Collision();
     #random;
     #configuration;
@@ -46,11 +48,19 @@ export class Network {
      * @param {Vector3} start The network origin
      */
     grow(start) {
+        let nodeCount = 1;
+
         if (this.#collision.fits(start, this.#configuration.radiusInitial)) {
             const root = new Node(start, this.#configuration.radiusInitial);
             let tips = root.grow(this.#configuration, this.#collision, this.#random);
 
             while (tips.length !== 0) {
+                if ((nodeCount += tips.length) > Network.#MAX_NODES) {
+                    console.warn("Too many nodes!");
+
+                    return;
+                }
+
                 const newTips = [];
                 // TODO: Shuffle tips?
 

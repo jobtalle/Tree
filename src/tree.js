@@ -7,7 +7,6 @@ import {Camera} from "./camera/camera.js";
 import {CameraControllerOrbit} from "./camera/cameraControllerOrbit.js";
 import {Network} from "./tree/network/network.js";
 import {Configuration} from "./tree/configuration.js";
-import {Random} from "./math/random.js";
 import {AttributesWireframe} from "./gl/attributes/attributesWireframe.js";
 import {AttributesIndices} from "./gl/attributes/attributesIndices.js";
 import {ModellerWireframe} from "./modellers/modellerWireframe.js";
@@ -65,7 +64,6 @@ export class Tree {
         });
 
         this.remodel();
-        this.updateConfigurationUniforms();
     }
 
     /**
@@ -82,6 +80,8 @@ export class Tree {
      */
     remodel() {
         this.#network = new Network(this.#configuration);
+
+        this.updateConfigurationUniforms();
 
         const attributes = new AttributesWireframe();
         const indices = new AttributesIndices();
