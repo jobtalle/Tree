@@ -19,7 +19,7 @@ export class Network {
         this.#random = new Random(configuration.seed);
         this.#configuration = configuration;
 
-        this.grow(new Vector3());
+        this.grow(new Vector3(Collision.SIZE * .5, 0, Collision.SIZE * .5));
     }
 
     /**
@@ -55,17 +55,20 @@ export class Network {
             let tips = root.grow(this.#configuration, this.#collision, this.#random);
 
             while (tips.length !== 0) {
-                if ((nodeCount += tips.length) > Network.#MAX_NODES) {
-                    console.warn("Too many nodes!");
-
-                    return;
-                }
-
                 const newTips = [];
                 // TODO: Shuffle tips?
 
-                for (const tip of tips)
-                    newTips.push(...tip.grow(this.#configuration, this.#collision, this.#random));
+                for (const tip of tips) {
+                    const grown = tip.grow(this.#configuration, this.#collision, this.#random);
+
+                    if ((nodeCount += grown.length) > Network.#MAX_NODES) {
+                        console.warn("Too many nodes!");
+
+                        return;
+                    }
+
+                    newTips.push(...grown);
+                }
 
                 tips = newTips;
             }

@@ -2,13 +2,14 @@ import {CameraController} from "./cameraController.js";
 import {Vector2} from "../math/vector2.js";
 import {Vector3} from "../math/vector3.js";
 import {Camera} from "./camera.js";
+import {Collision} from "../tree/collision.js";
 
 export class CameraControllerOrbit extends CameraController {
     #sensitivity;
     #down = false;
     #anchor = new Vector2();
     #from = new Vector3();
-    #pivot = new Vector3(0, .35, 0);
+    #pivot = new Vector3(Collision.SIZE * .5, .35, Collision.SIZE * .5);
     #angle = 0;
     #pitch = 0;
     #zoom;

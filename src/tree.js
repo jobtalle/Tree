@@ -21,12 +21,13 @@ export class Tree {
     #camera = new Camera();
     #cameraController = new CameraControllerOrbit(this.#camera);
     #network = null;
-    #updated = true;
+    #updateUniforms = true;
+    #updateNetwork = true;
     #configuration = new Configuration();
     #interface = new Interface(
         this.#configuration,
-        this.updateConfigurationUniforms.bind(this),
-        this.remodel.bind(this));
+        () => this.#updateUniforms = true,
+        () => this.#updateNetwork = true);
 
     /**
      * Construct the tree grower
@@ -71,8 +72,6 @@ export class Tree {
      */
     updateConfigurationUniforms() {
         Uniforms.GLOBALS.setGrowth(this.#configuration.growth * this.#network.depth);
-
-        this.#updated = true;
     }
 
     /**
@@ -81,8 +80,6 @@ export class Tree {
     remodel() {
         this.#network = new Network(this.#configuration);
 
-        this.updateConfigurationUniforms();
-
         const attributes = new AttributesWireframe();
         const indices = new AttributesIndices();
 
@@ -90,8 +87,6 @@ export class Tree {
             new ModellerWireframe(attributes, indices, root).model();
 
         Renderables.WIREFRAME.upload(attributes, indices);
-
-        this.#updated = true;
     }
 
     /**
@@ -106,9 +101,25 @@ export class Tree {
      * @param {number} time The time interpolation in the range [0, 1]
      */
     render(time) {
-        if (this.#updated || this.#cameraController.render(time))
-            this.#updated = false;
-        else
+        let update = this.#cameraController.render(time);
+
+        if (this.#updateNetwork) {
+            this.#updateNetwork = false;
+
+            this.remodel();
+            this.updateConfigurationUniforms();
+
+            update = true;
+        }
+        else if (this.#updateUniforms) {
+            this.#updateUniforms = false;
+
+            this.updateConfigurationUniforms();
+
+            update = true;
+        }
+
+        if (!update)
             return;
 
         this.#camera.updateVP();
