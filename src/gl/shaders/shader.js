@@ -19,6 +19,15 @@ export class Shader {
     }
 
     /**
+     * Make a vec2
+     * @param {Vector2} vector A value to convert to a vec2
+     * @returns {string} The vec2
+     */
+    static makeVec2(vector) {
+        return "vec2(" + vector.x + "," + vector.y + ")";
+    }
+
+    /**
      * Make a vec3
      * @param {Vector3 | Color} vector A value to convert to a vec3
      * @returns {string} The vec3
