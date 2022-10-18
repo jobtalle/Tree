@@ -11,6 +11,8 @@ export class Network {
     #configuration;
     #roots = [];
     #valid = false;
+    #min = null;
+    #max = null;
 
     /**
      * Construct a tree network
@@ -53,6 +55,14 @@ export class Network {
     }
 
     /**
+     * Get the center of the network
+     * @returns {Vector3} The center of the network
+     */
+    get center() {
+        return this.#min.copy().add(this.#max).multiply(.5);
+    }
+
+    /**
      * Grow a network
      * @param {Vector3} start The network origin
      * @returns {boolean} True if the network was valid
@@ -60,6 +70,11 @@ export class Network {
     #grow(start) {
         if (this.#collision.fits(start, this.#configuration.radiusInitial)) {
             const root = new Node(start, this.#configuration.radiusInitial);
+
+            if (!this.#min || !this.#max) {
+                this.#min = root.position.copy();
+                this.#max = root.position.copy();
+            }
 
             this.#collision.add(start, this.#configuration.radiusInitial);
 
@@ -72,6 +87,13 @@ export class Network {
 
                 for (const tip of tips) {
                     const grown = tip.grow(this.#configuration, this.#collision, this.#random);
+
+                    this.#min.x = Math.min(this.#min.x, tip.position.x);
+                    this.#min.y = Math.min(this.#min.y, tip.position.y);
+                    this.#min.z = Math.min(this.#min.z, tip.position.z);
+                    this.#max.x = Math.max(this.#max.x, tip.position.x);
+                    this.#max.y = Math.max(this.#max.y, tip.position.y);
+                    this.#max.z = Math.max(this.#max.z, tip.position.z);
 
                     if ((nodeCount += grown.length) > Network.#MAX_NODES) {
                         console.warn("Too many nodes!");

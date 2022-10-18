@@ -28,7 +28,7 @@ export class ShaderSpheres extends Shader {
         out vec4 color;
         
         void main() {
-            color = vec4(phong(COLOR, normalize(iNormal), sun, MATERIAL), 1.);
+            color = vec4(phong(COLOR, normalize(iNormal), MATERIAL), 1.);
         }
         `;
 

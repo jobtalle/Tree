@@ -91,6 +91,8 @@ export class Tree {
 
         if (newNetwork.valid) {
             this.#network = newNetwork;
+            this.#cameraController.setPivot(this.#network.center);
+            this.#modelled = 0;
 
             this.#model();
         }
@@ -100,7 +102,7 @@ export class Tree {
      * Model any non modelled layers
      */
     #model() {
-        for (let layer = 1; layer & this.#layers; layer <<= 1) switch (layer) {
+        for (let layer = 1; layer & this.#layers; layer <<= 1) if (!(layer & this.#modelled)) switch (layer) {
             case RenderLayer.WIREFRAME: {
                 const attributes = new AttributesWireframe();
                 const indices = new AttributesIndices();
@@ -119,6 +121,8 @@ export class Tree {
                 Renderables.SPHERES.uploadInstances(attributes);
             } break;
         }
+
+        this.#modelled |= this.#layers;
     }
 
     /**
@@ -156,6 +160,7 @@ export class Tree {
         this.#camera.updateVP();
 
         Uniforms.GLOBALS.setVP(this.#camera.vp);
+        Uniforms.GLOBALS.setSun(this.#cameraController.direction);
         Uniforms.GLOBALS.upload();
 
         gl.viewport(0, 0, this.#width, this.#height);
