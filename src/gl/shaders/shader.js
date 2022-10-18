@@ -40,6 +40,15 @@ export class Shader {
     }
 
     /**
+     * Make a vec4
+     * @param {Vector4} vector A value to convert to a vec4
+     * @returns {string} The vec4
+     */
+    static makeVec4(vector) {
+        return "vec4(" + vector.x + "," + vector.y + "," + vector.z + "," + vector.w + ")";
+    }
+
+    /**
      * Construct a shader
      * @param {String} vertex The vertex shader
      * @param {String} fragment The fragment shader

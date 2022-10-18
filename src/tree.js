@@ -19,7 +19,7 @@ import {RenderLayer} from "./renderLayer.js";
 export class Tree {
     static #CANVAS = document.getElementById("renderer");
     static #COLOR_BACKGROUND = new Color("#6790d2");
-    static #SUN = new Vector3(-1, -1, 0).normalize();
+    static #SUN = new Vector3(-1, -2, 0).normalize();
 
     #width;
     #height;
@@ -106,7 +106,7 @@ export class Tree {
      * Model any non modelled layers
      */
     #model() {
-        for (let layer = 1; layer & this.#layers; layer <<= 1) if (!(layer & this.#modelled)) switch (layer) {
+        for (let layer = 1; layer < RenderLayer.LAST; layer <<= 1) if (!(layer & this.#modelled)) switch (layer) {
             case RenderLayer.WIREFRAME: {
                 const attributes = new AttributesWireframe();
                 const indices = new AttributesIndices();
@@ -164,7 +164,8 @@ export class Tree {
         this.#camera.updateVP();
 
         Uniforms.GLOBALS.setVP(this.#camera.vp);
-        Uniforms.GLOBALS.setSun(this.#cameraController.direction);
+        Uniforms.GLOBALS.setEye(this.#cameraController.eye);
+        Uniforms.GLOBALS.setDirection(this.#cameraController.direction);
         Uniforms.GLOBALS.upload();
 
         gl.viewport(0, 0, this.#width, this.#height);

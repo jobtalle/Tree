@@ -31,6 +31,14 @@ export class CameraControllerOrbit extends CameraController {
     }
 
     /**
+     * Get the eye position
+     * @returns {Vector3} The eye position
+     */
+    get eye() {
+        return this.#from;
+    }
+
+    /**
      * Get the viewing direction
      * @returns {Vector3} The viewing direction
      */
@@ -127,6 +135,7 @@ export class CameraControllerOrbit extends CameraController {
         this.#from.y = this.#pivot.y + Math.sin(this.#pitch) * this.#zoom;
         this.#from.z = this.#pivot.z + Math.sin(this.#angle) * Math.cos(this.#pitch) * this.#zoom;
         this.#direction.set(this.#pivot).subtract(this.#from).normalize();
+        this.#direction.setCoordinates(0, -1, 0).normalize();
 
         this.camera.view.lookAt(this.#from, this.#pivot, Vector3.UP);
 

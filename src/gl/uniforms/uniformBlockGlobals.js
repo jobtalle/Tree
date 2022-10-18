@@ -10,7 +10,7 @@ export class UniformBlockGlobals extends UniformBlock {
      * Construct the global variables
      */
     constructor() {
-        super(80, UniformBlockGlobals.BINDING);
+        super(108, UniformBlockGlobals.BINDING);
 
         this.#floats = new Float32Array(this.bytes);
     }
@@ -23,6 +23,26 @@ export class UniformBlockGlobals extends UniformBlock {
         this.#floats[16] = sun.x;
         this.#floats[17] = sun.y;
         this.#floats[18] = sun.z;
+    }
+
+    /**
+     * Set the eye
+     * @param {Vector3} eye The eye vector
+     */
+    setEye(eye) {
+        this.#floats[20] = eye.x;
+        this.#floats[21] = eye.y;
+        this.#floats[22] = eye.z;
+    }
+
+    /**
+     * Set the camera direction
+     * @param {Vector3} direction The camera direction
+     */
+    setDirection(direction) {
+        this.#floats[24] = direction.x;
+        this.#floats[25] = direction.y;
+        this.#floats[26] = direction.z;
     }
 
     /**
@@ -47,4 +67,6 @@ export const glslGlobals = `
         mat4 vp;
         vec3 sun;
         float growth;
+        vec3 eye;
+        vec3 direction;
     };`;
