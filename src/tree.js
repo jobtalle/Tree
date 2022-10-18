@@ -81,6 +81,12 @@ export class Tree {
      */
     #updateUniforms() {
         Uniforms.GLOBALS.setGrowth(this.#configuration.growth * this.#network.depth);
+
+        this.#layers =
+            (this.#configuration.layerGeometry ? RenderLayer.SPHERES : 0) |
+            (this.#configuration.layerWireframe ? RenderLayer.WIREFRAME : 0);
+
+        this.#model();
     }
 
     /**
@@ -93,8 +99,6 @@ export class Tree {
             this.#network = newNetwork;
             this.#cameraController.setPivot(this.#network.center);
             this.#modelled = 0;
-
-            this.#model();
         }
     }
 
