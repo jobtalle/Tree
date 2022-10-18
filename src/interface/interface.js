@@ -22,6 +22,7 @@ export class Interface {
         this.#onUpdate = onUpdate;
         this.#onRemodel = onRemodel;
 
+        this.#addCheckbox("Wireframe", "layerWireframe", false);
         this.#addFieldRandomizer("Seed", new Vector2(0, 0xFFFFFFFF), "seed", true);
         this.#addFieldSlider("Growth", new Vector2(0, 1), "growth", false);
         this.#addFieldSlider("Radius at root", new Vector2(.05, Collision.RADIUS_MAX), "radiusInitial", true);
@@ -32,13 +33,55 @@ export class Interface {
     }
 
     /**
+     * Add a label to a row
+     * @param {HTMLTableRowElement} row The row
+     * @param {string} title The label name
+     */
+    #addLabel(row, title) {
+        row.appendChild(
+            document.createElement("td")).appendChild(
+            document.createElement("label")).appendChild(
+            document.createTextNode(title + ":"));
+    }
+
+    /**
+     * Add a checkbox
+     * @param {string} title The checkbox title
+     * @param {string} key The key in the configuration to bind this checkbox to
+     * @param {boolean} [remodel] True if this change requires remodelling
+     */
+    #addCheckbox(
+        title,
+        key,
+        remodel = true) {
+        const row = Interface.#TABLE.appendChild(document.createElement("tr"));
+
+        this.#addLabel(row, title);
+
+        Object.assign(
+            row.appendChild(document.createElement("input")),
+            {
+                type: "checkbox",
+                checked: this.#configuration[key],
+                onchange: event => {
+                    this.#configuration[key] = event.target.checked;
+
+                    if (remodel)
+                        this.#onRemodel();
+                    else
+                        this.#onUpdate();
+                }
+            });
+    }
+
+    /**
      * Add a field
      * @param {string} title The field title
      * @param {Vector2} range The range
      * @param {string} key The key in the configuration to bind this range to
      * @param {boolean} [round] True if the value should be rounded
      * @param {number} [decimals] The number of decimals to display
-     * @returns {{HTMLTrElement}, {HTMLInputElement}} The row and input elements
+     * @returns {{HTMLTableRowElement}, {HTMLInputElement}} The row and input elements
      */
     #addField(
         title,
@@ -48,9 +91,7 @@ export class Interface {
         decimals = Interface.#RANGE_DECIMALS) {
         const row = Interface.#TABLE.appendChild(document.createElement("tr"));
 
-        row.appendChild(document.createElement("td")).appendChild(
-            document.createElement("label")).appendChild(
-            document.createTextNode(title + ":"));
+        this.#addLabel(row, title);
 
         return [row, Object.assign(
             row.appendChild(document.createElement("td")).appendChild(

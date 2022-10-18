@@ -1,5 +1,7 @@
 export class Configuration {
     growth = 1;
+    layerWireframe = true;
+    layerGeometry = true;
 
     seed = Math.floor(Math.random() * 0x100000000);
 
