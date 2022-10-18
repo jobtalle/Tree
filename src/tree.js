@@ -72,6 +72,8 @@ export class Tree {
         });
 
         Uniforms.GLOBALS.setSun(Tree.#SUN);
+
+        gl.enable(gl.DEPTH_TEST);
     }
 
     /**
@@ -159,20 +161,22 @@ export class Tree {
         gl.viewport(0, 0, this.#width, this.#height);
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-        if (this.#layers & RenderLayer.WIREFRAME) {
-            Shaders.WIREFRAME.use();
-            Renderables.WIREFRAME.draw();
-        }
-
         if (this.#layers & RenderLayer.SPHERES) {
-            gl.enable(gl.DEPTH_TEST);
             gl.enable(gl.CULL_FACE);
 
             Shaders.SPHERES.use();
             Renderables.SPHERES.draw();
 
-            gl.disable(gl.DEPTH_TEST);
             gl.disable(gl.CULL_FACE);
+        }
+
+        if (this.#layers & RenderLayer.WIREFRAME) {
+            gl.disable(gl.DEPTH_TEST);
+
+            Shaders.WIREFRAME.use();
+            Renderables.WIREFRAME.draw();
+
+            gl.enable(gl.DEPTH_TEST);
         }
     }
 }
