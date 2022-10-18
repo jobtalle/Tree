@@ -1,5 +1,5 @@
-import {Vector2} from "../math/vector2.js";
-import {Collision} from "../tree/collision.js";
+import {Vector2} from "./math/vector2.js";
+import {Collision} from "./tree/collision.js";
 
 export class Interface {
     static #ELEMENT = document.getElementById("interface");

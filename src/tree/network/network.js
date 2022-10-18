@@ -13,6 +13,7 @@ export class Network {
     #valid = false;
     #min = null;
     #max = null;
+    #nodeCount = 0;
 
     /**
      * Construct a tree network
@@ -63,6 +64,14 @@ export class Network {
     }
 
     /**
+     * Get the number of nodes in the network
+     * @returns {number} The number of nodes
+     */
+    get nodeCount() {
+        return this.#nodeCount;
+    }
+
+    /**
      * Grow a network
      * @param {Vector3} start The network origin
      * @returns {boolean} True if the network was valid
@@ -79,7 +88,7 @@ export class Network {
             this.#collision.add(start, this.#configuration.radiusInitial);
 
             let tips = root.grow(this.#configuration, this.#collision, this.#random);
-            let nodeCount = tips.length + 1;
+            this.#nodeCount += tips.length + 1;
 
             while (tips.length !== 0) {
                 const newTips = [];
@@ -95,7 +104,7 @@ export class Network {
                     this.#max.y = Math.max(this.#max.y, tip.position.y);
                     this.#max.z = Math.max(this.#max.z, tip.position.z);
 
-                    if ((nodeCount += grown.length) > Network.#MAX_NODES) {
+                    if ((this.#nodeCount += grown.length) > Network.#MAX_NODES) {
                         console.warn("Too many nodes!");
 
                         return false;

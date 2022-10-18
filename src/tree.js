@@ -10,11 +10,12 @@ import {Configuration} from "./tree/configuration.js";
 import {AttributesWireframe} from "./gl/attributes/attributesWireframe.js";
 import {AttributesIndices} from "./gl/attributes/attributesIndices.js";
 import {ModellerWireframe} from "./modellers/modellerWireframe.js";
-import {Interface} from "./interface/interface.js";
+import {Interface} from "./interface.js";
 import {AttributesSpheres} from "./gl/attributes/attributesSpheres.js";
 import {ModellerSpheres} from "./modellers/modellerSpheres.js";
 import {Vector3} from "./math/vector3.js";
 import {RenderLayer} from "./renderLayer.js";
+import {Report} from "./report.js";
 
 export class Tree {
     static #CANVAS = document.getElementById("renderer");
@@ -99,6 +100,8 @@ export class Tree {
             this.#network = newNetwork;
             this.#cameraController.setPivot(this.#network.center);
             this.#modelled = 0;
+
+            Report.report(this.#network);
         }
     }
 
