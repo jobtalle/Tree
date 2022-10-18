@@ -10,6 +10,7 @@ export class Network {
     #random;
     #configuration;
     #roots = [];
+    #valid = false;
 
     /**
      * Construct a tree network
@@ -19,7 +20,15 @@ export class Network {
         this.#random = new Random(configuration.seed);
         this.#configuration = configuration;
 
-        this.grow(new Vector3(Collision.SIZE * .5, 0, Collision.SIZE * .5));
+        this.#valid = this.#grow(new Vector3(Collision.SIZE * .5, 0, Collision.SIZE * .5));
+    }
+
+    /**
+     * Check whether the network was grown successfully
+     * @returns {boolean} True if the network is valid
+     */
+    get valid() {
+        return this.#valid;
     }
 
     /**
@@ -46,8 +55,9 @@ export class Network {
     /**
      * Grow a network
      * @param {Vector3} start The network origin
+     * @returns {boolean} True if the network was valid
      */
-    grow(start) {
+    #grow(start) {
         if (this.#collision.fits(start, this.#configuration.radiusInitial)) {
             const root = new Node(start, this.#configuration.radiusInitial);
 
@@ -66,7 +76,7 @@ export class Network {
                     if ((nodeCount += grown.length) > Network.#MAX_NODES) {
                         console.warn("Too many nodes!");
 
-                        return;
+                        return false;
                     }
 
                     newTips.push(...grown);
@@ -75,7 +85,9 @@ export class Network {
                 tips = newTips;
             }
 
-            this.#roots = [root];
+            this.#roots.push(root);
         }
+
+        return true;
     }
 }

@@ -82,22 +82,26 @@ export class Tree {
      * Execute the algorithm with current parameters
      */
     remodel() {
-        this.#network = new Network(this.#configuration);
+        const newNetwork = new Network(this.#configuration);
 
-        // const attributes = new AttributesWireframe();
-        // const indices = new AttributesIndices();
-        //
-        // for (const root of this.#network.roots)
-        //     new ModellerWireframe(attributes, indices, root).model();
-        //
-        // Renderables.WIREFRAME.upload(attributes, indices);
+        if (newNetwork.valid) {
+            this.#network = newNetwork;
 
-        const attributes = new AttributesSpheres();
+            // const attributes = new AttributesWireframe();
+            // const indices = new AttributesIndices();
+            //
+            // for (const root of this.#network.roots)
+            //     new ModellerWireframe(attributes, indices, root).model();
+            //
+            // Renderables.WIREFRAME.upload(attributes, indices);
 
-        for (const root of this.#network.roots)
-            new ModellerSpheres(attributes, root).model();
+            const attributes = new AttributesSpheres();
 
-        Renderables.SPHERES.uploadInstances(attributes);
+            for (const root of this.#network.roots)
+                new ModellerSpheres(attributes, root).model();
+
+            Renderables.SPHERES.uploadInstances(attributes);
+        }
     }
 
     /**
