@@ -14,6 +14,7 @@ import {Interface} from "./interface/interface.js";
 import {AttributesSpheres} from "./gl/attributes/attributesSpheres.js";
 import {ModellerSpheres} from "./modellers/modellerSpheres.js";
 import {Vector3} from "./math/vector3.js";
+import {RenderLayer} from "./renderLayer.js";
 
 export class Tree {
     static #CANVAS = document.getElementById("renderer");
@@ -25,13 +26,15 @@ export class Tree {
     #camera = new Camera();
     #cameraController = new CameraControllerOrbit(this.#camera);
     #network = null;
-    #updateUniforms = true;
-    #updateNetwork = true;
+    #modifiedUniforms = true;
+    #modifiedNetwork = true;
+    #layers = RenderLayer.WIREFRAME | RenderLayer.SPHERES;
+    #modelled = 0;
     #configuration = new Configuration();
     #interface = new Interface(
         this.#configuration,
-        () => this.#updateUniforms = true,
-        () => this.#updateNetwork = true);
+        () => this.#modifiedUniforms = true,
+        () => this.#modifiedNetwork = true);
 
     /**
      * Construct the tree grower
@@ -74,33 +77,45 @@ export class Tree {
     /**
      * Update uniforms read from configuration
      */
-    updateConfigurationUniforms() {
+    #updateUniforms() {
         Uniforms.GLOBALS.setGrowth(this.#configuration.growth * this.#network.depth);
     }
 
     /**
      * Execute the algorithm with current parameters
      */
-    remodel() {
+    #updateNetwork() {
         const newNetwork = new Network(this.#configuration);
 
         if (newNetwork.valid) {
             this.#network = newNetwork;
 
-            // const attributes = new AttributesWireframe();
-            // const indices = new AttributesIndices();
-            //
-            // for (const root of this.#network.roots)
-            //     new ModellerWireframe(attributes, indices, root).model();
-            //
-            // Renderables.WIREFRAME.upload(attributes, indices);
+            this.#model();
+        }
+    }
 
-            const attributes = new AttributesSpheres();
+    /**
+     * Model any non modelled layers
+     */
+    #model() {
+        for (let layer = 1; layer & this.#layers; layer <<= 1) switch (layer) {
+            case RenderLayer.WIREFRAME: {
+                const attributes = new AttributesWireframe();
+                const indices = new AttributesIndices();
 
-            for (const root of this.#network.roots)
-                new ModellerSpheres(attributes, root).model();
+                for (const root of this.#network.roots)
+                    new ModellerWireframe(attributes, indices, root).model();
 
-            Renderables.SPHERES.uploadInstances(attributes);
+                Renderables.WIREFRAME.upload(attributes, indices);
+            } break;
+            case RenderLayer.SPHERES: {
+                const attributes = new AttributesSpheres();
+
+                for (const root of this.#network.roots)
+                    new ModellerSpheres(attributes, root).model();
+
+                Renderables.SPHERES.uploadInstances(attributes);
+            } break;
         }
     }
 
@@ -118,17 +133,17 @@ export class Tree {
     render(time) {
         let update = this.#cameraController.render(time);
 
-        if (this.#updateNetwork) {
-            this.#updateNetwork = false;
+        if (this.#modifiedNetwork) {
+            this.#modifiedNetwork = false;
 
-            this.remodel();
-            this.updateConfigurationUniforms();
+            this.#updateNetwork();
+            this.#updateUniforms();
 
             update = true;
-        } else if (this.#updateUniforms) {
-            this.#updateUniforms = false;
+        } else if (this.#modifiedUniforms) {
+            this.#modifiedUniforms = false;
 
-            this.updateConfigurationUniforms();
+            this.#updateUniforms();
 
             update = true;
         }
@@ -144,16 +159,20 @@ export class Tree {
         gl.viewport(0, 0, this.#width, this.#height);
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-        // Shaders.WIREFRAME.use();
-        // Renderables.WIREFRAME.draw();
+        if (this.#layers & RenderLayer.WIREFRAME) {
+            Shaders.WIREFRAME.use();
+            Renderables.WIREFRAME.draw();
+        }
 
-        gl.enable(gl.DEPTH_TEST);
-        gl.enable(gl.CULL_FACE);
+        if (this.#layers & RenderLayer.SPHERES) {
+            gl.enable(gl.DEPTH_TEST);
+            gl.enable(gl.CULL_FACE);
 
-        Shaders.SPHERES.use();
-        Renderables.SPHERES.draw();
+            Shaders.SPHERES.use();
+            Renderables.SPHERES.draw();
 
-        gl.disable(gl.DEPTH_TEST);
-        gl.disable(gl.CULL_FACE);
+            gl.disable(gl.DEPTH_TEST);
+            gl.disable(gl.CULL_FACE);
+        }
     }
 }
