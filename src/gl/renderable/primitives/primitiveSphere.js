@@ -92,7 +92,7 @@ export class PrimitiveSphere extends Primitive {
      */
     model(attributes, indices) {
         for (let point = 0, pointCount = this.#points.length; point < pointCount; ++point)
-            attributes.push(this.#points[point], this.#points[point]);
+            attributes.push(this.#points[point]);
 
         for (let index = 0, indexCount = this.#indices.length; index < indexCount; ++index)
             indices.push(this.#indices[index]);
