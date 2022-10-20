@@ -19,7 +19,7 @@ export class ModellerSpheres extends Modeller {
      * @param {Node} node The node to model
      */
     modelNode(node) {
-        this.attributes.push(node.position, node.radius);
+        this.attributes.push(node.position, node.radius, node.parentDistance, node.distance);
 
         for (let child = 0, childCount = node.children.length; child < childCount; ++child)
             this.modelNode(node.children[child]);

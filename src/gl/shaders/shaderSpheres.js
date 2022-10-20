@@ -12,14 +12,18 @@ export class ShaderSpheres extends Shader {
     static #VERTEX = glslGlobals + `
         in vec3 vertex;
         in vec3 normal;
+        
         in vec4 sphere;
+        in vec2 distance;
         
         out vec3 iNormal;
         out vec3 iPosition;
         
         void main() {
+            float scale = smoothstep(0., 1., (growth - distance.x) / (distance.y - distance.x));
+            
             iNormal = vertex;
-            iPosition = vertex * sphere.w + sphere.xyz;
+            iPosition = vertex * sphere.w * scale + sphere.xyz;
         
             gl_Position = vp * vec4(iPosition, 1.);
         }

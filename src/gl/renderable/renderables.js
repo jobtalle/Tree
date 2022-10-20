@@ -17,8 +17,11 @@ export class Renderables {
         gl.vertexAttribPointer(1, 3, gl.FLOAT, false, 24, 12);
     }, gl.TRIANGLES, () => {
         gl.enableVertexAttribArray(2);
-        gl.vertexAttribPointer(2, 4, gl.FLOAT, false, 16, 0);
+        gl.vertexAttribPointer(2, 4, gl.FLOAT, false, 24, 0);
         gl.vertexAttribDivisor(2, 1);
+        gl.enableVertexAttribArray(3);
+        gl.vertexAttribPointer(3, 2, gl.FLOAT, false, 24, 16);
+        gl.vertexAttribDivisor(3, 1);
     });
 
     /**

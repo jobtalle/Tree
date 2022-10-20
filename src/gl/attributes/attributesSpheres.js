@@ -10,6 +10,8 @@ export class AttributesSpheres extends Attributes {
                 gl.FLOAT,
                 gl.FLOAT,
                 gl.FLOAT,
+                gl.FLOAT,
+                gl.FLOAT,
                 gl.FLOAT
             ]);
     }
@@ -18,8 +20,10 @@ export class AttributesSpheres extends Attributes {
      * Push a sphere
      * @param {Vector3} center The sphere center
      * @param {number} radius The sphere radius
+     * @param {number} growthStart The start growth
+     * @param {number} growthEnd The end growth
      */
-    push(center, radius) {
-        this.array.push(center.x, center.y, center.z, radius);
+    push(center, radius, growthStart, growthEnd) {
+        this.array.push(center.x, center.y, center.z, radius, growthStart, growthEnd);
     }
 }

@@ -93,6 +93,17 @@ export class Node {
     }
 
     /**
+     * Get the node distance from the root of this nodes parent
+     * @returns {number} The node distance from the root
+     */
+    get parentDistance() {
+        if (this.#parent)
+            return this.#parent.distance;
+
+        return 0;
+    }
+
+    /**
      * Get the depth to the furthest tip
      * @returns {number} The depth
      */
