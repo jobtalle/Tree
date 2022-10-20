@@ -5,16 +5,16 @@ export class Matrix3 {
 
     /**
      * Construct a 3x3 matrix
-     * @param {Vector3} [direction] Optionally, the initial direction to rotate towards
+     * @param {Vector3 | Matrix3} [source] Optionally, the source to construct this matrix from
      */
-    constructor(direction = null) {
-        if (direction) {
-            const tangent = direction.tangent();
-            const bitangent = new Vector3().cross(tangent, direction);
+    constructor(source = null) {
+        if (source instanceof Vector3) {
+            const tangent = source.tangent();
+            const bitangent = new Vector3().cross(tangent, source);
 
-            this.buffer[0] = direction.x;
-            this.buffer[1] = direction.y;
-            this.buffer[2] = direction.z;
+            this.buffer[0] = source.x;
+            this.buffer[1] = source.y;
+            this.buffer[2] = source.z;
 
             this.buffer[3] = tangent.x;
             this.buffer[4] = tangent.y;
@@ -24,8 +24,46 @@ export class Matrix3 {
             this.buffer[7] = bitangent.y;
             this.buffer[8] = bitangent.z;
         }
+        else if (source instanceof Matrix3)
+            this.buffer.set(source.buffer);
         else
             this.identity();
+    }
+
+    /**
+     * Copy this matrix
+     * @returns {Matrix3} The new matrix
+     */
+    copy() {
+        return new Matrix3(this);
+    }
+
+    /**
+     * Set the rotation this matrix is pointing towards
+     * @param {Vector3} direction The new normalized direction
+     */
+    set direction(direction) {
+        this.buffer[0] = direction.x;
+        this.buffer[1] = direction.y;
+        this.buffer[2] = direction.z;
+
+        this.buffer[3] = this.buffer[7] * this.buffer[2] - this.buffer[1] * this.buffer[8];
+        this.buffer[4] = this.buffer[8] * this.buffer[0] - this.buffer[2] * this.buffer[6];
+        this.buffer[5] = this.buffer[6] * this.buffer[1] - this.buffer[0] * this.buffer[7];
+
+        // TODO: Does this drift?
+        const il = 1 / Math.sqrt(
+            this.buffer[3] * this.buffer[3] +
+            this.buffer[4] * this.buffer[4] +
+            this.buffer[5] * this.buffer[5]);
+
+        this.buffer[3] *= il;
+        this.buffer[4] *= il;
+        this.buffer[5] *= il;
+
+        this.buffer[6] = this.buffer[1] * this.buffer[5] - this.buffer[4] * this.buffer[2];
+        this.buffer[7] = this.buffer[2] * this.buffer[3] - this.buffer[5] * this.buffer[0];
+        this.buffer[8] = this.buffer[0] * this.buffer[4] - this.buffer[3] * this.buffer[1];
     }
 
     /**

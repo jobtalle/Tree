@@ -16,6 +16,8 @@ import {ModellerSpheres} from "./modellers/modellerSpheres.js";
 import {Vector3} from "./math/vector3.js";
 import {RenderLayer} from "./renderLayer.js";
 import {Report} from "./report.js";
+import {AttributesBranches} from "./gl/attributes/attributesBranches.js";
+import {ModellerBranches} from "./modellers/modellerBranches.js";
 
 export class Tree {
     static #CANVAS = document.getElementById("renderer");
@@ -29,7 +31,7 @@ export class Tree {
     #network = null;
     #modifiedUniforms = true;
     #modifiedNetwork = true;
-    #layers = RenderLayer.WIREFRAME | RenderLayer.SPHERES;
+    #layers = 0;
     #modelled = 0;
     #configuration = new Configuration();
     #interface = new Interface(
@@ -84,7 +86,7 @@ export class Tree {
         Uniforms.GLOBALS.setGrowth(this.#configuration.growth * this.#network.depth);
 
         this.#layers =
-            (this.#configuration.layerGeometry ? RenderLayer.SPHERES : 0) |
+            (this.#configuration.layerGeometry ? RenderLayer.BRANCHES : 0) |
             (this.#configuration.layerWireframe ? RenderLayer.WIREFRAME : 0);
 
         this.#model();
@@ -109,24 +111,40 @@ export class Tree {
      * Model any non modelled layers
      */
     #model() {
-        for (let layer = 1; layer < RenderLayer.LAST; layer <<= 1) if (!(layer & this.#modelled)) switch (layer) {
-            case RenderLayer.WIREFRAME: {
-                const attributes = new AttributesWireframe();
-                const indices = new AttributesIndices();
+        for (let layer = 1; layer < RenderLayer.LAST; layer <<= 1) {
+            if (!(layer & this.#modelled) && layer & this.#layers) {
+                switch (layer) {
+                    case RenderLayer.WIREFRAME: {
+                        const attributes = new AttributesWireframe();
+                        const indices = new AttributesIndices();
 
-                for (const root of this.#network.roots)
-                    new ModellerWireframe(attributes, indices, root).model();
+                        for (const root of this.#network.roots)
+                            new ModellerWireframe(attributes, indices, root).model();
 
-                Renderables.WIREFRAME.upload(attributes, indices);
-            } break;
-            case RenderLayer.SPHERES: {
-                const attributes = new AttributesSpheres();
+                        Renderables.WIREFRAME.upload(attributes, indices);
+                    }
+                        break;
+                    case RenderLayer.SPHERES: {
+                        const attributes = new AttributesSpheres();
 
-                for (const root of this.#network.roots)
-                    new ModellerSpheres(attributes, root).model();
+                        for (const root of this.#network.roots)
+                            new ModellerSpheres(attributes, root).model();
 
-                Renderables.SPHERES.uploadInstances(attributes);
-            } break;
+                        Renderables.SPHERES.uploadInstances(attributes);
+                    }
+                        break;
+                    case RenderLayer.BRANCHES: {
+                        const attributes = new AttributesBranches();
+                        const indices = new AttributesIndices();
+
+                        for (const root of this.#network.roots)
+                            new ModellerBranches(attributes, indices, root).model();
+
+                        Renderables.BRANCHES.upload(attributes, indices);
+                    }
+                        break;
+                }
+            }
         }
 
         this.#modelled |= this.#layers;
@@ -173,6 +191,15 @@ export class Tree {
 
         gl.viewport(0, 0, this.#width, this.#height);
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+        if (this.#layers & RenderLayer.BRANCHES) {
+            gl.enable(gl.CULL_FACE);
+
+            Shaders.BRANCHES.use();
+            Renderables.BRANCHES.draw();
+
+            gl.disable(gl.CULL_FACE);
+        }
 
         if (this.#layers & RenderLayer.SPHERES) {
             gl.enable(gl.CULL_FACE);

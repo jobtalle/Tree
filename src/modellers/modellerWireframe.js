@@ -1,8 +1,8 @@
 import {Modeller} from "./modeller.js";
 
 export class ModellerWireframe extends Modeller {
-    attributes;
-    indices;
+    #attributes;
+    #indices;
 
     /**
      * Construct a wireframe modeller
@@ -13,8 +13,8 @@ export class ModellerWireframe extends Modeller {
     constructor(attributes, indices, root) {
         super(root);
 
-        this.attributes = attributes;
-        this.indices = indices;
+        this.#attributes = attributes;
+        this.#indices = indices;
     }
 
     /**
@@ -22,18 +22,18 @@ export class ModellerWireframe extends Modeller {
      * @param {Node} node The node to model
      * @param [first] True if this is the first node
      */
-    modelNode(node, first = false) {
-        const index = this.attributes.attributeCount;
+    #modelNode(node, first = false) {
+        const index = this.#attributes.attributeCount;
 
-        this.attributes.push(node.position, node.distance);
+        this.#attributes.push(node.position, node.distance);
 
         if (!first)
-            this.indices.push(index);
+            this.#indices.push(index);
 
         for (let child = 0, childCount = node.children.length; child < childCount; ++child) {
-            this.indices.push(index);
+            this.#indices.push(index);
 
-            this.modelNode(node.children[child]);
+            this.#modelNode(node.children[child]);
         }
     }
 
@@ -41,6 +41,6 @@ export class ModellerWireframe extends Modeller {
      * Make the model
      */
     model() {
-        this.modelNode(this.root, true);
+        this.#modelNode(this.root, true);
     }
 }

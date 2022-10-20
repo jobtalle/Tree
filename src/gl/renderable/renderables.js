@@ -24,9 +24,11 @@ export class Renderables {
 
     static BRANCHES = new Renderable(() => {
         gl.enableVertexAttribArray(0);
-        gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 24, 0);
+        gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 28, 0);
         gl.enableVertexAttribArray(1);
-        gl.vertexAttribPointer(1, 3, gl.FLOAT, false, 24, 12);
+        gl.vertexAttribPointer(1, 3, gl.FLOAT, false, 28, 12);
+        gl.enableVertexAttribArray(2);
+        gl.vertexAttribPointer(2, 1, gl.FLOAT, false, 28, 24);
     }, gl.TRIANGLES);
 
     /**

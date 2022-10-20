@@ -119,7 +119,7 @@ export class Node {
         if (this.#parent)
             return this.#position.copy().subtract(this.#parent.position).normalize();
 
-        return Vector3.UP;
+        return Vector3.UP.copy();
     }
 
     /**
