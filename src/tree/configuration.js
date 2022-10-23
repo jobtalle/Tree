@@ -1,7 +1,8 @@
 export class Configuration {
     growth = 1;
     layerWireframe = false;
-    layerGeometry = true;
+    layerBranches = true;
+    layerSpheres = false;
 
     seed = Math.floor(Math.random() * 0x100000000);
 

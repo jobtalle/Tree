@@ -23,6 +23,8 @@ export class Interface {
         this.#onRemodel = onRemodel;
 
         this.#addCheckbox("Wireframe", "layerWireframe", false);
+        this.#addCheckbox("Branches", "layerBranches", false);
+        this.#addCheckbox("Spheres", "layerSpheres", false);
         this.#addFieldRandomizer("Seed", new Vector2(0, 0xFFFFFFFF), "seed", true);
         this.#addFieldSlider("Growth", new Vector2(0, 1), "growth", false);
         this.#addFieldSlider("Radius at root", new Vector2(.05, Collision.RADIUS_MAX), "radiusInitial", true);

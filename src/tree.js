@@ -86,8 +86,9 @@ export class Tree {
         Uniforms.GLOBALS.setGrowth(this.#configuration.growth * this.#network.depth);
 
         this.#layers =
-            (this.#configuration.layerGeometry ? RenderLayer.BRANCHES : 0) |
-            (this.#configuration.layerWireframe ? RenderLayer.WIREFRAME : 0);
+            (this.#configuration.layerBranches ? RenderLayer.BRANCHES : 0) |
+            (this.#configuration.layerWireframe ? RenderLayer.WIREFRAME : 0) |
+            (this.#configuration.layerSpheres ? RenderLayer.SPHERES : 0);
 
         this.#model();
     }
@@ -204,10 +205,14 @@ export class Tree {
         if (this.#layers & RenderLayer.SPHERES) {
             gl.enable(gl.CULL_FACE);
 
+            if (this.#layers & RenderLayer.BRANCHES)
+                gl.enable(gl.SAMPLE_ALPHA_TO_COVERAGE);
+
             Shaders.SPHERES.use();
             Renderables.SPHERES.draw();
 
             gl.disable(gl.CULL_FACE);
+            gl.disable(gl.SAMPLE_ALPHA_TO_COVERAGE);
         }
 
         if (this.#layers & RenderLayer.WIREFRAME) {

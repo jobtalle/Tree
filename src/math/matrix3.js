@@ -51,7 +51,6 @@ export class Matrix3 {
         this.buffer[4] = this.buffer[8] * this.buffer[0] - this.buffer[2] * this.buffer[6];
         this.buffer[5] = this.buffer[6] * this.buffer[1] - this.buffer[0] * this.buffer[7];
 
-        // TODO: Does this drift?
         const il = 1 / Math.sqrt(
             this.buffer[3] * this.buffer[3] +
             this.buffer[4] * this.buffer[4] +
