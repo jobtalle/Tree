@@ -8,6 +8,7 @@ export class Node {
     #children = [];
     #distance;
     #depth = 0;
+    #weight = 0;
 
     /**
      * Construct a new node
@@ -27,9 +28,18 @@ export class Node {
      * Add depth to this node
      * @param {number} depth The amount of depth to add
      */
-    setDepth(depth) {
+    addDepth(depth) {
         this.#depth = Math.max(this.#depth, depth);
-        this.#parent?.setDepth(depth + this.#radius + this.#parent.radius);
+        this.#parent?.addDepth(depth + this.#radius + this.#parent.radius);
+    }
+
+    /**
+     * Add weight to this node
+     * @param {number} weight The amount of weight to add
+     */
+    addWeight(weight) {
+        this.#weight += weight;
+        this.#parent?.addWeight(weight + this.#radius + this.#parent.radius);
     }
 
     /**
@@ -61,7 +71,8 @@ export class Node {
 
                 this.#children.push(new Node(position, radius, this, this.#distance + stride));
 
-                this.setDepth(stride);
+                this.addDepth(stride);
+                this.addWeight(stride);
             }
         }
 
@@ -109,6 +120,14 @@ export class Node {
      */
     get depth() {
         return this.#depth;
+    }
+
+    /**
+     * Get the total length of all branches emerging from this branch
+     * @returns {number} the total length of all branches emerging from this branch
+     */
+    get weight() {
+        return this.#weight;
     }
 
     /**

@@ -4,6 +4,8 @@ import {Matrix3} from "../math/matrix3.js";
 
 export class ModellerBranches extends Modeller {
     static #RING_PRECISION = 7;
+    static #RADIUS_THRESHOLD = .001;
+    static #RADIUS = .0015;
 
     #attributes;
     #indices;
@@ -72,7 +74,7 @@ export class ModellerBranches extends Modeller {
 
         const rotatedRing = this.#rotateRing(ring, matrix);
         const base = this.#attributes.attributeCount;
-        const radius = node.depth * .05;
+        const radius = Math.sqrt(node.weight) * ModellerBranches.#RADIUS + ModellerBranches.#RADIUS_THRESHOLD;
 
         if (!node.children.length) {
             this.#attributes.push(node.position, new Vector3(), node.distance);
