@@ -3,7 +3,7 @@ import {Vector3} from "../math/vector3.js";
 import {Matrix3} from "../math/matrix3.js";
 
 export class ModellerBranches extends Modeller {
-    static #RING_PRECISION = 17;
+    static #RING_PRECISION = 7;
 
     #attributes;
     #indices;
@@ -72,7 +72,7 @@ export class ModellerBranches extends Modeller {
 
         const rotatedRing = this.#rotateRing(ring, matrix);
         const base = this.#attributes.attributeCount;
-        const radius = node.depth * .01;
+        const radius = node.depth * .05;
 
         if (!node.children.length) {
             this.#attributes.push(node.position, new Vector3(), node.distance);

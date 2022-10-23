@@ -28,8 +28,8 @@ export class Node {
      * @param {number} depth The amount of depth to add
      */
     setDepth(depth) {
-        this.#parent?.setDepth(depth);
         this.#depth = Math.max(this.#depth, depth);
+        this.#parent?.setDepth(depth + this.#radius + this.#parent.radius);
     }
 
     /**
@@ -61,7 +61,7 @@ export class Node {
 
                 this.#children.push(new Node(position, radius, this, this.#distance + stride));
 
-                this.setDepth(this.#distance + stride);
+                this.setDepth(stride);
             }
         }
 
