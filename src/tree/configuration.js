@@ -1,6 +1,6 @@
 export class Configuration {
     growth = 1;
-    layerWireframe = true;
+    layerWireframe = false;
     layerGeometry = true;
 
     seed = Math.floor(Math.random() * 0x100000000);
@@ -9,6 +9,6 @@ export class Configuration {
     radiusDecay = .89;
     radiusThreshold = .015;
 
-    extendTries = 3;
+    extendTries = 5;
     extendAngle = .7;
 }

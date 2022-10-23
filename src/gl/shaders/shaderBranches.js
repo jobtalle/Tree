@@ -6,7 +6,7 @@ import {glslShade} from "./glsl/glslShade.js";
 
 export class ShaderBranches extends Shader {
     static #COLOR = new Color("#9d8a70");
-    static #MATERIAL = new Vector4(.3, .7, .5, 7);
+    static #MATERIAL = new Vector4(.3, .7, .2, 5);
 
     static #VERTEX = glslGlobals + `
         in vec3 vertex;

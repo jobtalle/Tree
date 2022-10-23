@@ -3,7 +3,7 @@ import {Vector3} from "../math/vector3.js";
 import {Matrix3} from "../math/matrix3.js";
 
 export class ModellerBranches extends Modeller {
-    static #RING_PRECISION = 7;
+    static #RING_PRECISION = 17;
 
     #attributes;
     #indices;
@@ -74,21 +74,34 @@ export class ModellerBranches extends Modeller {
         const base = this.#attributes.attributeCount;
         const radius = node.depth * .01;
 
-        for (let i = 0; i < ModellerBranches.#RING_PRECISION; ++i)
-            this.#attributes.push(
-                rotatedRing[i].copy().multiply(radius).add(node.position),
-                rotatedRing[i],
-                node.distance);
+        if (!node.children.length) {
+            this.#attributes.push(node.position, new Vector3(), node.distance);
 
-        if (!first) for (let i = 0; i < ModellerBranches.#RING_PRECISION; ++i) {
-            const iNext = i === ModellerBranches.#RING_PRECISION - 1 ? 0 : i + 1;
+            if (!first) for (let i = 0; i < ModellerBranches.#RING_PRECISION; ++i) {
+                const iNext = i === ModellerBranches.#RING_PRECISION - 1 ? 0 : i + 1;
 
-            this.#indices.push(base + i);
-            this.#indices.push(base + iNext);
-            this.#indices.push(baseIndex + iNext);
-            this.#indices.push(baseIndex + iNext);
-            this.#indices.push(baseIndex + i);
-            this.#indices.push(base + i);
+                this.#indices.push(baseIndex + iNext);
+                this.#indices.push(baseIndex + i);
+                this.#indices.push(base);
+            }
+        }
+        else {
+            for (let i = 0; i < ModellerBranches.#RING_PRECISION; ++i)
+                this.#attributes.push(
+                    rotatedRing[i].copy().multiply(radius).add(node.position),
+                    rotatedRing[i],
+                    node.distance);
+
+            if (!first) for (let i = 0; i < ModellerBranches.#RING_PRECISION; ++i) {
+                const iNext = i === ModellerBranches.#RING_PRECISION - 1 ? 0 : i + 1;
+
+                this.#indices.push(base + i);
+                this.#indices.push(base + iNext);
+                this.#indices.push(baseIndex + iNext);
+                this.#indices.push(baseIndex + iNext);
+                this.#indices.push(baseIndex + i);
+                this.#indices.push(base + i);
+            }
         }
 
         for (let child = 0, childCount = node.children.length; child < childCount; ++child)
