@@ -7,6 +7,7 @@ import {Vector4} from "../../math/vector4.js";
 export class ShaderSpheres extends Shader {
     static #COLOR = new Color("#729d70");
     static #MATERIAL = new Vector4(.3, .7, .5, 7);
+    static #TRANSPARENCY = .5;
 
     static #VERTEX = glslGlobals + `
         in vec3 vertex;
@@ -34,7 +35,7 @@ export class ShaderSpheres extends Shader {
         out vec4 color;
         
         void main() {
-            color = vec4(shade(iPosition, COLOR, normalize(iNormal), MATERIAL), .5);
+            color = vec4(shade(iPosition, COLOR, normalize(iNormal), MATERIAL), TRANSPARENCY);
         }
         `;
 
@@ -44,7 +45,8 @@ export class ShaderSpheres extends Shader {
     constructor() {
         super(ShaderSpheres.#VERTEX, ShaderSpheres.#FRAGMENT, [
             ["COLOR", Shader.makeVec3(ShaderSpheres.#COLOR)],
-            ["MATERIAL", Shader.makeVec4(ShaderSpheres.#MATERIAL)]]);
+            ["MATERIAL", Shader.makeVec4(ShaderSpheres.#MATERIAL)],
+            ["TRANSPARENCY", ShaderSpheres.#TRANSPARENCY]]);
 
         this.use();
         this.bindUniformBlock(UniformBlockGlobals.NAME, UniformBlockGlobals.BINDING);
