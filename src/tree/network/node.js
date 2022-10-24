@@ -80,6 +80,22 @@ export class Node {
     }
 
     /**
+     * Check whether this is the first node in a network
+     * @returns {boolean} True if it is
+     */
+    get isFirst() {
+        return !this.#parent;
+    }
+
+    /**
+     * Check whether this is the last node in a network
+     * @returns {boolean} True if it is
+     */
+    get isLast() {
+        return this.#children.length === 0;
+    }
+
+    /**
      * Get the node position
      * @returns {Vector3} The node position
      */

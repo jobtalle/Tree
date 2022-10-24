@@ -11,5 +11,5 @@ export class Configuration {
     radiusThreshold = .015;
 
     extendTries = 5;
-    extendAngle = .7;
+    extendAngle = .72;
 }

@@ -1,11 +1,14 @@
 import {Modeller} from "./modeller.js";
 import {Vector3} from "../math/vector3.js";
 import {Matrix3} from "../math/matrix3.js";
+import {BezierCubic} from "../math/bezierCubic.js";
 
 export class ModellerBranches extends Modeller {
     static #RING_PRECISION = 7;
     static #RADIUS_THRESHOLD = .001;
     static #RADIUS = .0015;
+    static #BEZIER_RADIUS = .4;
+    static #PRECISION = .04;
 
     #attributes;
     #indices;
@@ -55,14 +58,39 @@ export class ModellerBranches extends Modeller {
     }
 
     /**
+     * Make the spline emerging from a node
+     * @param {Node} start The start node
+     * @param {Node} end The end node
+     * @returns {Spline} A spline connecting both nodes
+     */
+    #makeSpline(start, end) {
+        const anchorRadius = ModellerBranches.#BEZIER_RADIUS * start.position.distanceTo(end.position);
+
+        return new BezierCubic(
+            start.position,
+            start.direction.multiply(anchorRadius).add(start.position),
+            end.direction.multiply(-anchorRadius).add(end.position),
+            end.position);
+    }
+
+    /**
+     * Get the branch radius at a node
+     * @param {Node} node The node
+     * @returns {number} The radius
+     */
+    #getRadius(node) {
+        return Math.sqrt(node.weight) * ModellerBranches.#RADIUS + ModellerBranches.#RADIUS_THRESHOLD;
+    }
+
+    /**
      * Model a node and its children
      * @param {Node} node The node to model
      * @param {Vector3[]} ring The ring
      * @param {Matrix3} matrix The rotation matrix of the previous node
-     * @param {number} baseIndex The base index of the ring to connect to
+     * @param {number} indexConnect The base index of the ring to connect to
      * @param [first] True if this is the first node
      */
-    #modelNode(node, ring, matrix, baseIndex, first = false) {
+    #modelNode(node, ring, matrix, indexConnect, first = false) {
         const direction = node.direction;
 
         for (const child of node.children)
@@ -72,9 +100,8 @@ export class ModellerBranches extends Modeller {
 
         matrix.direction = direction;
 
-        const rotatedRing = this.#rotateRing(ring, matrix);
-        const base = this.#attributes.attributeCount;
-        const radius = Math.sqrt(node.weight) * ModellerBranches.#RADIUS + ModellerBranches.#RADIUS_THRESHOLD;
+        const radius = this.#getRadius(node);
+        const indexBase = this.#attributes.attributeCount;
 
         if (!node.children.length) {
             this.#attributes.push(node.position, new Vector3(), node.distance);
@@ -82,12 +109,14 @@ export class ModellerBranches extends Modeller {
             if (!first) for (let i = 0; i < ModellerBranches.#RING_PRECISION; ++i) {
                 const iNext = i === ModellerBranches.#RING_PRECISION - 1 ? 0 : i + 1;
 
-                this.#indices.push(baseIndex + iNext);
-                this.#indices.push(baseIndex + i);
-                this.#indices.push(base);
+                this.#indices.push(indexConnect + iNext);
+                this.#indices.push(indexConnect + i);
+                this.#indices.push(indexBase);
             }
         }
         else {
+            const rotatedRing = this.#rotateRing(ring, matrix);
+
             for (let i = 0; i < ModellerBranches.#RING_PRECISION; ++i)
                 this.#attributes.push(
                     rotatedRing[i].copy().multiply(radius).add(node.position),
@@ -97,17 +126,63 @@ export class ModellerBranches extends Modeller {
             if (!first) for (let i = 0; i < ModellerBranches.#RING_PRECISION; ++i) {
                 const iNext = i === ModellerBranches.#RING_PRECISION - 1 ? 0 : i + 1;
 
-                this.#indices.push(base + i);
-                this.#indices.push(base + iNext);
-                this.#indices.push(baseIndex + iNext);
-                this.#indices.push(baseIndex + iNext);
-                this.#indices.push(baseIndex + i);
-                this.#indices.push(base + i);
+                this.#indices.push(indexBase + i);
+                this.#indices.push(indexBase + iNext);
+                this.#indices.push(indexConnect + iNext);
+                this.#indices.push(indexConnect + iNext);
+                this.#indices.push(indexConnect + i);
+                this.#indices.push(indexBase + i);
             }
         }
 
-        for (let child = 0, childCount = node.children.length; child < childCount; ++child)
-            this.#modelNode(node.children[child], ring, matrix.copy(), base);
+        for (let child = 0, childCount = node.children.length; child < childCount; ++child) {
+            const distanceToChild = node.children[child].distance - node.distance;
+            const matrixChild = matrix.copy();
+            const steps = Math.ceil(distanceToChild / ModellerBranches.#PRECISION);
+
+            let indexConnectChild = indexBase;
+            let indexBaseChild = this.#attributes.attributeCount;
+
+            if (steps) {
+                const childRadius = this.#getRadius(node.children[child]);
+                const center = new Vector3();
+                const direction = new Vector3();
+                const spline = this.#makeSpline(node, node.children[child]);
+
+                for (let step = 0; step < steps - 1; ++step) {
+                    const position = (step + 1) / steps;
+
+                    spline.sample(center, position);
+                    matrixChild.direction = spline.derivative(direction, position);
+
+                    const rotatedRing = this.#rotateRing(ring, matrixChild);
+                    const interpolatedRadius = radius + position * (childRadius - radius);
+                    const interpolatedDistance = node.distance + position * distanceToChild;
+
+                    for (let i = 0; i < ModellerBranches.#RING_PRECISION; ++i)
+                        this.#attributes.push(
+                            rotatedRing[i].copy().multiply(interpolatedRadius).add(center),
+                            rotatedRing[i],
+                            interpolatedDistance);
+
+                    for (let i = 0; i < ModellerBranches.#RING_PRECISION; ++i) {
+                        const iNext = i === ModellerBranches.#RING_PRECISION - 1 ? 0 : i + 1;
+
+                        this.#indices.push(indexBaseChild + i);
+                        this.#indices.push(indexBaseChild + iNext);
+                        this.#indices.push(indexConnectChild + iNext);
+                        this.#indices.push(indexConnectChild + iNext);
+                        this.#indices.push(indexConnectChild + i);
+                        this.#indices.push(indexBaseChild + i);
+                    }
+
+                    indexConnectChild = indexBaseChild;
+                    indexBaseChild += ModellerBranches.#RING_PRECISION;
+                }
+            }
+
+            this.#modelNode(node.children[child], ring, matrixChild, indexConnectChild);
+        }
     }
 
     /**
