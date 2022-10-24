@@ -10,7 +10,7 @@ export class UniformBlockGlobals extends UniformBlock {
      * Construct the global variables
      */
     constructor() {
-        super(108, UniformBlockGlobals.BINDING);
+        super(172, UniformBlockGlobals.BINDING);
 
         this.#floats = new Float32Array(this.bytes);
     }
@@ -20,9 +20,9 @@ export class UniformBlockGlobals extends UniformBlock {
      * @param {Vector3} sun The normalized sun direction
      */
     setSun(sun) {
-        this.#floats[16] = sun.x;
-        this.#floats[17] = sun.y;
-        this.#floats[18] = sun.z;
+        this.#floats[32] = sun.x;
+        this.#floats[33] = sun.y;
+        this.#floats[34] = sun.z;
     }
 
     /**
@@ -30,9 +30,9 @@ export class UniformBlockGlobals extends UniformBlock {
      * @param {Vector3} eye The eye vector
      */
     setEye(eye) {
-        this.#floats[20] = eye.x;
-        this.#floats[21] = eye.y;
-        this.#floats[22] = eye.z;
+        this.#floats[36] = eye.x;
+        this.#floats[37] = eye.y;
+        this.#floats[38] = eye.z;
     }
 
     /**
@@ -40,9 +40,9 @@ export class UniformBlockGlobals extends UniformBlock {
      * @param {Vector3} direction The camera direction
      */
     setDirection(direction) {
-        this.#floats[24] = direction.x;
-        this.#floats[25] = direction.y;
-        this.#floats[26] = direction.z;
+        this.#floats[40] = direction.x;
+        this.#floats[41] = direction.y;
+        this.#floats[42] = direction.z;
     }
 
     /**
@@ -50,7 +50,7 @@ export class UniformBlockGlobals extends UniformBlock {
      * @param {number} growth The growth threshold
      */
     setGrowth(growth) {
-        this.#floats[19] = growth;
+        this.#floats[35] = growth;
     }
 
     /**
@@ -60,11 +60,21 @@ export class UniformBlockGlobals extends UniformBlock {
     setVP(vp) {
         this.#floats.set(vp.buffer);
     }
+
+    /**
+     * Set the shadow matrix
+     * @param {Matrix4} shadowMatrix The shadow matrix
+     */
+    setShadowMatrix(shadowMatrix) {
+        this.#floats.set(shadowMatrix.buffer, 16);
+    }
 }
+
 
 export const glslGlobals = `
     uniform ` + UniformBlockGlobals.NAME + ` {
         mat4 vp;
+        mat4 shadowMatrix;
         vec3 sun;
         float growth;
         vec3 eye;
