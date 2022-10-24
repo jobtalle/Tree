@@ -1,9 +1,22 @@
 export const glslShade = `
+    #ifdef SHADOWS
     uniform sampler2D shadows;
+    #endif
     
-    vec3 shade(const vec3 position, const vec3 positionShadow, const vec3 color, const vec3 normal, const vec4 material) {
+    vec3 shade(
+        const vec3 position,
+        #ifdef SHADOWS
+        const vec3 positionShadow,
+        #endif
+        const vec3 color,
+        const vec3 normal,
+        const vec4 material) {
+        float diffuse = max(0., -dot(normal, sun)) * material.y;
+        #ifdef SHADOWS
         float shadow = texture(shadows, positionShadow.xy * .5 + .5).r + .001 < positionShadow.z * .5 + .5 ? .5 : 1.;
-        float diffuse = max(0., -dot(normal, sun)) * material.y * shadow;
+        
+        diffuse *= shadow;
+        #endif
         vec3 d = normalize(eye - position);
         vec3 r = reflect(sun, normal);
         

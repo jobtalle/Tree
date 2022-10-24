@@ -51,6 +51,7 @@ export class ShaderBranches extends Shader {
      */
     constructor() {
         super(ShaderBranches.#VERTEX, ShaderBranches.#FRAGMENT, [
+            ["SHADOWS"],
             ["COLOR", Shader.makeVec3(ShaderBranches.#COLOR)],
             ["MATERIAL", Shader.makeVec4(ShaderBranches.#MATERIAL)]]);
 
