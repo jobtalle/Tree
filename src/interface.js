@@ -25,7 +25,14 @@ export class Interface {
         this.#addCheckbox("Wireframe", "layerWireframe", false);
         this.#addCheckbox("Branches", "layerBranches", false);
         this.#addCheckbox("Spheres", "layerSpheres", false);
-        this.#addFieldRandomizer("Seed", new Vector2(0, 0xFFFFFFFF), "seed", true);
+
+        const randomize = this.#addFieldRandomizer("Seed", new Vector2(0, 0xFFFFFFFF), "seed", true);
+
+        window.addEventListener("keydown", event => {
+            if (event.key === " ")
+                randomize.click();
+        });
+
         this.#addFieldSlider("Growth", new Vector2(0, 1), "growth", false);
         this.#addFieldSlider("Radius at root", new Vector2(.05, Collision.RADIUS_MAX), "radiusInitial", true);
         this.#addFieldSlider("Radius decay", new Vector2(.7, .95), "radiusDecay", true);
@@ -149,6 +156,7 @@ export class Interface {
      * @param {Vector2} range The range
      * @param {string} key The key in the configuration to bind this range to
      * @param {boolean} [remodel] True if this change requires remodelling
+     * @returns {HTMLButtonElement} The button element
      */
     #addFieldRandomizer(
         title,
@@ -157,7 +165,7 @@ export class Interface {
         remodel = true) {
         const [row, field] = this.#addField(title, range, key, true, 0);
 
-        Object.assign(
+        return Object.assign(
             row.appendChild(document.createElement("td")).appendChild(
                 Object.assign(
                     document.createElement("button"),
