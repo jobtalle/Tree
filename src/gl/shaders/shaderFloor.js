@@ -1,6 +1,7 @@
 import {Shader} from "./shader.js";
 import {glslGlobals, UniformBlockGlobals} from "../uniforms/uniformBlockGlobals.js";
 import {glslShade} from "./glsl/glslShade.js";
+import {glslShadow} from "./glsl/glslShadow.js";
 
 export class ShaderFloor extends Shader {
     static #VERTEX = glslGlobals + `
@@ -15,13 +16,20 @@ export class ShaderFloor extends Shader {
         }
         `;
 
-    static #FRAGMENT = glslGlobals + glslShade + `
+    static #FRAGMENT = glslGlobals + glslShade + glslShadow + `
+        uniform sampler2D shadows;
+
         in vec3 iPosition;
         
         out vec4 color;
         
         void main() {
-            color = vec4(1., 0., 0., 1.);
+            const vec3 normal = vec3(0., 1., 0.);
+            
+            color = vec4(vec3(.9), 1.);
+            
+            if (detectShadow(iPosition, normal, shadows))
+                color.rgb *= .5;
         }
         `;
 

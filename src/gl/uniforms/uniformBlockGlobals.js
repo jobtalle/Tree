@@ -54,19 +54,19 @@ export class UniformBlockGlobals extends UniformBlock {
     }
 
     /**
-     * Set the VP matrix
-     * @param {Matrix4} vp The VP matrix
-     */
-    setVP(vp) {
-        this.#floats.set(vp.buffer);
-    }
-
-    /**
      * Set the shadow matrix
      * @param {Matrix4} shadowMatrix The shadow matrix
      */
     setShadowMatrix(shadowMatrix) {
         this.#floats.set(shadowMatrix.buffer, 16);
+    }
+
+    /**
+     * Set the VP matrix
+     * @param {Matrix4} vp The VP matrix
+     */
+    setVP(vp) {
+        this.#floats.set(vp.buffer);
     }
 }
 

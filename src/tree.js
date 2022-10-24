@@ -92,7 +92,7 @@ export class Tree {
      */
     #initializeShadowMatrix() {
         const radius = 2;
-        const mv = new Matrix4().lookAt(Tree.#SUN.copy().multiply(radius), new Vector3(), Vector3.UP);
+        const mv = new Matrix4().lookAt(Tree.#SUN, new Vector3(), Vector3.UP);
         const projection = new Matrix4().orthographic(-radius, -radius, radius, radius, -radius, radius * 2);
 
         Uniforms.GLOBALS.setShadowMatrix(projection.multiply(mv));
