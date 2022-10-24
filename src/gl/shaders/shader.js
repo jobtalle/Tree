@@ -13,18 +13,9 @@ export class Shader {
         let glsl = "";
 
         for (const define of defines)
-            glsl += "#define " + define[0] + " " + define[1] + "\n";
+            glsl += "#define " + define[0] + " " + (define[1] || "") + "\n";
 
         return glsl;
-    }
-
-    /**
-     * Make a vec2
-     * @param {Vector2} vector A value to convert to a vec2
-     * @returns {string} The vec2
-     */
-    static makeVec2(vector) {
-        return "vec2(" + vector.x + "," + vector.y + ")";
     }
 
     /**
