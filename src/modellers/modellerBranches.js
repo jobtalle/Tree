@@ -8,7 +8,8 @@ export class ModellerBranches extends Modeller {
     static #RADIUS = .0015;
     static #BEZIER_RADIUS = .4;
     static #SUBDIVISION_STEPS = .002;
-    static #SUBDIVISION_STEPS_MIN = 3;
+    static #SUBDIVISION_STEPS_MIN = 4 ;
+    static #SUBDIVISION_JUMP_MAX = 2;
     static #SUBDIVISION_STEPS_POWER = .47;
     static #SUBDIVISION_LENGTH = .04;
     static #SUBDIVISION_ANGLE = .2;
@@ -92,7 +93,7 @@ export class ModellerBranches extends Modeller {
      * @param {Matrix3} matrix The rotation matrix of the previous node
      * @param {number} indexConnect The base index of the ring to connect to
      * @param {number} ringSteps The number of ring steps
-     * @param {boolean} reducedRing True if the ring steps has been reduced by 1
+     * @param {number} connectSteps The number of ring steps of the parent node
      * @param [first] True if this is the first node
      */
     #modelNode(
@@ -100,7 +101,7 @@ export class ModellerBranches extends Modeller {
         matrix,
         indexConnect,
         ringSteps,
-        reducedRing,
+        connectSteps,
         first = false) {
         const direction = node.direction;
 
@@ -108,7 +109,6 @@ export class ModellerBranches extends Modeller {
 
         const radius = this.#getRadius(node);
         const indexBase = this.#attributes.attributeCount;
-        const connectSteps = ringSteps + (reducedRing ? 1 : 0);
 
         if (node.isLast) {
             this.#attributes.push(node.position, new Vector3(), node.distance);
@@ -135,7 +135,7 @@ export class ModellerBranches extends Modeller {
                     const iNext = i === ringSteps - 1 ? 0 : i + 1;
                     const iNextConnect = i === connectSteps - 1 ? 0 : i + 1;
 
-                    if (i === ringSteps) {
+                    if (i >= ringSteps) {
                         this.#indices.push(indexBase);
                         this.#indices.push(indexConnect + iNextConnect);
                         this.#indices.push(indexConnect + i);
@@ -201,14 +201,14 @@ export class ModellerBranches extends Modeller {
                 }
             }
 
-            const childRingSteps = Math.max(ringSteps - 1, this.#getRingSteps(node.children[child]));
-
             this.#modelNode(
                 node.children[child],
                 matrixChild,
                 indexConnectChild,
-                childRingSteps,
-                childRingSteps !== ringSteps);
+                Math.max(
+                    ringSteps - ModellerBranches.#SUBDIVISION_JUMP_MAX,
+                    this.#getRingSteps(node.children[child])),
+                ringSteps);
         }
     }
 
@@ -216,8 +216,12 @@ export class ModellerBranches extends Modeller {
      * Make the model
      */
     model() {
-        const matrix = new Matrix3(Vector3.UP);
-
-        this.#modelNode(this.root, matrix, 0, this.#getRingSteps(this.root), false, true);
+        this.#modelNode(
+            this.root,
+            new Matrix3(Vector3.UP),
+            0,
+            this.#getRingSteps(this.root),
+            this.#getRingSteps(this.root),
+            true);
     }
 }

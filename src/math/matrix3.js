@@ -79,6 +79,37 @@ export class Matrix3 {
     }
 
     /**
+     * Multiply this matrix by another matrix
+     * @param {Matrix3} other The other matrix
+     * @returns {Matrix3} The matrix after multiplication
+     */
+    multiply(other) {
+        const _00 = this.buffer[0];
+        const _01 = this.buffer[1];
+        const _02 = this.buffer[2];
+        const _10 = this.buffer[3];
+        const _11 = this.buffer[4];
+        const _12 = this.buffer[5];
+        const _20 = this.buffer[6];
+        const _21 = this.buffer[7];
+        const _22 = this.buffer[8];
+
+        this.buffer[0] = _00 * other.buffer[0] + _10 * other.buffer[1] + _20 * other.buffer[2];
+        this.buffer[1] = _01 * other.buffer[0] + _11 * other.buffer[1] + _21 * other.buffer[2];
+        this.buffer[2] = _02 * other.buffer[0] + _12 * other.buffer[1] + _22 * other.buffer[2];
+
+        this.buffer[3] = _00 * other.buffer[3] + _10 * other.buffer[4] + _20 * other.buffer[5];
+        this.buffer[4] = _01 * other.buffer[3] + _11 * other.buffer[4] + _21 * other.buffer[5];
+        this.buffer[5] = _02 * other.buffer[3] + _12 * other.buffer[4] + _22 * other.buffer[5];
+
+        this.buffer[6] = _00 * other.buffer[6] + _10 * other.buffer[7] + _20 * other.buffer[8];
+        this.buffer[7] = _01 * other.buffer[6] + _11 * other.buffer[7] + _21 * other.buffer[8];
+        this.buffer[8] = _02 * other.buffer[6] + _12 * other.buffer[7] + _22 * other.buffer[8];
+
+        return this;
+    }
+
+    /**
      * Multiply a vector by this matrix
      * @param {Vector3} vector A vector to multiply
      * @returns {Vector3} The modified vector
