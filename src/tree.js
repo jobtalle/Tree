@@ -221,7 +221,7 @@ export class Tree {
         // TODO: Only update depth if uniforms changed
         this.#shadow.target();
 
-        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+        gl.clear(gl.DEPTH_BUFFER_BIT);
 
         if (this.#layers & RenderLayer.BRANCHES) {
             gl.enable(gl.CULL_FACE);

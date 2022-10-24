@@ -64,7 +64,6 @@ export class CameraControllerOrbit extends CameraController {
      * @param {Vector3} vector The pivot vector
      */
     setPivot(vector) {
-        vector.x = vector.z = 1.5;
         this.#pivot.set(vector);
 
         this.moved();
