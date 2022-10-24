@@ -16,12 +16,14 @@ export class ShaderSpheres extends Shader {
         
         out vec3 iNormal;
         out vec3 iPosition;
+        out vec3 iPositionShadow;
         
         void main() {
             float scale = smoothstep(0., 1., (growth - distance.x) / (distance.y - distance.x));
             
             iNormal = vertex;
             iPosition = vertex * sphere.w * scale + sphere.xyz;
+            iPositionShadow = (shadowMatrix * vec4(vertex, 1.)).xyz;
         
             gl_Position = vp * vec4(iPosition, 1.);
         }
@@ -30,11 +32,12 @@ export class ShaderSpheres extends Shader {
     static #FRAGMENT = glslGlobals + glslShade + `
         in vec3 iNormal;
         in vec3 iPosition;
+        in vec3 iPositionShadow;
         
         out vec4 color;
         
         void main() {
-            color = vec4(shade(iPosition, COLOR, normalize(iNormal), MATERIAL), TRANSPARENCY);
+            color = vec4(shade(iPosition, iPositionShadow, COLOR, normalize(iNormal), MATERIAL), TRANSPARENCY);
         }
         `;
 

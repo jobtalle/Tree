@@ -3,7 +3,6 @@ import {Color} from "../../color.js";
 import {Vector4} from "../../math/vector4.js";
 import {glslGlobals, UniformBlockGlobals} from "../uniforms/uniformBlockGlobals.js";
 import {glslShade} from "./glsl/glslShade.js";
-import {glslShadow} from "./glsl/glslShadow.js";
 
 export class ShaderBranches extends Shader {
     static #COLOR = new Color("#9d8a70");
@@ -16,22 +15,23 @@ export class ShaderBranches extends Shader {
         
         out vec3 iNormal;
         out vec3 iPosition;
+        out vec3 iPositionShadow;
         out float iDepth;
         
         void main() {
             iNormal = normal;
             iPosition = vertex;
+            iPositionShadow = (shadowMatrix * vec4(vertex, 1.)).xyz;
             iDepth = depth;
         
             gl_Position = vp * vec4(iPosition, 1.);
         }
         `;
 
-    static #FRAGMENT = glslGlobals + glslShade + glslShadow + `
-        uniform sampler2D shadows;
-        
+    static #FRAGMENT = glslGlobals + glslShade + `
         in vec3 iNormal;
         in vec3 iPosition;
+        in vec3 iPositionShadow;
         in float iDepth;
         
         out vec4 color;
@@ -42,10 +42,7 @@ export class ShaderBranches extends Shader {
                 
             vec3 normal = normalize(iNormal);
         
-            color = vec4(shade(iPosition, COLOR, normal, MATERIAL), 1.);
-            
-            if (detectShadow(iPosition, normal, shadows))
-                color.rgb *= .5;
+            color = vec4(shade(iPosition, iPositionShadow, COLOR, normal, MATERIAL), 1.);
         }
         `;
 

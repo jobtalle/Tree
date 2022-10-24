@@ -1,6 +1,5 @@
 import {Shader} from "./shader.js";
 import {glslGlobals, UniformBlockGlobals} from "../uniforms/uniformBlockGlobals.js";
-import {glslShade} from "./glsl/glslShade.js";
 
 export class ShaderBranchesDepth extends Shader {
     static #VERTEX = glslGlobals + `
@@ -16,7 +15,7 @@ export class ShaderBranchesDepth extends Shader {
         }
         `;
 
-    static #FRAGMENT = glslGlobals + glslShade + `
+    static #FRAGMENT = glslGlobals + `
         in float iDepth;
         
         void main() {

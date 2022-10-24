@@ -1,25 +1,28 @@
 import {Shader} from "./shader.js";
 import {glslGlobals, UniformBlockGlobals} from "../uniforms/uniformBlockGlobals.js";
-import {glslShade} from "./glsl/glslShade.js";
-import {glslShadow} from "./glsl/glslShadow.js";
+import {Color} from "../../color.js";
 
 export class ShaderFloor extends Shader {
+    static #COLOR = new Color("#3c5581");
     static #VERTEX = glslGlobals + `
         layout(location = 0) in vec3 vertex;
         
         out vec3 iPosition;
+        out vec4 iPositionProjected;
         
         void main() {
             iPosition = vertex;
+            iPositionProjected = shadowMatrix * vec4(vertex, 1.);
             
             gl_Position = vp * vec4(vertex, 1.);
         }
         `;
 
-    static #FRAGMENT = glslGlobals + glslShade + glslShadow + `
+    static #FRAGMENT = glslGlobals + `
         uniform sampler2D shadows;
 
         in vec3 iPosition;
+        in vec4 iPositionProjected;
         
         out vec4 color;
         
@@ -28,8 +31,12 @@ export class ShaderFloor extends Shader {
             
             color = vec4(vec3(.9), 1.);
             
-            if (detectShadow(iPosition, normal, shadows))
-                color.rgb *= .5;
+            float shadowDepth = texture(shadows, iPositionProjected.xy * .5 + .5).r;
+            
+            if (iPositionProjected.z * .5 + .5 > shadowDepth)
+                color = vec4(COLOR, 1.);
+            else
+                discard;
         }
         `;
 
@@ -37,7 +44,9 @@ export class ShaderFloor extends Shader {
      * Construct the floor shader
      */
     constructor() {
-        super(ShaderFloor.#VERTEX, ShaderFloor.#FRAGMENT);
+        super(ShaderFloor.#VERTEX, ShaderFloor.#FRAGMENT, [
+            ["COLOR", Shader.makeVec3(ShaderFloor.#COLOR)]
+        ]);
 
         this.use();
         this.bindUniformBlock(UniformBlockGlobals.NAME, UniformBlockGlobals.BINDING);

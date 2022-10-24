@@ -18,8 +18,7 @@ import {RenderLayer} from "./renderLayer.js";
 import {Report} from "./report.js";
 import {AttributesBranches} from "./gl/attributes/attributesBranches.js";
 import {ModellerBranches} from "./modellers/modellerBranches.js";
-import {Depth} from "./gl/depth.js";
-import {Matrix4} from "./math/matrix4.js";
+import {Shadow} from "./gl/shadow.js";
 import {AttributesFloor} from "./gl/attributes/attributesFloor.js";
 import {Collision} from "./tree/collision.js";
 
@@ -32,7 +31,7 @@ export class Tree {
     #height;
     #camera = new Camera();
     #cameraController = new CameraControllerOrbit(this.#camera);
-    #depth = new Depth();
+    #shadow = new Shadow(Tree.#SUN, new Vector3(Collision.SIZE * .5, 0, Collision.SIZE * .5));
     #network = null;
     #modifiedUniforms = true;
     #modifiedNetwork = true;
@@ -83,19 +82,7 @@ export class Tree {
 
         gl.enable(gl.DEPTH_TEST);
 
-        this.#initializeShadowMatrix();
         this.#initializeFloor();
-    }
-
-    /**
-     * Initialize the depth projection matrix
-     */
-    #initializeShadowMatrix() {
-        const radius = 2;
-        const mv = new Matrix4().lookAt(Tree.#SUN, new Vector3(), Vector3.UP);
-        const projection = new Matrix4().orthographic(-radius, -radius, radius, radius, -radius, radius * 2);
-
-        Uniforms.GLOBALS.setShadowMatrix(projection.multiply(mv));
     }
 
     /**
@@ -232,9 +219,9 @@ export class Tree {
         Uniforms.GLOBALS.upload();
 
         // TODO: Only update depth if uniforms changed
-        this.#depth.target();
+        this.#shadow.target();
 
-        gl.clear(gl.DEPTH_BUFFER_BIT);
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
         if (this.#layers & RenderLayer.BRANCHES) {
             gl.enable(gl.CULL_FACE);
