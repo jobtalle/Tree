@@ -8,7 +8,9 @@ export class ModellerBranches extends Modeller {
     static #RADIUS_THRESHOLD = .001;
     static #RADIUS = .0015;
     static #BEZIER_RADIUS = .4;
-    static #PRECISION = .04;
+    static #SUBDIVISION_LENGTH = .04;
+    static #SUBDIVISION_ANGLE = .2;
+    static #RADIUS_POWER = .44;
 
     #attributes;
     #indices;
@@ -79,7 +81,9 @@ export class ModellerBranches extends Modeller {
      * @returns {number} The radius
      */
     #getRadius(node) {
-        return Math.sqrt(node.weight) * ModellerBranches.#RADIUS + ModellerBranches.#RADIUS_THRESHOLD;
+        return Math.pow(
+            node.weight,
+            ModellerBranches.#RADIUS_POWER) * ModellerBranches.#RADIUS + ModellerBranches.#RADIUS_THRESHOLD;
     }
 
     /**
@@ -137,8 +141,11 @@ export class ModellerBranches extends Modeller {
 
         for (let child = 0, childCount = node.children.length; child < childCount; ++child) {
             const distanceToChild = node.children[child].distance - node.distance;
+            const angleToChild = Math.acos(node.children[child].position.copy().subtract(node.position).normalize().dot(direction));
             const matrixChild = matrix.copy();
-            const steps = Math.ceil(distanceToChild / ModellerBranches.#PRECISION);
+            const steps = Math.max(
+                Math.ceil(distanceToChild / ModellerBranches.#SUBDIVISION_LENGTH),
+                Math.ceil(angleToChild / ModellerBranches.#SUBDIVISION_ANGLE));
 
             let indexConnectChild = indexBase;
             let indexBaseChild = this.#attributes.attributeCount;
