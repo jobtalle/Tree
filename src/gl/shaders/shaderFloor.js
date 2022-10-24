@@ -2,31 +2,34 @@ import {Shader} from "./shader.js";
 import {glslGlobals, UniformBlockGlobals} from "../uniforms/uniformBlockGlobals.js";
 import {glslShade} from "./glsl/glslShade.js";
 
-export class ShaderBranchesDepth extends Shader {
+export class ShaderFloor extends Shader {
     static #VERTEX = glslGlobals + `
         layout(location = 0) in vec3 vertex;
-        layout(location = 2) in float depth;
         
-        out float iDepth;
+        out vec3 iPosition;
         
         void main() {
-            iDepth = depth;
-        
-            gl_Position = shadowMatrix * vec4(vertex, 1.);
+            iPosition = vertex;
+            
+            gl_Position = vp * vec4(vertex, 1.);
         }
         `;
 
     static #FRAGMENT = glslGlobals + glslShade + `
-        in float iDepth;
+        in vec3 iPosition;
+        
+        out vec4 color;
         
         void main() {
-            if (iDepth > growth)
-                discard;
+            color = vec4(1., 0., 0., 1.);
         }
         `;
 
+    /**
+     * Construct the floor shader
+     */
     constructor() {
-        super(ShaderBranchesDepth.#VERTEX, ShaderBranchesDepth.#FRAGMENT);
+        super(ShaderFloor.#VERTEX, ShaderFloor.#FRAGMENT);
 
         this.use();
         this.bindUniformBlock(UniformBlockGlobals.NAME, UniformBlockGlobals.BINDING);

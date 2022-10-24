@@ -22,4 +22,12 @@ export class Depth {
 
         gl.bindFramebuffer(gl.FRAMEBUFFER, null);
     }
+
+    /**
+     * Target this buffer
+     */
+    target() {
+        gl.viewport(0, 0, Depth.#SIZE, Depth.#SIZE);
+        gl.bindFramebuffer(gl.FRAMEBUFFER, this.#fbo);
+    }
 }

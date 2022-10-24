@@ -6,7 +6,7 @@ export class ShaderWireframe extends Shader {
     static #COLOR = new Color("#ffffff");
 
     static #VERTEX = glslGlobals + `
-        in vec4 position;
+        layout(location = 0) in vec4 position;
         
         out float distance;
         

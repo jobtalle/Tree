@@ -299,5 +299,7 @@ export class Matrix4 {
         this.buffer[13] = -(top + bottom) / (bottom - top);
         this.buffer[14] = -(zFar + zNear) / (zFar - zNear);
         this.buffer[15] = 1;
+
+        return this;
     }
 }

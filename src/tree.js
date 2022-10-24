@@ -19,6 +19,9 @@ import {Report} from "./report.js";
 import {AttributesBranches} from "./gl/attributes/attributesBranches.js";
 import {ModellerBranches} from "./modellers/modellerBranches.js";
 import {Depth} from "./gl/depth.js";
+import {Matrix4} from "./math/matrix4.js";
+import {AttributesFloor} from "./gl/attributes/attributesFloor.js";
+import {Collision} from "./tree/collision.js";
 
 export class Tree {
     static #CANVAS = document.getElementById("renderer");
@@ -79,6 +82,42 @@ export class Tree {
         Uniforms.GLOBALS.setSun(Tree.#SUN);
 
         gl.enable(gl.DEPTH_TEST);
+
+        this.#initializeShadowMatrix();
+        this.#initializeFloor();
+    }
+
+    /**
+     * Initialize the depth projection matrix
+     */
+    #initializeShadowMatrix() {
+        const radius = 2;
+        const mv = new Matrix4().lookAt(Tree.#SUN.copy().multiply(radius), new Vector3(), Vector3.UP);
+        const projection = new Matrix4().orthographic(-radius, -radius, radius, radius, -radius, radius * 2);
+
+        Uniforms.GLOBALS.setShadowMatrix(projection.multiply(mv));
+    }
+
+    /**
+     * Initialize the floor
+     */
+    #initializeFloor() {
+        const attributes = new AttributesFloor();
+        const indices = new AttributesIndices();
+
+        attributes.push(new Vector3(0, 0, 0));
+        attributes.push(new Vector3(Collision.SIZE, 0, 0));
+        attributes.push(new Vector3(Collision.SIZE, 0, Collision.SIZE));
+        attributes.push(new Vector3(0, 0, Collision.SIZE));
+
+        indices.push(0);
+        indices.push(1);
+        indices.push(2);
+        indices.push(2);
+        indices.push(3);
+        indices.push(0);
+
+        Renderables.FLOOR.upload(attributes, indices);
     }
 
     /**
@@ -192,8 +231,30 @@ export class Tree {
         Uniforms.GLOBALS.setDirection(this.#cameraController.direction);
         Uniforms.GLOBALS.upload();
 
+        // TODO: Only update depth if uniforms changed
+        this.#depth.target();
+
+        gl.clear(gl.DEPTH_BUFFER_BIT);
+
+        if (this.#layers & RenderLayer.BRANCHES) {
+            gl.enable(gl.CULL_FACE);
+
+            Shaders.BRANCHES_DEPTH.use();
+            Renderables.BRANCHES.draw();
+
+            gl.disable(gl.CULL_FACE);
+        }
+
+        gl.bindFramebuffer(gl.FRAMEBUFFER, null);
         gl.viewport(0, 0, this.#width, this.#height);
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+        gl.enable(gl.CULL_FACE);
+
+        Shaders.FLOOR.use();
+        Renderables.FLOOR.draw();
+
+        gl.disable(gl.CULL_FACE);
 
         if (this.#layers & RenderLayer.BRANCHES) {
             gl.enable(gl.CULL_FACE);

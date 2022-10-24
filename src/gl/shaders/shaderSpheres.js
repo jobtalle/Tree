@@ -10,10 +10,9 @@ export class ShaderSpheres extends Shader {
     static #TRANSPARENCY = .5;
 
     static #VERTEX = glslGlobals + `
-        in vec3 vertex;
-        
-        in vec4 sphere;
-        in vec2 distance;
+        layout(location = 0) in vec3 vertex;
+        layout(location = 1) in vec4 sphere;
+        layout(location = 2) in vec2 distance;
         
         out vec3 iNormal;
         out vec3 iPosition;

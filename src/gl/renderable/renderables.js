@@ -5,6 +5,11 @@ import {AttributesSphere} from "../attributes/attributesSphere.js";
 import {AttributesIndices} from "../attributes/attributesIndices.js";
 
 export class Renderables {
+    static FLOOR = new Renderable(() => {
+        gl.enableVertexAttribArray(0);
+        gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 12, 0);
+    }, gl.TRIANGLES);
+
     static WIREFRAME = new Renderable(() => {
         gl.enableVertexAttribArray(0);
         gl.vertexAttribPointer(0, 4, gl.FLOAT, false, 16, 0);
