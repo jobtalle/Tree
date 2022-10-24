@@ -18,6 +18,7 @@ import {RenderLayer} from "./renderLayer.js";
 import {Report} from "./report.js";
 import {AttributesBranches} from "./gl/attributes/attributesBranches.js";
 import {ModellerBranches} from "./modellers/modellerBranches.js";
+import {Depth} from "./gl/depth.js";
 
 export class Tree {
     static #CANVAS = document.getElementById("renderer");
@@ -28,6 +29,7 @@ export class Tree {
     #height;
     #camera = new Camera();
     #cameraController = new CameraControllerOrbit(this.#camera);
+    #depth = new Depth();
     #network = null;
     #modifiedUniforms = true;
     #modifiedNetwork = true;
