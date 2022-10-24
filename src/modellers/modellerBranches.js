@@ -14,6 +14,7 @@ export class ModellerBranches extends Modeller {
     static #SUBDIVISION_LENGTH = .04;
     static #SUBDIVISION_ANGLE = .2;
     static #RADIUS_POWER = .44;
+    static #SPLIT_THRESHOLD = .5;
 
     #attributes;
     #indices;
@@ -103,10 +104,7 @@ export class ModellerBranches extends Modeller {
         ringSteps,
         connectSteps,
         first = false) {
-        const direction = node.direction;
-
-        matrix.direction = direction;
-
+        const direction = matrix.direction = node.direction;
         const radius = this.#getRadius(node);
         const indexBase = this.#attributes.attributeCount;
 
@@ -168,6 +166,21 @@ export class ModellerBranches extends Modeller {
                 const center = new Vector3();
                 const direction = new Vector3();
                 const spline = this.#makeSpline(node, node.children[child]);
+                const split = childRadius / radius < ModellerBranches.#SPLIT_THRESHOLD;
+                const startRadius = split ? childRadius : radius;
+
+                if (split) {
+                    const rotatedRing = this.#rotateRing(ringSteps, matrixChild);
+
+                    for (let i = 0; i < ringSteps; ++i)
+                        this.#attributes.push(
+                            rotatedRing[i].copy().multiply(startRadius).add(node.position),
+                            rotatedRing[i],
+                            node.distance);
+
+                    indexConnectChild = indexBaseChild;
+                    indexBaseChild += ringSteps;
+                }
 
                 for (let step = 0; step < steps - 1; ++step) {
                     const position = (step + 1) / steps;
@@ -176,7 +189,7 @@ export class ModellerBranches extends Modeller {
                     matrixChild.direction = spline.derivative(direction, position);
 
                     const rotatedRing = this.#rotateRing(ringSteps, matrixChild);
-                    const interpolatedRadius = radius + position * (childRadius - radius);
+                    const interpolatedRadius = startRadius + position * (childRadius - startRadius);
                     const interpolatedDistance = node.distance + position * distanceToChild;
 
                     for (let i = 0; i < ringSteps; ++i)
