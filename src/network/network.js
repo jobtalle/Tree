@@ -11,8 +11,8 @@ export class Network {
     #configuration;
     #roots = [];
     #valid = false;
-    #min = null;
-    #max = null;
+    #min = new Vector3(Collision.SIZE * .5, 0, Collision.SIZE * .5);
+    #max = this.#min.copy();
     #nodeCount = 0;
 
     /**
@@ -23,7 +23,24 @@ export class Network {
         this.#random = new Random(configuration.seed);
         this.#configuration = configuration;
 
-        this.#valid = this.#grow(new Vector3(Collision.SIZE * .5, 0, Collision.SIZE * .5));
+        const starts = [];
+
+        if (configuration.roots === 1)
+            starts.push(new Vector3(Collision.SIZE * .5, 0, Collision.SIZE * .5));
+        else {
+            const radius = Collision.SIZE * .25;
+
+            for (let i = 0; i < configuration.roots; ++i) {
+                const angle = Math.PI * 2 * i / configuration.roots;
+
+                starts.push(new Vector3(
+                    Collision.SIZE * .5 + Math.cos(angle) * radius,
+                    0,
+                    Collision.SIZE * .5 + Math.sin(angle) * radius));
+            }
+        }
+
+        this.#valid = this.#grow(starts);
     }
 
     /**
@@ -73,57 +90,62 @@ export class Network {
 
     /**
      * Grow a network
-     * @param {Vector3} start The network origin
+     * @param {Vector3[]} starts The network origins
      * @returns {boolean} True if the network was valid
      */
-    #grow(start) {
-        if (this.#collision.fits(start, this.#configuration.radiusInitial)) {
-            const root = new Node(start, this.#configuration.radiusInitial);
+    #grow(starts) {
+        let tips = [];
+        let index = 0;
 
-            if (!this.#min || !this.#max) {
-                this.#min = root.position.copy();
-                this.#max = root.position.copy();
-            }
+        for (const start of starts) {
+            const node = new Node(start, this.#configuration.radiusInitial);
+
+            this.#roots.push(node);
+
+            // TODO: Create function for this
+            this.#min.x = Math.min(this.#min.x, start.x);
+            this.#min.y = Math.min(this.#min.y, start.y);
+            this.#min.z = Math.min(this.#min.z, start.z);
+            this.#max.x = Math.max(this.#max.x, start.x);
+            this.#max.y = Math.max(this.#max.y, start.y);
+            this.#max.z = Math.max(this.#max.z, start.z);
 
             this.#collision.add(start, this.#configuration.radiusInitial);
 
-            let tips = root.grow(this.#configuration, this.#collision, this.#random, this.#configuration.extendThreshold);
-            let index = 0;
+            tips.push(...node.grow(this.#configuration, this.#collision, this.#random, this.#configuration.extendThreshold));
+        }
 
-            this.#nodeCount += tips.length + 1;
+        this.#nodeCount += tips.length + 1;
 
-            while (tips.length !== 0) {
-                const newTips = [];
-                // TODO: Shuffle tips?
+        while (tips.length !== 0) {
+            const newTips = [];
+            // TODO: Shuffle tips?
 
-                for (const tip of tips) {
-                    const grown = tip.grow(
-                        this.#configuration,
-                        this.#collision,
-                        this.#random,
-                        index <= this.#configuration.extendThreshold);
+            for (const tip of tips) {
+                const grown = tip.grow(
+                    this.#configuration,
+                    this.#collision,
+                    this.#random,
+                    index <= this.#configuration.extendThreshold);
 
-                    this.#min.x = Math.min(this.#min.x, tip.position.x);
-                    this.#min.y = Math.min(this.#min.y, tip.position.y);
-                    this.#min.z = Math.min(this.#min.z, tip.position.z);
-                    this.#max.x = Math.max(this.#max.x, tip.position.x);
-                    this.#max.y = Math.max(this.#max.y, tip.position.y);
-                    this.#max.z = Math.max(this.#max.z, tip.position.z);
+                this.#min.x = Math.min(this.#min.x, tip.position.x);
+                this.#min.y = Math.min(this.#min.y, tip.position.y);
+                this.#min.z = Math.min(this.#min.z, tip.position.z);
+                this.#max.x = Math.max(this.#max.x, tip.position.x);
+                this.#max.y = Math.max(this.#max.y, tip.position.y);
+                this.#max.z = Math.max(this.#max.z, tip.position.z);
 
-                    if ((this.#nodeCount += grown.length) > Network.#MAX_NODES) {
-                        console.warn("Too many nodes!");
+                if ((this.#nodeCount += grown.length) > Network.#MAX_NODES) {
+                    console.warn("Too many nodes!");
 
-                        return false;
-                    }
-
-                    newTips.push(...grown);
+                    return false;
                 }
 
-                tips = newTips;
-                ++index;
+                newTips.push(...grown);
             }
 
-            this.#roots.push(root);
+            tips = newTips;
+            ++index;
         }
 
         return true;

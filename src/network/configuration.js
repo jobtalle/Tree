@@ -6,6 +6,8 @@ export class Configuration {
 
     seed = 42;
 
+    roots = 1;
+
     radiusInitial = .1;
     radiusDecay = .89;
     radiusThreshold = .015;

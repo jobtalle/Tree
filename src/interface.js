@@ -41,6 +41,7 @@ export class Interface {
                 randomize.click();
         });
 
+        this.#addFieldSlider("Roots", new Vector2(1, 8), "roots", true, true);
         this.#addFieldSlider("Radius at root", new Vector2(.05, Collision.RADIUS_MAX), "radiusInitial", true);
         this.#addFieldSlider("Radius decay", new Vector2(.7, .95), "radiusDecay", true);
         this.#addFieldSlider("Radius threshold", new Vector2(.012, .1), "radiusThreshold", true);
