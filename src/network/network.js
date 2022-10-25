@@ -1,12 +1,13 @@
 import {Node} from "./node.js";
-import {Collision} from "./collision.js";
+import {Collision} from "./collision/collision.js";
 import {Vector3} from "../math/vector3.js";
 import {Random} from "../math/random.js";
+import {VolumeCylinder} from "./collision/volumeCylinder.js";
 
 export class Network {
     static #MAX_NODES = 64000;
 
-    #collision = new Collision();
+    #collision;
     #random;
     #configuration;
     #roots = [];
@@ -20,8 +21,11 @@ export class Network {
      * @param {Configuration} configuration The configuration
      */
     constructor(configuration) {
+        this.#collision = new Collision();
         this.#random = new Random(configuration.seed);
         this.#configuration = configuration;
+
+        this.#collision.addVolume(new VolumeCylinder(new Vector3(Collision.SIZE * .5, 0, Collision.SIZE * .5), .3));
 
         const starts = [];
 
@@ -89,6 +93,19 @@ export class Network {
     }
 
     /**
+     * Add a point to the min & max bounds
+     * @param {Vector3} point The point to add
+     */
+    #addToBounds(point) {
+        this.#min.x = Math.min(this.#min.x, point.x);
+        this.#min.y = Math.min(this.#min.y, point.y);
+        this.#min.z = Math.min(this.#min.z, point.z);
+        this.#max.x = Math.max(this.#max.x, point.x);
+        this.#max.y = Math.max(this.#max.y, point.y);
+        this.#max.z = Math.max(this.#max.z, point.z);
+    }
+
+    /**
      * Grow a network
      * @param {Vector3[]} starts The network origins
      * @returns {boolean} True if the network was valid
@@ -101,14 +118,7 @@ export class Network {
             const node = new Node(start, this.#configuration.radiusInitial);
 
             this.#roots.push(node);
-
-            // TODO: Create function for this
-            this.#min.x = Math.min(this.#min.x, start.x);
-            this.#min.y = Math.min(this.#min.y, start.y);
-            this.#min.z = Math.min(this.#min.z, start.z);
-            this.#max.x = Math.max(this.#max.x, start.x);
-            this.#max.y = Math.max(this.#max.y, start.y);
-            this.#max.z = Math.max(this.#max.z, start.z);
+            this.#addToBounds(start);
 
             this.#collision.add(start, this.#configuration.radiusInitial);
 
@@ -128,12 +138,7 @@ export class Network {
                     this.#random,
                     index <= this.#configuration.extendThreshold);
 
-                this.#min.x = Math.min(this.#min.x, tip.position.x);
-                this.#min.y = Math.min(this.#min.y, tip.position.y);
-                this.#min.z = Math.min(this.#min.z, tip.position.z);
-                this.#max.x = Math.max(this.#max.x, tip.position.x);
-                this.#max.y = Math.max(this.#max.y, tip.position.y);
-                this.#max.z = Math.max(this.#max.z, tip.position.z);
+                this.#addToBounds(tip.position);
 
                 if ((this.#nodeCount += grown.length) > Network.#MAX_NODES) {
                     console.warn("Too many nodes!");

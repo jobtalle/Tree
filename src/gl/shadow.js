@@ -2,7 +2,7 @@ import {gl} from "./gl.js";
 import {Matrix4} from "../math/matrix4.js";
 import {Vector3} from "../math/vector3.js";
 import {Uniforms} from "./uniforms/uniforms.js";
-import {Collision} from "../network/collision.js";
+import {Collision} from "../network/collision/collision.js";
 
 export class Shadow {
     static #SIZE = 4096;

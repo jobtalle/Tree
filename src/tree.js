@@ -20,7 +20,7 @@ import {AttributesBranches} from "./gl/attributes/attributesBranches.js";
 import {ModellerBranches} from "./modellers/modellerBranches.js";
 import {Shadow} from "./gl/shadow.js";
 import {AttributesFloor} from "./gl/attributes/attributesFloor.js";
-import {Collision} from "./network/collision.js";
+import {Collision} from "./network/collision/collision.js";
 
 export class Tree {
     static #CANVAS = document.getElementById("renderer");

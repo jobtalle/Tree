@@ -3,6 +3,7 @@ export class Configuration {
     layerWireframe = false;
     layerBranches = true;
     layerSpheres = false;
+    layerVolumes = false;
 
     seed = 42;
 
@@ -12,7 +13,7 @@ export class Configuration {
     radiusDecay = .89;
     radiusThreshold = .015;
 
-    collisionRadius = 1;
+    collisionRadius = .85;
 
     extendTries = 5;
     extendAngle = .72;

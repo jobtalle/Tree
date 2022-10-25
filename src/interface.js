@@ -1,5 +1,5 @@
 import {Vector2} from "./math/vector2.js";
-import {Collision} from "./network/collision.js";
+import {Collision} from "./network/collision/collision.js";
 
 export class Interface {
     static #ELEMENT = document.getElementById("interface");
@@ -30,6 +30,7 @@ export class Interface {
         this.#addCheckbox("Wireframe", "layerWireframe", false);
         this.#addCheckbox("Branches", "layerBranches", false);
         this.#addCheckbox("Spheres", "layerSpheres", false);
+        this.#addCheckbox("Volumes", "layerVolumes", false);
         this.#addFieldSlider("Growth", new Vector2(0, 1), "growth", false);
 
         this.#addHeader("Structure");

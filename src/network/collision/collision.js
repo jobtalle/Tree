@@ -7,6 +7,7 @@ export class Collision {
 
     #spheres = [];
     #radii = [];
+    #volumes = [];
 
     /**
      * Construct a collision grid
@@ -16,6 +17,14 @@ export class Collision {
             this.#spheres.push([]);
             this.#radii.push([]);
         }
+    }
+
+    /**
+     * Add a collision volume
+     * @param {Volume} volume The volume to add
+     */
+    addVolume(volume) {
+        this.#volumes.push(volume);
     }
 
     /**
@@ -63,6 +72,13 @@ export class Collision {
     fits(center, radius, exclude = null) {
         if (!this.#inBounds(center))
             return false;
+
+        const volumeCount = this.#volumes.length;
+
+        if (volumeCount) for (let volume = 0; volume < volumeCount; ++volume) {
+            if (!this.#volumes[volume].contains(center))
+                return false;
+        }
 
         const xStart = Math.max(0,
             Math.floor((center.x - Collision.RADIUS_MAX - radius) * Collision.INVERSE_CELL_SIZE));
