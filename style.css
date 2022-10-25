@@ -10,6 +10,23 @@ body {
 
 #interface {
     user-select: none;
+    font-family: sans-serif;
+}
+
+#interface table .header {
+    background-color: #d9d9d9;
+    font-weight: bold;
+    font-style: italic;
+}
+
+#interface table .header:hover {
+    background-color: #757575;
+    color: white;
+    cursor: pointer;
+}
+
+#interface table button {
+    width: 100%;
 }
 
 #report {

@@ -4,6 +4,7 @@ import {Collision} from "./network/collision.js";
 export class Interface {
     static #ELEMENT = document.getElementById("interface");
     static #TABLE = Interface.#ELEMENT.appendChild(document.createElement("table"));
+    static #CLASS_HEADER = "header";
     static #RANGE_STEPS = 512;
     static #RANGE_DECIMALS = 3;
 
@@ -22,9 +23,14 @@ export class Interface {
         this.#onUpdate = onUpdate;
         this.#onRemodel = onRemodel;
 
+        this.#addHeader("Rendering");
+
         this.#addCheckbox("Wireframe", "layerWireframe", false);
         this.#addCheckbox("Branches", "layerBranches", false);
         this.#addCheckbox("Spheres", "layerSpheres", false);
+        this.#addFieldSlider("Growth", new Vector2(0, 1), "growth", false);
+
+        this.#addHeader("Structure");
 
         const randomize = this.#addFieldRandomizer("Seed", new Vector2(0, 0xFFFFFFFF), "seed", true);
 
@@ -33,12 +39,24 @@ export class Interface {
                 randomize.click();
         });
 
-        this.#addFieldSlider("Growth", new Vector2(0, 1), "growth", false);
         this.#addFieldSlider("Radius at root", new Vector2(.05, Collision.RADIUS_MAX), "radiusInitial", true);
         this.#addFieldSlider("Radius decay", new Vector2(.7, .95), "radiusDecay", true);
         this.#addFieldSlider("Radius threshold", new Vector2(.012, .1), "radiusThreshold", true);
         this.#addFieldSlider("Extend tries", new Vector2(1, 20), "extendTries", true, true);
         this.#addFieldSlider("Extend angle", new Vector2(.1, 1.5), "extendAngle", true);
+    }
+
+    /**
+     * Add a header to the table
+     * @param {string} title The header title
+     */
+    #addHeader(title) {
+        Interface.#TABLE.appendChild(document.createElement("tr")).appendChild(Object.assign(
+            document.createElement("td"),
+            {
+                className: Interface.#CLASS_HEADER,
+                colSpan: 3
+            })).appendChild(document.createTextNode(title));
     }
 
     /**

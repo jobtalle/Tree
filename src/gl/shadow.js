@@ -6,7 +6,7 @@ import {Collision} from "../network/collision.js";
 
 export class Shadow {
     static #SIZE = 4096;
-    static #RADIUS = Collision.SIZE * .5;
+    static #RADIUS = Collision.SIZE / Math.sqrt(2);
 
     #texture = gl.createTexture();
     #fbo = gl.createFramebuffer();
