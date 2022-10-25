@@ -11,6 +11,7 @@ export class Interface {
     #configuration;
     #onUpdate;
     #onRemodel;
+    #header = null;
 
     /**
      * Construct the configuration interface
@@ -23,14 +24,14 @@ export class Interface {
         this.#onUpdate = onUpdate;
         this.#onRemodel = onRemodel;
 
-        this.#addHeader("Rendering");
+        this.#addHeader("Rendering", "rendering");
 
         this.#addCheckbox("Wireframe", "layerWireframe", false);
         this.#addCheckbox("Branches", "layerBranches", false);
         this.#addCheckbox("Spheres", "layerSpheres", false);
         this.#addFieldSlider("Growth", new Vector2(0, 1), "growth", false);
 
-        this.#addHeader("Structure");
+        this.#addHeader("Structure", "structure");
 
         const randomize = this.#addFieldRandomizer("Seed", new Vector2(0, 0xFFFFFFFF), "seed", true);
 
@@ -47,16 +48,48 @@ export class Interface {
     }
 
     /**
+     * Make a table row
+     * @returns {HTMLTableRowElement} The table row
+     */
+    #makeRow() {
+        const row = document.createElement("tr");
+
+        this.#header.push(row);
+
+        return Interface.#TABLE.appendChild(row);
+    }
+
+    /**
      * Add a header to the table
      * @param {string} title The header title
+     * @param {string} category The category to toggle
+     * @param {boolean} [visible] The initial visibility state
      */
-    #addHeader(title) {
+    #addHeader(title, category, visible = true) {
+        const children = [];
+
         Interface.#TABLE.appendChild(document.createElement("tr")).appendChild(Object.assign(
             document.createElement("td"),
             {
                 className: Interface.#CLASS_HEADER,
-                colSpan: 3
+                colSpan: 3,
+                onclick: () => {
+                    if (visible) {
+                        for (const child of children)
+                            child.style.display = "none";
+
+                        visible = false;
+                    }
+                    else {
+                        for (const child of children)
+                            child.style.display = "";
+
+                        visible = true;
+                    }
+                }
             })).appendChild(document.createTextNode(title));
+
+        this.#header = children;
     }
 
     /**
@@ -81,7 +114,7 @@ export class Interface {
         title,
         key,
         remodel = true) {
-        const row = Interface.#TABLE.appendChild(document.createElement("tr"));
+        const row = this.#makeRow();
 
         this.#addLabel(row, title);
 
@@ -116,7 +149,7 @@ export class Interface {
         key,
         round = false,
         decimals = Interface.#RANGE_DECIMALS) {
-        const row = Interface.#TABLE.appendChild(document.createElement("tr"));
+        const row = this.#makeRow();
 
         this.#addLabel(row, title);
 
