@@ -142,6 +142,8 @@ export class Interface {
      * @param {string} key The key in the configuration to bind this range to
      * @param {boolean} [round] True if the value should be rounded
      * @param {number} [decimals] The number of decimals to display
+     * @param {boolean} [readonly] True if the field is readonly
+     * @param {function} [onChange] A function that returns a new value if it was manually entered
      * @returns {{HTMLTableRowElement}, {HTMLInputElement}} The row and input elements
      */
     #addField(
@@ -149,7 +151,9 @@ export class Interface {
         range,
         key,
         round = false,
-        decimals = Interface.#RANGE_DECIMALS) {
+        decimals = Interface.#RANGE_DECIMALS,
+        readonly = true,
+        onChange = null) {
         const row = this.#makeRow();
 
         this.#addLabel(row, title);
@@ -159,7 +163,11 @@ export class Interface {
                 document.createElement("input")),
             {
                 value: round ? this.#configuration[key].toString() : this.#configuration[key].toFixed(decimals),
-                readOnly: true
+                readOnly: readonly,
+                oninput: event => {
+                    if (onChange)
+                        onChange(Number.parseFloat(event.target.value));
+                }
             })];
     }
 
@@ -215,7 +223,18 @@ export class Interface {
         range,
         key,
         remodel = true) {
-        const [row, field] = this.#addField(title, range, key, true, 0);
+        const [row, field] = this.#addField(title, range, key, true, 0, false, value => {
+            const seed = Math.max(range.x, Math.min(range.y, Math.round(value)));
+
+            if (!isNaN(seed)) {
+                this.#configuration[key] = seed;
+
+                if (remodel)
+                    this.#onRemodel();
+                else
+                    this.#onUpdate();
+            }
+        });
 
         return Object.assign(
             row.appendChild(document.createElement("td")).appendChild(

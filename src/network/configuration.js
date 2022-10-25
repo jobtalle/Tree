@@ -4,7 +4,7 @@ export class Configuration {
     layerBranches = true;
     layerSpheres = false;
 
-    seed = Math.floor(Math.random() * 0x100000000);
+    seed = 42;
 
     radiusInitial = .1;
     radiusDecay = .89;

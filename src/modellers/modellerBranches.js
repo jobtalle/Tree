@@ -5,14 +5,14 @@ import {BezierCubic} from "../math/bezierCubic.js";
 
 export class ModellerBranches extends Modeller {
     static #RADIUS_THRESHOLD = .001;
-    static #RADIUS = .0015;
+    static #RADIUS = .0018;
+    static #RADIUS_POWER = .41;
     static #SUBDIVISION_STEPS = .002;
     static #SUBDIVISION_STEPS_MIN = 4 ;
     static #SUBDIVISION_JUMP_MAX = 2;
     static #SUBDIVISION_STEPS_POWER = .47;
-    static #SUBDIVISION_LENGTH = .04;
+    static #SUBDIVISION_LENGTH = .07;
     static #SUBDIVISION_ANGLE = .2;
-    static #RADIUS_POWER = .44;
     static #SPLIT_THRESHOLD = .5;
 
     #attributes;
