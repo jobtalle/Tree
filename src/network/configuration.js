@@ -12,4 +12,5 @@ export class Configuration {
 
     extendTries = 5;
     extendAngle = .72;
+    extendThreshold = 0;
 }

@@ -47,9 +47,10 @@ export class Node {
      * @param {Configuration} configuration The configuration
      * @param {Collision} collision The collision grid
      * @param {Random} random The randomizer
+     * @param {boolean} [singleExtension] True if only one extension is allowed
      * @returns {Node[]} The generated child nodes
      */
-    grow(configuration, collision, random) {
+    grow(configuration, collision, random, singleExtension = false) {
         const radius = this.#radius * configuration.radiusDecay;
 
         if (radius < configuration.radiusThreshold)
@@ -73,18 +74,13 @@ export class Node {
 
                 this.addDepth(stride);
                 this.addWeight(stride);
+
+                if (singleExtension)
+                    break;
             }
         }
 
         return this.#children;
-    }
-
-    /**
-     * Check whether this is the first node in a network
-     * @returns {boolean} True if it is
-     */
-    get isFirst() {
-        return !this.#parent;
     }
 
     /**

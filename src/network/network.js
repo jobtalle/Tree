@@ -87,7 +87,9 @@ export class Network {
 
             this.#collision.add(start, this.#configuration.radiusInitial);
 
-            let tips = root.grow(this.#configuration, this.#collision, this.#random);
+            let tips = root.grow(this.#configuration, this.#collision, this.#random, this.#configuration.extendThreshold);
+            let index = 0;
+
             this.#nodeCount += tips.length + 1;
 
             while (tips.length !== 0) {
@@ -95,7 +97,11 @@ export class Network {
                 // TODO: Shuffle tips?
 
                 for (const tip of tips) {
-                    const grown = tip.grow(this.#configuration, this.#collision, this.#random);
+                    const grown = tip.grow(
+                        this.#configuration,
+                        this.#collision,
+                        this.#random,
+                        index <= this.#configuration.extendThreshold);
 
                     this.#min.x = Math.min(this.#min.x, tip.position.x);
                     this.#min.y = Math.min(this.#min.y, tip.position.y);
@@ -114,6 +120,7 @@ export class Network {
                 }
 
                 tips = newTips;
+                ++index;
             }
 
             this.#roots.push(root);
