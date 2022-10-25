@@ -6,7 +6,6 @@ import {BezierCubic} from "../math/bezierCubic.js";
 export class ModellerBranches extends Modeller {
     static #RADIUS_THRESHOLD = .001;
     static #RADIUS = .0015;
-    static #BEZIER_RADIUS = .3;
     static #SUBDIVISION_STEPS = .002;
     static #SUBDIVISION_STEPS_MIN = 4 ;
     static #SUBDIVISION_JUMP_MAX = 2;
@@ -57,12 +56,10 @@ export class ModellerBranches extends Modeller {
      * @returns {Spline} A spline connecting both nodes
      */
     #makeSpline(start, end) {
-        const anchorRadius = ModellerBranches.#BEZIER_RADIUS * start.position.distanceTo(end.position);
-
         return new BezierCubic(
             start.position,
-            start.direction.multiply(anchorRadius).add(start.position),
-            end.direction.multiply(-anchorRadius).add(end.position),
+            start.direction.multiply(start.radius).add(start.position),
+            end.direction.multiply(-end.radius).add(end.position),
             end.position);
     }
 
