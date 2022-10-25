@@ -11,7 +11,7 @@ export class ModellerBranches extends Modeller {
     static #SUBDIVISION_STEPS_MIN = 4 ;
     static #SUBDIVISION_JUMP_MAX = 2;
     static #SUBDIVISION_STEPS_POWER = .47;
-    static #SUBDIVISION_LENGTH = .07;
+    static #SUBDIVISION_LENGTH = .055;
     static #SUBDIVISION_ANGLE = .2;
     static #SPLIT_THRESHOLD = .5;
 

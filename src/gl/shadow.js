@@ -7,6 +7,7 @@ import {Collision} from "../network/collision.js";
 export class Shadow {
     static #SIZE = 4096;
     static #RADIUS = Collision.SIZE / Math.sqrt(2);
+    static #DEPTH_MULTIPLIER = 2;
 
     #texture = gl.createTexture();
     #fbo = gl.createFramebuffer();
@@ -35,8 +36,8 @@ export class Shadow {
             -Shadow.#RADIUS,
             Shadow.#RADIUS,
             Shadow.#RADIUS,
-            -Shadow.#RADIUS,
-            Shadow.#RADIUS * 2);
+            Shadow.#RADIUS * -Shadow.#DEPTH_MULTIPLIER,
+            Shadow.#RADIUS * Shadow.#DEPTH_MULTIPLIER);
 
         Uniforms.GLOBALS.setShadowMatrix(projection.multiply(view));
     }

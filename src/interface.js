@@ -25,14 +25,14 @@ export class Interface {
         this.#onUpdate = onUpdate;
         this.#onRemodel = onRemodel;
 
-        this.#addHeader("Rendering", "rendering");
+        this.#addHeader("Rendering");
 
         this.#addCheckbox("Wireframe", "layerWireframe", false);
         this.#addCheckbox("Branches", "layerBranches", false);
         this.#addCheckbox("Spheres", "layerSpheres", false);
         this.#addFieldSlider("Growth", new Vector2(0, 1), "growth", false);
 
-        this.#addHeader("Structure", "structure");
+        this.#addHeader("Structure");
 
         const randomize = this.#addFieldRandomizer("Seed", new Vector2(0, 0xFFFFFFFF), "seed", true);
 
@@ -47,6 +47,9 @@ export class Interface {
         this.#addFieldSlider("Extend tries", new Vector2(1, 20), "extendTries", true, true);
         this.#addFieldSlider("Extend angle", new Vector2(.1, 1.5), "extendAngle", true);
         this.#addFieldSlider("Extend threshold", new Vector2(0, 6), "extendThreshold", true, true);
+        this.#addFieldSlider("Collision radius", new Vector2(0, 1.5), "collisionRadius", true, false);
+
+        this.#addHeader("Bounds");
     }
 
     /**
@@ -64,10 +67,9 @@ export class Interface {
     /**
      * Add a header to the table
      * @param {string} title The header title
-     * @param {string} category The category to toggle
      * @param {boolean} [visible] The initial visibility state
      */
-    #addHeader(title, category, visible = true) {
+    #addHeader(title, visible = true) {
         const children = [];
 
         Interface.#TABLE.appendChild(document.createElement("tr")).appendChild(Object.assign(

@@ -10,7 +10,9 @@ export class Configuration {
     radiusDecay = .89;
     radiusThreshold = .015;
 
+    collisionRadius = 1;
+
     extendTries = 5;
     extendAngle = .72;
-    extendThreshold = 0;
+    extendThreshold = 1;
 }

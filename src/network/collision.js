@@ -57,9 +57,10 @@ export class Collision {
      * Check if a sphere fits in the collision field
      * @param {Vector3} center The sphere center
      * @param {number} radius The sphere radius
+     * @param {Vector3} [exclude] An optional sphere center to exclude from this check
      * @returns {boolean} True if the sphere would fit in the collision field
      */
-    fits(center, radius) {
+    fits(center, radius, exclude = null) {
         if (!this.#inBounds(center))
             return false;
 
@@ -81,7 +82,8 @@ export class Collision {
 
             for (let sphere = 0, sphereCount = this.#spheres[cell].length; sphere < sphereCount; ++sphere)
                 if (center.distanceTo(this.#spheres[cell][sphere]) <
-                    radius + this.#radii[cell][sphere] - Collision.#EPSILON)
+                    radius + this.#radii[cell][sphere] - Collision.#EPSILON &&
+                    (!exclude || !this.#spheres[cell][sphere].equals(exclude)))
                     return false;
         }
 

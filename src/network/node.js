@@ -67,8 +67,8 @@ export class Node {
                 Math.sin(extendRadial) * Math.sin(extendPitch),
                 Math.cos(extendRadial) * Math.sin(extendPitch))).multiply(stride).add(this.#position);
 
-            if (collision.fits(position, radius)) {
-                collision.add(position, radius);
+            if (collision.fits(position, radius * configuration.collisionRadius, this.#position)) {
+                collision.add(position, radius * configuration.collisionRadius);
 
                 this.#children.push(new Node(position, radius, this, this.#distance + stride));
 
