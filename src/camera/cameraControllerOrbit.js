@@ -48,10 +48,9 @@ export class CameraControllerOrbit extends CameraController {
 
     /**
      * Update before rendering
-     * @param {number} time The time interpolation in the range [0, 1]
      * @returns {boolean} True if the camera updated
      */
-    render(time) {
+    render() {
         const updated = this.#updated;
 
         this.#updated = false;

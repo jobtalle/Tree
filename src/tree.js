@@ -38,15 +38,16 @@ export class Tree {
     #layers = 0;
     #modelled = 0;
     #configuration = new Configuration();
-    #interface = new Interface(
-        this.#configuration,
-        () => this.#modifiedUniforms = true,
-        () => this.#modifiedNetwork = true);
 
     /**
      * Construct the tree grower
      */
     constructor() {
+        new Interface(
+            this.#configuration,
+            () => this.#modifiedUniforms = true,
+            () => this.#modifiedNetwork = true)
+
         this.#width = Tree.#CANVAS.width;
         this.#height = Tree.#CANVAS.height;
         this.#camera.updateProjection(this.#width / this.#height);
@@ -180,18 +181,10 @@ export class Tree {
     }
 
     /**
-     * Update the state
-     */
-    update() {
-        this.#cameraController.update();
-    }
-
-    /**
      * Update before rendering
-     * @param {number} time The time interpolation in the range [0, 1]
      */
-    render(time) {
-        let update = this.#cameraController.render(time);
+    render() {
+        let update = this.#cameraController.render();
 
         if (this.#modifiedNetwork) {
             this.#modifiedNetwork = false;
