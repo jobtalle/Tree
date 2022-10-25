@@ -13,10 +13,16 @@ body {
     font-family: sans-serif;
 }
 
+#interface table tr.hidden {
+    visibility: collapse;
+}
+
 #interface table .header {
     background-color: #d9d9d9;
     font-weight: bold;
     font-style: italic;
+    border-top: 1px solid gray;
+    border-bottom: 1px solid gray;
 }
 
 #interface table .header:hover {

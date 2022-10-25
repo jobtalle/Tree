@@ -5,6 +5,7 @@ export class Interface {
     static #ELEMENT = document.getElementById("interface");
     static #TABLE = Interface.#ELEMENT.appendChild(document.createElement("table"));
     static #CLASS_HEADER = "header";
+    static #CLASS_HIDDEN = "hidden";
     static #RANGE_STEPS = 512;
     static #RANGE_DECIMALS = 3;
 
@@ -76,13 +77,13 @@ export class Interface {
                 onclick: () => {
                     if (visible) {
                         for (const child of children)
-                            child.style.display = "none";
+                            child.classList.add(Interface.#CLASS_HIDDEN);
 
                         visible = false;
                     }
                     else {
                         for (const child of children)
-                            child.style.display = "";
+                            child.classList.remove(Interface.#CLASS_HIDDEN);
 
                         visible = true;
                     }
