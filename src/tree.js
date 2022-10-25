@@ -5,8 +5,8 @@ import {Renderables} from "./gl/renderable/renderables.js";
 import {Uniforms} from "./gl/uniforms/uniforms.js";
 import {Camera} from "./camera/camera.js";
 import {CameraControllerOrbit} from "./camera/cameraControllerOrbit.js";
-import {Network} from "./tree/network/network.js";
-import {Configuration} from "./tree/configuration.js";
+import {Network} from "./network/network.js";
+import {Configuration} from "./network/configuration.js";
 import {AttributesWireframe} from "./gl/attributes/attributesWireframe.js";
 import {AttributesIndices} from "./gl/attributes/attributesIndices.js";
 import {ModellerWireframe} from "./modellers/modellerWireframe.js";
@@ -20,7 +20,7 @@ import {AttributesBranches} from "./gl/attributes/attributesBranches.js";
 import {ModellerBranches} from "./modellers/modellerBranches.js";
 import {Shadow} from "./gl/shadow.js";
 import {AttributesFloor} from "./gl/attributes/attributesFloor.js";
-import {Collision} from "./tree/collision.js";
+import {Collision} from "./network/collision.js";
 
 export class Tree {
     static #CANVAS = document.getElementById("renderer");

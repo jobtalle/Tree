@@ -1,5 +1,5 @@
-import {Matrix3} from "../../math/matrix3.js";
-import {Vector3} from "../../math/vector3.js";
+import {Matrix3} from "../math/matrix3.js";
+import {Vector3} from "../math/vector3.js";
 
 export class Node {
     #position;

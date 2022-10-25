@@ -1,7 +1,7 @@
 import {Node} from "./node.js";
-import {Collision} from "../collision.js";
-import {Vector3} from "../../math/vector3.js";
-import {Random} from "../../math/random.js";
+import {Collision} from "./collision.js";
+import {Vector3} from "../math/vector3.js";
+import {Random} from "../math/random.js";
 
 export class Network {
     static #MAX_NODES = 64000;
