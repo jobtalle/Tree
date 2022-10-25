@@ -120,6 +120,7 @@ export class Tree {
             (this.#configuration.layerSpheres ? RenderLayer.SPHERES : 0);
 
         this.#model();
+        this.#updateShadows();
     }
 
     /**
@@ -181,6 +182,26 @@ export class Tree {
     }
 
     /**
+     * Update the shadow map
+     */
+    #updateShadows() {
+        this.#shadow.target();
+
+        gl.clear(gl.DEPTH_BUFFER_BIT);
+
+        if (this.#layers & RenderLayer.BRANCHES) {
+            gl.enable(gl.CULL_FACE);
+
+            Shaders.BRANCHES_DEPTH.use();
+            Renderables.BRANCHES.draw();
+
+            gl.disable(gl.CULL_FACE);
+        }
+
+        gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    }
+
+    /**
      * Update before rendering
      */
     render() {
@@ -211,21 +232,6 @@ export class Tree {
         Uniforms.GLOBALS.setDirection(this.#cameraController.direction);
         Uniforms.GLOBALS.upload();
 
-        // TODO: Only update depth if uniforms changed
-        this.#shadow.target();
-
-        gl.clear(gl.DEPTH_BUFFER_BIT);
-
-        if (this.#layers & RenderLayer.BRANCHES) {
-            gl.enable(gl.CULL_FACE);
-
-            Shaders.BRANCHES_DEPTH.use();
-            Renderables.BRANCHES.draw();
-
-            gl.disable(gl.CULL_FACE);
-        }
-
-        gl.bindFramebuffer(gl.FRAMEBUFFER, null);
         gl.viewport(0, 0, this.#width, this.#height);
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
