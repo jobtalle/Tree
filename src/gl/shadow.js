@@ -2,9 +2,11 @@ import {gl} from "./gl.js";
 import {Matrix4} from "../math/matrix4.js";
 import {Vector3} from "../math/vector3.js";
 import {Uniforms} from "./uniforms/uniforms.js";
+import {Collision} from "../network/collision.js";
 
 export class Shadow {
     static #SIZE = 4096;
+    static #RADIUS = Collision.SIZE * .5;
 
     #texture = gl.createTexture();
     #fbo = gl.createFramebuffer();
@@ -15,7 +17,6 @@ export class Shadow {
      * @param {Vector3} focus The focus
      */
     constructor(sun, focus) {
-        focus.multiply(-1);
         gl.bindTexture(gl.TEXTURE_2D, this.#texture);
         gl.texStorage2D(gl.TEXTURE_2D, 1, gl.DEPTH_COMPONENT32F, Shadow.#SIZE, Shadow.#SIZE);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
@@ -28,15 +29,14 @@ export class Shadow {
 
         gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
-        const radius = 1.5;
-        const view = new Matrix4().lookAt(sun.copy().multiply(-radius).subtract(focus), focus.negate(), Vector3.UP);
+        const view = new Matrix4().lookAt(sun.copy().negate().add(focus), focus, Vector3.UP);
         const projection = new Matrix4().orthographic(
-            -radius,
-            -radius,
-            radius,
-            radius,
-            radius * -2,
-            radius * 2);
+            -Shadow.#RADIUS,
+            -Shadow.#RADIUS,
+            Shadow.#RADIUS,
+            Shadow.#RADIUS,
+            -Shadow.#RADIUS,
+            Shadow.#RADIUS * 2);
 
         Uniforms.GLOBALS.setShadowMatrix(projection.multiply(view));
     }
