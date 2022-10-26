@@ -2,7 +2,6 @@ import {Node} from "./node.js";
 import {Collision} from "./collision/collision.js";
 import {Vector3} from "../math/vector3.js";
 import {Random} from "../math/random.js";
-import {VolumeCylinder} from "./collision/volumeCylinder.js";
 
 export class Network {
     static #MAX_NODES = 64000;
@@ -24,8 +23,6 @@ export class Network {
         this.#collision = new Collision();
         this.#random = new Random(configuration.seed);
         this.#configuration = configuration;
-
-        this.#collision.addVolume(new VolumeCylinder(new Vector3(Collision.SIZE * .5, 0, Collision.SIZE * .5), .3));
 
         const starts = [];
 
