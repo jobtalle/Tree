@@ -35,6 +35,10 @@ body {
     width: 100%;
 }
 
+#interface table select {
+    width: 100%;
+}
+
 #report {
     position: absolute;
     left: 10px;

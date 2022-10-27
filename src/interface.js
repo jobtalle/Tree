@@ -1,5 +1,6 @@
 import {Vector2} from "./math/vector2.js";
 import {Collision} from "./network/collision/collision.js";
+import {BoundsType} from "./boundsType.js";
 
 export class Interface {
     static #ELEMENT = document.getElementById("interface");
@@ -13,6 +14,9 @@ export class Interface {
     #onUpdate;
     #onRemodel;
     #header = null;
+    #select = null;
+    #selectChildren = null;
+    #selectGroup = null;
 
     /**
      * Construct the configuration interface
@@ -52,16 +56,34 @@ export class Interface {
         this.#addFieldSlider("Collision radius", new Vector2(0, 1.5), "collisionRadius", true, false);
 
         this.#addHeader("Bounds");
+
+        this.#addDropdown("Type", "boundsType");
+        this.#addDropdownOption("None", BoundsType.NONE);
+
+        this.#addDropdownOption("Sphere", BoundsType.SPHERE);
+        this.#addFieldSlider("Sphere height", new Vector2(0, 1), "boundsSphereHeight", true, false);
+
+        this.#endDropdown();
     }
 
     /**
      * Make a table row
+     * @param {boolean} [collapsible] True if this row should be collapsible by its header
      * @returns {HTMLTableRowElement} The table row
      */
-    #makeRow() {
+    #makeRow(collapsible = true) {
         const row = document.createElement("tr");
 
-        this.#header.push(row);
+        if (collapsible) {
+            this.#header?.push(row);
+
+            if (this.#selectGroup) {
+                this.#selectGroup.push(row);
+
+                if (this.#select.children.length !== 1)
+                    row.classList.add(Interface.#CLASS_HIDDEN);
+            }
+        }
 
         return Interface.#TABLE.appendChild(row);
     }
@@ -74,7 +96,7 @@ export class Interface {
     #addHeader(title, visible = true) {
         const children = [];
 
-        Interface.#TABLE.appendChild(document.createElement("tr")).appendChild(Object.assign(
+        this.#makeRow(false).appendChild(Object.assign(
             document.createElement("td"),
             {
                 className: Interface.#CLASS_HEADER,
@@ -111,6 +133,62 @@ export class Interface {
     }
 
     /**
+     * Add a dropdown
+     * @param {string} title The dropdown title
+     * @param {string} key The key in the configuration to bind this dropdown to
+     */
+    #addDropdown(title, key) {
+        const row = this.#makeRow();
+        const children = {};
+
+        this.#addLabel(row, title);
+
+        this.#selectChildren = children;
+        this.#select = row.appendChild(Object.assign(
+            document.createElement("td"),
+            {
+                colSpan: 2
+            })).appendChild(Object.assign(
+                document.createElement("select"),
+            {
+                    onchange: event => {
+                        this.#configuration[key] = event.target.value;
+
+                        for (const category of Object.keys(children)) {
+                            if (category === event.target.value) {
+                                for (const child of children[category])
+                                    child.classList.remove(Interface.#CLASS_HIDDEN);
+                            }
+                            else {
+                                for (const child of children[category])
+                                    child.classList.add(Interface.#CLASS_HIDDEN);
+                            }
+                        }
+                    }
+                }));
+    }
+
+    /**
+     * Add a dropdown option
+     * @param {string} title The option title
+     * @param {string} value The value of this option
+     */
+    #addDropdownOption(title, value) {
+        this.#selectChildren[value] = this.#selectGroup = [];
+        this.#select?.appendChild(Object.assign(document.createElement("option"),
+            {
+                value: value
+            })).appendChild(document.createTextNode(title));
+    }
+
+    /**
+     * End the dropdown that's currently being appended
+     */
+    #endDropdown() {
+        this.#selectGroup = null;
+    }
+
+    /**
      * Add a checkbox
      * @param {string} title The checkbox title
      * @param {string} key The key in the configuration to bind this checkbox to
@@ -125,7 +203,7 @@ export class Interface {
         this.#addLabel(row, title);
 
         Object.assign(
-            row.appendChild(document.createElement("input")),
+            row.appendChild(document.createElement("td")).appendChild(document.createElement("input")),
             {
                 type: "checkbox",
                 checked: this.#configuration[key],

@@ -1,3 +1,5 @@
+import {BoundsType} from "../boundsType.js";
+
 export class Configuration {
     growth = 1;
 
@@ -19,4 +21,8 @@ export class Configuration {
     extendTries = 5;
     extendAngle = .72;
     extendThreshold = 1;
+
+    boundsType = BoundsType.NONE;
+
+    boundsSphereHeight = .7;
 }
