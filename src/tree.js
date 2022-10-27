@@ -113,6 +113,7 @@ export class Tree {
      */
     #updateUniforms() {
         Uniforms.GLOBALS.setGrowth(this.#configuration.growth * this.#network.depth);
+        Uniforms.GLOBALS.upload();
 
         this.#layers =
             (this.#configuration.layerBranches ? RenderLayer.BRANCHES : 0) |
@@ -208,7 +209,7 @@ export class Tree {
         let update = this.#cameraController.render();
 
         if (this.#modifiedNetwork) {
-            this.#modifiedNetwork = false;
+            this.#modifiedNetwork = this.#modifiedUniforms = false;
 
             this.#updateNetwork();
             this.#updateUniforms();

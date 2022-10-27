@@ -1,5 +1,6 @@
 export class Configuration {
     growth = 1;
+
     layerWireframe = false;
     layerBranches = true;
     layerSpheres = false;
