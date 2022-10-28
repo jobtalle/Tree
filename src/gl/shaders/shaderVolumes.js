@@ -5,9 +5,9 @@ import {glslGlobals, UniformBlockGlobals} from "../uniforms/uniformBlockGlobals.
 import {glslShade} from "./glsl/glslShade.js";
 
 export class ShaderVolumes extends Shader {
-    static #COLOR = new Color("#d7b326");
-    static #MATERIAL = new Vector4(.3, .7, .2, 10);
-    static #TRANSPARENCY = .5;
+    static #COLOR = new Color("#ffffff");
+    static #MATERIAL = new Vector4(.5, .5, .2, 10);
+    static #TRANSPARENCY = .25;
 
     static #VERTEX = glslGlobals + `
         layout(location = 0) in vec3 vertex;

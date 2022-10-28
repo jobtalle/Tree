@@ -32,13 +32,13 @@ export class ModellerOval extends Modeller {
      * Make the model
      */
     model() {
-        const normal = new Vector3(0, 1, 0);
-        const divisionsY = Math.ceil(Math.max(3, Math.PI * this.#radiusVertical / ModellerOval.#PRECISION));
+        const normal = new Vector3();
+        const divisionsY = Math.ceil(Math.max(3, Math.PI * this.#radiusHorizontal / ModellerOval.#PRECISION));
         const divisionsRadial = Math.ceil(Math.max(4, Math.PI * 2 * this.#radiusHorizontal / ModellerOval.#PRECISION));
         const ring = [];
         let indexBase = this.#attributes.attributeCount;
 
-        this.#attributes.push(new Vector3(this.#center.x, this.#center.y + this.#radiusVertical, this.#center.z), normal);
+        this.#attributes.push(new Vector3(this.#center.x, this.#center.y + this.#radiusVertical, this.#center.z), Vector3.UP);
 
         for (let r = 0; r < divisionsRadial; ++r) {
             const rNext = r === divisionsRadial - 1 ? 0 : r + 1;
@@ -60,9 +60,15 @@ export class ModellerOval extends Modeller {
             for (let r = 0; r < divisionsRadial; ++r) {
                 const angleRadial = Math.PI * 2 * r / divisionsRadial;
 
-                ring[r].x = this.#center.x + Math.cos(angleRadial) * Math.sin(angleY) * this.#radiusHorizontal;
-                ring[r].y = this.#center.y + Math.cos(angleY) * this.#radiusVertical;
-                ring[r].z = this.#center.z + Math.sin(angleRadial) * Math.sin(angleY) * this.#radiusHorizontal;
+                ring[r].x = Math.cos(angleRadial) * Math.sin(angleY) * this.#radiusHorizontal;
+                ring[r].y = Math.cos(angleY) * this.#radiusVertical;
+                ring[r].z = Math.sin(angleRadial) * Math.sin(angleY) * this.#radiusHorizontal;
+
+                normal.x = 2 * ring[r].x / (this.#radiusHorizontal * this.#radiusHorizontal);
+                normal.y = 2 * ring[r].y / (this.#radiusHorizontal * this.#radiusVertical);
+                normal.z = 2 * ring[r].z / (this.#radiusHorizontal * this.#radiusHorizontal);
+
+                ring[r].add(this.#center);
 
                 this.#attributes.push(ring[r], normal);
 
@@ -89,6 +95,6 @@ export class ModellerOval extends Modeller {
             this.#indices.push(indexBase);
         }
 
-        this.#attributes.push(new Vector3(this.#center.x, this.#center.y - this.#radiusVertical, this.#center.z), normal);
+        this.#attributes.push(new Vector3(this.#center.x, this.#center.y - this.#radiusVertical, this.#center.z), Vector3.UP.copy().negate());
     }
 }
