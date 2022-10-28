@@ -7,6 +7,7 @@ export class Interface {
     static #TABLE = Interface.#ELEMENT.appendChild(document.createElement("table"));
     static #CLASS_HEADER = "header";
     static #CLASS_HIDDEN = "hidden";
+    static #CLASS_HIDDEN_DROPDOWN = "hidden-dropdown";
     static #RANGE_STEPS = 512;
     static #RANGE_DECIMALS = 3;
 
@@ -60,8 +61,8 @@ export class Interface {
         this.#addDropdown("Type", "boundsType");
         this.#addDropdownOption("None", BoundsType.NONE);
 
-        this.#addDropdownOption("Sphere", BoundsType.SPHERE);
-        this.#addFieldSlider("Sphere height", new Vector2(0, 1), "boundsSphereHeight", true, false);
+        this.#addDropdownOption("Oval", BoundsType.OVAL);
+        this.#addFieldSlider("Oval height", new Vector2(.5, Collision.SIZE), "boundsOvalHeight", true, false);
 
         this.#endDropdown();
     }
@@ -81,7 +82,7 @@ export class Interface {
                 this.#selectGroup.push(row);
 
                 if (this.#select.children.length !== 1)
-                    row.classList.add(Interface.#CLASS_HIDDEN);
+                    row.classList.add(Interface.#CLASS_HIDDEN_DROPDOWN);
             }
         }
 
@@ -157,11 +158,11 @@ export class Interface {
                         for (const category of Object.keys(children)) {
                             if (category === event.target.value) {
                                 for (const child of children[category])
-                                    child.classList.remove(Interface.#CLASS_HIDDEN);
+                                    child.classList.remove(Interface.#CLASS_HIDDEN_DROPDOWN);
                             }
                             else {
                                 for (const child of children[category])
-                                    child.classList.add(Interface.#CLASS_HIDDEN);
+                                    child.classList.add(Interface.#CLASS_HIDDEN_DROPDOWN);
                             }
                         }
                     }

@@ -24,5 +24,5 @@ export class Configuration {
 
     boundsType = BoundsType.NONE;
 
-    boundsSphereHeight = .7;
+    boundsOvalHeight = 1.5;
 }

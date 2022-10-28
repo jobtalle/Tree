@@ -17,6 +17,10 @@ body {
     visibility: collapse;
 }
 
+#interface table tr.hidden-dropdown {
+    visibility: collapse;
+}
+
 #interface table .header {
     background-color: #d9d9d9;
     font-weight: bold;
