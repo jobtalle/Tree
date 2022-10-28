@@ -58,11 +58,12 @@ export class Interface {
 
         this.#addHeader("Bounds");
 
-        this.#addDropdown("Type", "boundsType");
+        this.#addDropdown("Type", "boundsType", true);
         this.#addDropdownOption("None", BoundsType.NONE);
 
         this.#addDropdownOption("Oval", BoundsType.OVAL);
         this.#addFieldSlider("Oval height", new Vector2(.5, Collision.SIZE), "boundsOvalHeight", true, false);
+        this.#addFieldSlider("Oval radius", new Vector2(.1, Collision.SIZE * .5), "boundsOvalRadius", true, false);
 
         this.#endDropdown();
     }
@@ -137,8 +138,9 @@ export class Interface {
      * Add a dropdown
      * @param {string} title The dropdown title
      * @param {string} key The key in the configuration to bind this dropdown to
+     * @param {boolean} [remodel] True if this change requires remodelling
      */
-    #addDropdown(title, key) {
+    #addDropdown(title, key, remodel = false) {
         const row = this.#makeRow();
         const children = {};
 
@@ -165,6 +167,11 @@ export class Interface {
                                     child.classList.add(Interface.#CLASS_HIDDEN_DROPDOWN);
                             }
                         }
+
+                        if (remodel)
+                            this.#onRemodel();
+                        else
+                            this.#onUpdate();
                     }
                 }));
     }

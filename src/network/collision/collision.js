@@ -75,8 +75,16 @@ export class Collision {
 
         const volumeCount = this.#volumes.length;
 
-        if (volumeCount) for (let volume = 0; volume < volumeCount; ++volume) {
-            if (!this.#volumes[volume].contains(center))
+        if (volumeCount) {
+            let contained = false;
+
+            for (let volume = 0; volume < volumeCount; ++volume) if (this.#volumes[volume].contains(center)) {
+                contained = true;
+
+                break;
+            }
+
+            if (!contained)
                 return false;
         }
 

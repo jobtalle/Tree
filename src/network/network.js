@@ -2,6 +2,8 @@ import {Node} from "./node.js";
 import {Collision} from "./collision/collision.js";
 import {Vector3} from "../math/vector3.js";
 import {Random} from "../math/random.js";
+import {BoundsType} from "../boundsType.js";
+import {VolumeOval} from "./collision/volumeOval.js";
 
 export class Network {
     static #MAX_NODES = 64000;
@@ -39,6 +41,13 @@ export class Network {
                     0,
                     Collision.SIZE * .5 + Math.sin(angle) * radius));
             }
+        }
+
+        for (const start of starts) switch (configuration.boundsType) {
+            case BoundsType.OVAL:
+                this.#collision.addVolume(new VolumeOval(start, configuration.boundsOvalHeight, configuration.boundsOvalRadius));
+
+                break;
         }
 
         this.#valid = this.#grow(starts);
