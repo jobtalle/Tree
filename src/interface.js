@@ -62,6 +62,7 @@ export class Interface {
         this.#addDropdownOption("None", BoundsType.NONE);
 
         this.#addDropdownOption("Oval", BoundsType.OVAL);
+        this.#addFieldSlider("Oval base", new Vector2(-Collision.SIZE * .5, 0), "boundsOvalBase", true, false);
         this.#addFieldSlider("Oval height", new Vector2(.5, Collision.SIZE), "boundsOvalHeight", true, false);
         this.#addFieldSlider("Oval radius", new Vector2(.1, Collision.SIZE * .5), "boundsOvalRadius", true, false);
 

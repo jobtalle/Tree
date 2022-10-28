@@ -24,6 +24,7 @@ export class Configuration {
 
     boundsType = BoundsType.NONE;
 
+    boundsOvalBase = 0;
     boundsOvalHeight = 1.5;
     boundsOvalRadius = .5;
 }

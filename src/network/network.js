@@ -45,7 +45,7 @@ export class Network {
 
         for (const start of starts) switch (configuration.boundsType) {
             case BoundsType.OVAL:
-                this.#collision.addVolume(new VolumeOval(start, configuration.boundsOvalHeight, configuration.boundsOvalRadius));
+                this.#collision.addVolume(new VolumeOval(start.copy().add(new Vector3(0, configuration.boundsOvalBase, 0)), configuration.boundsOvalHeight, configuration.boundsOvalRadius));
 
                 break;
         }

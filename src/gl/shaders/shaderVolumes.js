@@ -31,6 +31,9 @@ export class ShaderVolumes extends Shader {
         out vec4 color;
         
         void main() {
+            if (iPosition.y < 0.)
+                discard;
+                
             color = vec4(shade(iPosition, COLOR, normalize(iNormal), MATERIAL), TRANSPARENCY);
         }
         `;
