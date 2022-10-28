@@ -44,8 +44,11 @@ export class Network {
         }
 
         for (const start of starts) switch (configuration.boundsType) {
-            case BoundsType.OVAL:
-                this.#collision.addVolume(new VolumeOval(start.copy().add(new Vector3(0, configuration.boundsOvalBase, 0)), configuration.boundsOvalHeight, configuration.boundsOvalRadius));
+            case BoundsType.ELLIPSOID:
+                this.#collision.addVolume(new VolumeOval(
+                    start.copy().add(new Vector3(0, configuration.boundsEllipsoidBase, 0)),
+                    configuration.boundsEllipsoidHeight,
+                    configuration.boundsEllipsoidRadius));
 
                 break;
         }
