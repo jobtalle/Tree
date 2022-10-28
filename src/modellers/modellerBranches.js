@@ -189,13 +189,12 @@ export class ModellerBranches extends Modeller {
                     const interpolatedRadius = startRadius + position * (childRadius - startRadius);
                     const interpolatedDistance = node.distance + position * distanceToChild;
 
-                    for (let i = 0; i < ringSteps; ++i)
+                    for (let i = 0; i < ringSteps; ++i) {
                         this.#attributes.push(
                             rotatedRing[i].copy().multiply(interpolatedRadius).add(center),
                             rotatedRing[i],
                             interpolatedDistance);
 
-                    for (let i = 0; i < ringSteps; ++i) {
                         const iNext = i === ringSteps - 1 ? 0 : i + 1;
 
                         this.#indices.push(indexBaseChild + i);

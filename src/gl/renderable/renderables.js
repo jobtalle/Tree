@@ -36,6 +36,13 @@ export class Renderables {
         gl.vertexAttribPointer(2, 1, gl.FLOAT, false, 28, 24);
     }, gl.TRIANGLES);
 
+    static VOLUMES = new Renderable(() => {
+        gl.enableVertexAttribArray(0);
+        gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 24, 0);
+        gl.enableVertexAttribArray(1);
+        gl.vertexAttribPointer(1, 3, gl.FLOAT, false, 24, 12);
+    }, gl.TRIANGLES);
+
     /**
      * Create primitive shapes
      */

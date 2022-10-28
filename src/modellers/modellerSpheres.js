@@ -1,7 +1,7 @@
 import {Modeller} from "./modeller.js";
 
 export class ModellerSpheres extends Modeller {
-    attributes;
+    #attributes;
 
     /**
      * Construct a spheres modeller
@@ -11,7 +11,7 @@ export class ModellerSpheres extends Modeller {
     constructor(attributes, root) {
         super(root);
 
-        this.attributes = attributes;
+        this.#attributes = attributes;
     }
 
     /**
@@ -19,7 +19,7 @@ export class ModellerSpheres extends Modeller {
      * @param {Node} node The node to model
      */
     modelNode(node) {
-        this.attributes.push(node.position, node.radius, node.parentDistance, node.distance);
+        this.#attributes.push(node.position, node.radius, node.parentDistance, node.distance);
 
         for (let child = 0, childCount = node.children.length; child < childCount; ++child)
             this.modelNode(node.children[child]);

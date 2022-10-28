@@ -125,4 +125,12 @@ export class Collision {
         this.#spheres[index].push(center);
         this.#radii[index].push(radius);
     }
+
+    /**
+     * Get all collision volumes
+     * @returns {Volume[]} The collision volumes
+     */
+    get volumes() {
+        return this.#volumes;
+    }
 }

@@ -1,9 +1,9 @@
 import {Volume} from "./volume.js";
 
 export class VolumeOval extends Volume {
-    #base;
-    #height;
-    #radius;
+    base;
+    height;
+    radius;
 
     /**
      * Construct a vertically aligned oval constraint
@@ -14,9 +14,9 @@ export class VolumeOval extends Volume {
     constructor(base, height, radius) {
         super();
 
-        this.#base = base;
-        this.#height = height;
-        this.#radius = radius;
+        this.base = base;
+        this.height = height;
+        this.radius = radius;
     }
 
     /**
@@ -25,15 +25,15 @@ export class VolumeOval extends Volume {
      * @returns {boolean} True if the given point is inside the volume
      */
     contains(point) {
-        const y = point.y - this.#base.y;
+        const y = point.y - this.base.y;
 
-        if (y < 0 || y > this.#height)
+        if (y < 0 || y > this.height)
             return false;
 
-        const radius = this.#radius * Math.sin(y * Math.PI / this.#height);
-        const dx = point.x - this.#base.x;
-        const dz = point.z - this.#base.z;
+        const dx = (point.x - this.base.x) / this.radius;
+        const dy = (point.y - (this.base.y + this.height * .5)) / (this.height * .5);
+        const dz = (point.z - this.base.z) / this.radius;
 
-        return dx * dx + dz * dz < radius * radius;
+        return dx * dx + dy * dy + dz * dz < 1;
     }
 }

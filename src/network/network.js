@@ -70,6 +70,14 @@ export class Network {
     }
 
     /**
+     * Get the collision volume
+     * @returns {Collision} The collision volume
+     */
+    get collision() {
+        return this.#collision;
+    }
+
+    /**
      * Get the maximum depth of all structures in this network
      * @returns {number} The depth
      */

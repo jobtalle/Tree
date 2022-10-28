@@ -6,7 +6,7 @@ export class Configuration {
     layerWireframe = false;
     layerBranches = true;
     layerSpheres = false;
-    layerVolumes = false;
+    layerVolumes = true;
 
     seed = 42;
 

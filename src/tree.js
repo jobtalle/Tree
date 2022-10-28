@@ -21,6 +21,10 @@ import {ModellerBranches} from "./modellers/modellerBranches.js";
 import {Shadow} from "./gl/shadow.js";
 import {AttributesFloor} from "./gl/attributes/attributesFloor.js";
 import {Collision} from "./network/collision/collision.js";
+import {AttributesVolumes} from "./gl/attributes/attributesVolumes.js";
+import {BoundsType} from "./boundsType.js";
+import {VolumeOval} from "./network/collision/volumeOval.js";
+import {ModellerOval} from "./modellers/modellerOval.js";
 
 export class Tree {
     static #CANVAS = document.getElementById("renderer");
@@ -118,7 +122,8 @@ export class Tree {
         this.#layers =
             (this.#configuration.layerBranches ? RenderLayer.BRANCHES : 0) |
             (this.#configuration.layerWireframe ? RenderLayer.WIREFRAME : 0) |
-            (this.#configuration.layerSpheres ? RenderLayer.SPHERES : 0);
+            (this.#configuration.layerSpheres ? RenderLayer.SPHERES : 0) |
+            (this.#configuration.layerVolumes ? RenderLayer.VOLUMES : 0);
 
         this.#model();
         this.#updateShadows();
@@ -154,8 +159,7 @@ export class Tree {
                             new ModellerWireframe(attributes, indices, root).model();
 
                         Renderables.WIREFRAME.upload(attributes, indices);
-                    }
-                        break;
+                    } break;
                     case RenderLayer.SPHERES: {
                         const attributes = new AttributesSpheres();
 
@@ -163,8 +167,7 @@ export class Tree {
                             new ModellerSpheres(attributes, root).model();
 
                         Renderables.SPHERES.uploadInstances(attributes);
-                    }
-                        break;
+                    } break;
                     case RenderLayer.BRANCHES: {
                         const attributes = new AttributesBranches();
                         const indices = new AttributesIndices();
@@ -173,8 +176,26 @@ export class Tree {
                             new ModellerBranches(attributes, indices, root).model();
 
                         Renderables.BRANCHES.upload(attributes, indices);
-                    }
-                        break;
+                    } break;
+                    case RenderLayer.VOLUMES: {
+                        const attributes = new AttributesVolumes();
+                        const indices = new AttributesIndices();
+
+                        for (const volume of this.#network.collision.volumes) {
+                            if (volume instanceof VolumeOval)
+                                new ModellerOval(
+                                    attributes,
+                                    indices,
+                                    new Vector3(
+                                        volume.base.x,
+                                        volume.base.y + volume.height * .5,
+                                        volume.base.z),
+                                    volume.radius,
+                                    volume.height * .5).model();
+                        }
+
+                        Renderables.VOLUMES.upload(attributes, indices);
+                    } break;
                 }
             }
         }
@@ -260,6 +281,17 @@ export class Tree {
 
             Shaders.SPHERES.use();
             Renderables.SPHERES.draw();
+
+            gl.disable(gl.CULL_FACE);
+            gl.disable(gl.SAMPLE_ALPHA_TO_COVERAGE);
+        }
+
+        if (this.#layers & RenderLayer.VOLUMES) {
+            gl.enable(gl.CULL_FACE);
+            gl.enable(gl.SAMPLE_ALPHA_TO_COVERAGE);
+
+            Shaders.VOLUMES.use();
+            Renderables.VOLUMES.draw();
 
             gl.disable(gl.CULL_FACE);
             gl.disable(gl.SAMPLE_ALPHA_TO_COVERAGE);
