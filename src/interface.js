@@ -51,11 +51,17 @@ export class Interface {
         this.#addFieldSlider("Radius at root", new Vector2(.05, Collision.RADIUS_MAX), "radiusInitial", true);
         this.#addFieldSlider("Radius decay", new Vector2(.7, .95), "radiusDecay", true);
         this.#addFieldSlider("Radius threshold", new Vector2(.012, .1), "radiusThreshold", true);
-        this.#addFieldSlider("Extend tries", new Vector2(1, 20), "extendTries", true, true);
+        this.#addFieldSlider("Extend tries", new Vector2(1, 26), "extendTries", true, true);
         this.#addFieldSlider("Extend angle", new Vector2(.1, 1.5), "extendAngle", true);
         this.#addFieldSlider("Extend threshold", new Vector2(0, 8), "extendThreshold", true, true);
         this.#addFieldSlider("Angle threshold", new Vector2(0, Math.PI), "angleThreshold", true);
         this.#addFieldSlider("Collision radius", new Vector2(0, 1.5), "collisionRadius", true, false);
+        this.#addCheckbox("Shuffle tips", "shuffleTips", true);
+
+        this.#addHeader("Stability");
+
+        this.#addFieldSlider("Initial", new Vector2(0, 1.5), "stabilityInitial", true);
+        this.#addFieldSlider("Threshold", new Vector2(0, .99), "stabilityThreshold", true);
 
         this.#addHeader("Bounds");
 

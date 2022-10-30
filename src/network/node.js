@@ -4,6 +4,8 @@ import {Vector3} from "../math/vector3.js";
 export class Node {
     #position;
     #radius;
+    #root;
+    #average;
     #parent;
     #children = [];
     #distance;
@@ -14,12 +16,22 @@ export class Node {
      * Construct a new node
      * @param {Vector3} position The node position
      * @param {number} radius The node radius
+     * @param {Vector3} root The structure root
+     * @param {Vector3} average The average position accumulator
      * @param {Node} [parent] The node parent, if any
      * @param {number} [distance] The node distance from the root, zero by default
      */
-    constructor(position, radius, parent = null, distance = 0) {
+    constructor(
+        position,
+        radius,
+        root,
+        average,
+        parent = null,
+        distance = 0) {
         this.#position = Object.freeze(position);
         this.#radius = radius;
+        this.#root = root;
+        this.#average = average;
         this.#parent = parent;
         this.#distance = distance;
     }
@@ -74,9 +86,23 @@ export class Node {
                 continue;
 
             if (collision.fits(position, radius * configuration.collisionRadius, this.#position)) {
+                const newAverage = position.copy().subtract(this.#root).add(this.#average);
+                const stability = newAverage.normalize().dot(Vector3.UP);
+
+                if (stability < configuration.stabilityThreshold)
+                    continue;
+
                 collision.add(position, radius * configuration.collisionRadius);
 
-                this.#children.push(new Node(position, radius, this, this.#distance + stride));
+                this.#average.add(position.copy().subtract(this.#root));
+
+                this.#children.push(new Node(
+                    position,
+                    radius,
+                    this.#root,
+                    this.#average,
+                    this,
+                    this.#distance + stride));
 
                 this.addDepth(stride);
                 this.addWeight(stride);

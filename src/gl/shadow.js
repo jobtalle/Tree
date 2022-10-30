@@ -5,7 +5,7 @@ import {Uniforms} from "./uniforms/uniforms.js";
 import {Collision} from "../network/collision/collision.js";
 
 export class Shadow {
-    static #SIZE = 4096;
+    static #SIZE = 2048;
     static #RADIUS = Collision.SIZE / Math.sqrt(2);
     static #DEPTH_MULTIPLIER = 2;
 

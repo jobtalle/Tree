@@ -8,7 +8,7 @@ export class Configuration {
     layerSpheres = false;
     layerVolumes = true;
 
-    seed = 42;
+    seed = 26;
 
     roots = 1;
 
@@ -22,7 +22,12 @@ export class Configuration {
 
     extendTries = 5;
     extendAngle = .72;
-    extendThreshold = 1;
+    extendThreshold = 0;
+
+    shuffleTips = true;
+
+    stabilityInitial = .3;
+    stabilityThreshold = .8;
 
     boundsType = BoundsType.NONE;
 

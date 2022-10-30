@@ -123,6 +123,23 @@ export class Network {
     }
 
     /**
+     * Shuffle an array
+     * @param {Array} array The array to shuffle
+     * @param {Random} random A randomizer
+     * @returns {Array} The shuffled array
+     */
+    #shuffle(array, random) {
+        let currentIndex = array.length,  randomIndex;
+
+        while (currentIndex !== 0) {
+            randomIndex = Math.floor(random.float * currentIndex);
+            currentIndex--;
+
+            [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+        }
+    }
+
+    /**
      * Grow a network
      * @param {Vector3[]} starts The network origins
      * @returns {boolean} True if the network was valid
@@ -132,7 +149,11 @@ export class Network {
         let index = 0;
 
         for (const start of starts) {
-            const node = new Node(start, this.#configuration.radiusInitial);
+            const node = new Node(
+                start,
+                this.#configuration.radiusInitial,
+                start.copy(),
+                Vector3.UP.copy().multiply(this.#configuration.stabilityInitial));
 
             this.#roots.push(node);
             this.#addToBounds(start);
@@ -146,7 +167,9 @@ export class Network {
 
         while (tips.length !== 0) {
             const newTips = [];
-            // TODO: Shuffle tips?
+
+            if (this.#configuration.shuffleTips)
+                this.#shuffle(tips, this.#random);
 
             for (const tip of tips) {
                 const grown = tip.grow(
