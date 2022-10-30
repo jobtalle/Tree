@@ -19,19 +19,11 @@ export class Random {
     }
 
     /**
-     * Fork this randomizer
-     * @returns {Random} A copy of this randomizer in the current state
-     */
-    fork() {
-        return new Random(this.n);
-    }
-
-    /**
      * Get a randomized integer in the range [0, 0xFFFFFFFF]
      * @returns {number} A random integer
      */
     get integer() {
-        return this.n = (Random.#MULTIPLIER * this.n++) % Random.#MODULUS;
+        return this.n = ((Random.#MULTIPLIER * this.n) + 1) % Random.#MODULUS;
     }
 
     /**

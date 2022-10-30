@@ -8,7 +8,7 @@ export class Configuration {
     layerSpheres = false;
     layerVolumes = true;
 
-    seed = 26;
+    seed = 0;
 
     roots = 1;
 
