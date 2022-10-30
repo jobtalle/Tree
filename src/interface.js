@@ -54,6 +54,7 @@ export class Interface {
         this.#addFieldSlider("Extend tries", new Vector2(1, 20), "extendTries", true, true);
         this.#addFieldSlider("Extend angle", new Vector2(.1, 1.5), "extendAngle", true);
         this.#addFieldSlider("Extend threshold", new Vector2(0, 8), "extendThreshold", true, true);
+        this.#addFieldSlider("Angle threshold", new Vector2(0, Math.PI), "angleThreshold", true);
         this.#addFieldSlider("Collision radius", new Vector2(0, 1.5), "collisionRadius", true, false);
 
         this.#addHeader("Bounds");

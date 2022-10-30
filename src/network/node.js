@@ -65,7 +65,13 @@ export class Node {
             const position = matrix.apply(new Vector3(
                 Math.cos(extendPitch),
                 Math.sin(extendRadial) * Math.sin(extendPitch),
-                Math.cos(extendRadial) * Math.sin(extendPitch))).multiply(stride).add(this.#position);
+                Math.cos(extendRadial) * Math.sin(extendPitch)));
+            const angle = Math.acos(position.dot(Vector3.UP));
+
+            position.multiply(stride).add(this.#position)
+
+            if (!isNaN(angle) && angle > configuration.angleThreshold)
+                continue;
 
             if (collision.fits(position, radius * configuration.collisionRadius, this.#position)) {
                 collision.add(position, radius * configuration.collisionRadius);
