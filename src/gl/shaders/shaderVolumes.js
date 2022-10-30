@@ -6,8 +6,8 @@ import {glslShade} from "./glsl/glslShade.js";
 
 export class ShaderVolumes extends Shader {
     static #COLOR = new Color("#ffffff");
-    static #MATERIAL = new Vector4(.5, .5, .2, 10);
-    static #TRANSPARENCY = .25;
+    static #MATERIAL = new Vector4(.5, .5, .2, 12);
+    static #TRANSPARENCY = .2;
 
     static #VERTEX = glslGlobals + `
         layout(location = 0) in vec3 vertex;
@@ -15,10 +15,12 @@ export class ShaderVolumes extends Shader {
         
         out vec3 iNormal;
         out vec3 iPosition;
+        out vec3 iPositionShadow;
         
         void main() {
             iNormal = normal;
             iPosition = vertex;
+            iPositionShadow = (shadowMatrix * vec4(vertex, 1.)).xyz;
             
             gl_Position = vp * vec4(vertex, 1.);
         }
@@ -27,25 +29,37 @@ export class ShaderVolumes extends Shader {
     static #FRAGMENT = glslGlobals + glslShade + `
         in vec3 iNormal;
         in vec3 iPosition;
+        in vec3 iPositionShadow;
         
         out vec4 color;
         
         void main() {
             if (iPosition.y < 0.)
                 discard;
-                
-            color = vec4(shade(iPosition, COLOR, normalize(iNormal), MATERIAL), TRANSPARENCY);
+            
+            #ifdef INVERTED
+            color = vec4(shade(iPosition, iPositionShadow, COLOR, normalize(-iNormal), MATERIAL), TRANSPARENCY);
+            #else
+            color = vec4(shade(iPosition, iPositionShadow, COLOR, normalize(iNormal), MATERIAL), TRANSPARENCY);
+            #endif
         }
         `;
 
     /**
      * Construct the volumes shader
+     * @param {boolean} inverted True if the volumes are inverted
      */
-    constructor() {
-        super(ShaderVolumes.#VERTEX, ShaderVolumes.#FRAGMENT, [
+    constructor(inverted) {
+        const defines = [
+            ["SHADOWS"],
             ["COLOR", Shader.makeVec3(ShaderVolumes.#COLOR)],
             ["MATERIAL", Shader.makeVec4(ShaderVolumes.#MATERIAL)],
-            ["TRANSPARENCY", ShaderVolumes.#TRANSPARENCY]]);
+            ["TRANSPARENCY", ShaderVolumes.#TRANSPARENCY]];
+
+        if (inverted)
+            defines.push(["INVERTED"]);
+
+        super(ShaderVolumes.#VERTEX, ShaderVolumes.#FRAGMENT, defines);
 
         this.use();
         this.bindUniformBlock(UniformBlockGlobals.NAME, UniformBlockGlobals.BINDING);

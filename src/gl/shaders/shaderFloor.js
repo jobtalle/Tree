@@ -8,11 +8,11 @@ export class ShaderFloor extends Shader {
         layout(location = 0) in vec3 vertex;
         
         out vec3 iPosition;
-        out vec4 iPositionProjected;
+        out vec3 iPositionProjected;
         
         void main() {
             iPosition = vertex;
-            iPositionProjected = shadowMatrix * vec4(vertex, 1.);
+            iPositionProjected = (shadowMatrix * vec4(vertex, 1.)).xyz;
             
             gl_Position = vp * vec4(vertex, 1.);
         }
@@ -22,7 +22,7 @@ export class ShaderFloor extends Shader {
         uniform sampler2D shadows;
 
         in vec3 iPosition;
-        in vec4 iPositionProjected;
+        in vec3 iPositionProjected;
         
         out vec4 color;
         

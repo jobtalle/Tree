@@ -22,7 +22,6 @@ import {Shadow} from "./gl/shadow.js";
 import {AttributesFloor} from "./gl/attributes/attributesFloor.js";
 import {Collision} from "./network/collision/collision.js";
 import {AttributesVolumes} from "./gl/attributes/attributesVolumes.js";
-import {BoundsType} from "./boundsType.js";
 import {VolumeOval} from "./network/collision/volumeOval.js";
 import {ModellerOval} from "./modellers/modellerOval.js";
 
@@ -86,6 +85,7 @@ export class Tree {
         Uniforms.GLOBALS.setSun(Tree.#SUN);
 
         gl.enable(gl.DEPTH_TEST);
+        gl.blendFuncSeparate(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA, gl.ONE, gl.ONE_MINUS_SRC_ALPHA)
 
         this.#initializeFloor();
     }
@@ -288,13 +288,21 @@ export class Tree {
 
         if (this.#layers & RenderLayer.VOLUMES) {
             gl.enable(gl.CULL_FACE);
-            gl.enable(gl.SAMPLE_ALPHA_TO_COVERAGE);
+            gl.enable(gl.BLEND);
+            gl.depthMask(false);
+            gl.frontFace(gl.CW);
+
+            Shaders.VOLUMES_INVERTED.use();
+            Renderables.VOLUMES.draw();
+
+            gl.frontFace(gl.CCW);
 
             Shaders.VOLUMES.use();
             Renderables.VOLUMES.draw();
 
+            gl.disable(gl.BLEND);
             gl.disable(gl.CULL_FACE);
-            gl.disable(gl.SAMPLE_ALPHA_TO_COVERAGE);
+            gl.depthMask(true);
         }
 
         if (this.#layers & RenderLayer.WIREFRAME) {
