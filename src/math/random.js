@@ -23,7 +23,7 @@ export class Random {
      * @returns {number} A random integer
      */
     get integer() {
-        return this.n = ((Random.#MULTIPLIER * this.n) + 1) % Random.#MODULUS;
+        return this.n = (Random.#MULTIPLIER * this.n + 1) % Random.#MODULUS;
     }
 
     /**

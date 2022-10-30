@@ -24,7 +24,6 @@ import {Collision} from "./network/collision/collision.js";
 import {AttributesVolumes} from "./gl/attributes/attributesVolumes.js";
 import {VolumeOval} from "./network/collision/volumeOval.js";
 import {ModellerOval} from "./modellers/modellerOval.js";
-import {Random} from "./math/random.js";
 
 export class Tree {
     static #CANVAS = document.getElementById("renderer");
