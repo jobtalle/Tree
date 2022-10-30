@@ -37,27 +37,22 @@ export class ShaderVolumes extends Shader {
             if (iPosition.y < 0.)
                 discard;
             
-            #ifdef INVERTED
-            color = vec4(shade(iPosition, iPositionShadow, COLOR, normalize(-iNormal), MATERIAL), TRANSPARENCY);
-            #else
-            color = vec4(shade(iPosition, iPositionShadow, COLOR, normalize(iNormal), MATERIAL), TRANSPARENCY);
-            #endif
+            if (dot(iNormal, sun) > 0.)
+                color = vec4(shade(iPosition, iPositionShadow, COLOR, normalize(-iNormal), MATERIAL), TRANSPARENCY);
+            else
+                color = vec4(shade(iPosition, iPositionShadow, COLOR, normalize(iNormal), MATERIAL), TRANSPARENCY);
         }
         `;
 
     /**
      * Construct the volumes shader
-     * @param {boolean} inverted True if the volumes are inverted
      */
-    constructor(inverted) {
+    constructor() {
         const defines = [
             ["SHADOWS"],
             ["COLOR", Shader.makeVec3(ShaderVolumes.#COLOR)],
             ["MATERIAL", Shader.makeVec4(ShaderVolumes.#MATERIAL)],
             ["TRANSPARENCY", ShaderVolumes.#TRANSPARENCY]];
-
-        if (inverted)
-            defines.push(["INVERTED"]);
 
         super(ShaderVolumes.#VERTEX, ShaderVolumes.#FRAGMENT, defines);
 

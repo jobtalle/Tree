@@ -11,6 +11,5 @@ export class Shaders {
     static SPHERES = new ShaderSpheres();
     static BRANCHES = new ShaderBranches();
     static BRANCHES_DEPTH = new ShaderBranchesDepth();
-    static VOLUMES = new ShaderVolumes(false);
-    static VOLUMES_INVERTED = new ShaderVolumes(true);
+    static VOLUMES = new ShaderVolumes();
 }

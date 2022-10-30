@@ -292,7 +292,7 @@ export class Tree {
             gl.depthMask(false);
             gl.frontFace(gl.CW);
 
-            Shaders.VOLUMES_INVERTED.use();
+            Shaders.VOLUMES.use();
             Renderables.VOLUMES.draw();
 
             gl.frontFace(gl.CCW);

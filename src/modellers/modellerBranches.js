@@ -13,7 +13,7 @@ export class ModellerBranches extends Modeller {
     static #SUBDIVISION_STEPS_POWER = .47;
     static #SUBDIVISION_LENGTH = .055;
     static #SUBDIVISION_ANGLE = .2;
-    static #SPLIT_THRESHOLD = .5;
+    static #SPLIT_THRESHOLD = .4;
 
     #attributes;
     #indices;
