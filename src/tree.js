@@ -142,6 +142,8 @@ export class Tree {
 
             Report.report(this.#network);
         }
+        else
+            Report.reportInvalid();
     }
 
     /**

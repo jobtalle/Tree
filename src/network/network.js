@@ -180,11 +180,8 @@ export class Network {
 
                 this.#addToBounds(tip.position);
 
-                if ((this.#nodeCount += grown.length) > Network.#MAX_NODES) {
-                    console.warn("Too many nodes!");
-
+                if ((this.#nodeCount += grown.length) > Network.#MAX_NODES)
                     return false;
-                }
 
                 newTips.push(...grown);
             }
