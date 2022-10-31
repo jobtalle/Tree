@@ -10,7 +10,7 @@ export class UniformBlockGlobals extends UniformBlock {
      * Construct the global variables
      */
     constructor() {
-        super(172, UniformBlockGlobals.BINDING);
+        super(256, UniformBlockGlobals.BINDING);
 
         this.#floats = new Float32Array(this.bytes);
     }
@@ -72,7 +72,7 @@ export class UniformBlockGlobals extends UniformBlock {
 
 
 export const glslGlobals = `
-    uniform ` + UniformBlockGlobals.NAME + ` {
+    layout(std140) uniform ` + UniformBlockGlobals.NAME + ` {
         mat4 vp;
         mat4 shadowMatrix;
         vec3 sun;

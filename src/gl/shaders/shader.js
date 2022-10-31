@@ -80,15 +80,6 @@ export class Shader {
     }
 
     /**
-     * Get a uniform location
-     * @param {string} name The name of the uniform
-     * @returns {WebGLUniformLocation} The uniform location
-     */
-    uniformLocation(name) {
-        return gl.getUniformLocation(this.#program, name);
-    }
-
-    /**
      * Bind a uniform block
      * @param {string} name The uniform block name
      * @param {number} binding The binding index
