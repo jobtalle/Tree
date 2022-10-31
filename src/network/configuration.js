@@ -16,6 +16,9 @@ export class Configuration {
     radiusDecay = .89;
     radiusThreshold = .015;
 
+    randomDecay = .05;
+    randomThreshold = 0;
+
     angleThreshold = Math.PI * .7;
 
     collisionRadius = .85;

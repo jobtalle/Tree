@@ -40,7 +40,7 @@ export class Interface {
 
         this.#addHeader("Structure");
 
-        const randomize = this.#addFieldRandomizer("Seed", new Vector2(0, 0xFFFFFFFF), "seed", true);
+        const randomize = this.#addFieldRandomizer("Seed", new Vector2(0, 0xFFFFFFFF), "seed");
 
         window.addEventListener("keydown", event => {
             if (event.key === " ")
@@ -48,20 +48,25 @@ export class Interface {
         });
 
         this.#addFieldSlider("Roots", new Vector2(1, 8), "roots", true, true);
-        this.#addFieldSlider("Radius at root", new Vector2(.05, Collision.RADIUS_MAX), "radiusInitial", true);
-        this.#addFieldSlider("Radius decay", new Vector2(.7, .95), "radiusDecay", true);
-        this.#addFieldSlider("Radius threshold", new Vector2(.012, .1), "radiusThreshold", true);
+        this.#addFieldSlider("Radius at root", new Vector2(.05, Collision.RADIUS_MAX), "radiusInitial");
+        this.#addFieldSlider("Radius decay", new Vector2(.7, .95), "radiusDecay");
+        this.#addFieldSlider("Radius threshold", new Vector2(.012, .1), "radiusThreshold");
         this.#addFieldSlider("Extend tries", new Vector2(1, 26), "extendTries", true, true);
-        this.#addFieldSlider("Extend angle", new Vector2(.1, 1.5), "extendAngle", true);
+        this.#addFieldSlider("Extend angle", new Vector2(.1, 1.5), "extendAngle");
         this.#addFieldSlider("Extend threshold", new Vector2(0, 8), "extendThreshold", true, true);
-        this.#addFieldSlider("Angle threshold", new Vector2(0, Math.PI), "angleThreshold", true);
+        this.#addFieldSlider("Angle threshold", new Vector2(0, Math.PI), "angleThreshold");
         this.#addFieldSlider("Collision radius", new Vector2(0, 1.5), "collisionRadius", true, false);
-        this.#addCheckbox("Shuffle tips", "shuffleTips", true);
+        this.#addCheckbox("Shuffle tips", "shuffleTips");
+
+        this.#addHeader("Randomization");
+
+        this.#addFieldSlider("Random decay", new Vector2(0, .2), "randomDecay");
+        this.#addFieldSlider("Random threshold", new Vector2(0, .1), "randomThreshold");
 
         this.#addHeader("Stability");
 
-        this.#addFieldSlider("Initial", new Vector2(0, 1.5), "stabilityInitial", true);
-        this.#addFieldSlider("Threshold", new Vector2(0, .99), "stabilityThreshold", true);
+        this.#addFieldSlider("Initial", new Vector2(0, 1.5), "stabilityInitial");
+        this.#addFieldSlider("Threshold", new Vector2(0, .99), "stabilityThreshold");
 
         this.#addHeader("Bounds");
 
@@ -69,9 +74,9 @@ export class Interface {
         this.#addDropdownOption("None", BoundsType.NONE);
 
         this.#addDropdownOption("Ellipsoid", BoundsType.ELLIPSOID);
-        this.#addFieldSlider("Ellipsoid base", new Vector2(-Collision.SIZE * .5, 0), "boundsEllipsoidBase", true, false);
-        this.#addFieldSlider("Ellipsoid height", new Vector2(.5, Collision.SIZE), "boundsEllipsoidHeight", true, false);
-        this.#addFieldSlider("Ellipsoid radius", new Vector2(.1, Collision.SIZE * .5), "boundsEllipsoidRadius", true, false);
+        this.#addFieldSlider("Ellipsoid base", new Vector2(-Collision.SIZE * .5, 0), "boundsEllipsoidBase");
+        this.#addFieldSlider("Ellipsoid height", new Vector2(.5, Collision.SIZE), "boundsEllipsoidHeight");
+        this.#addFieldSlider("Ellipsoid radius", new Vector2(.1, Collision.SIZE * .5), "boundsEllipsoidRadius");
 
         this.#endDropdown();
     }

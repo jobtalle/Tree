@@ -63,9 +63,11 @@ export class Node {
      * @returns {Node[]} The generated child nodes
      */
     grow(configuration, collision, random, singleExtension = false) {
-        const radius = this.#radius * configuration.radiusDecay;
+        const radius = this.#radius * (configuration.radiusDecay + Math.min(
+            (1 - random.float * 2) * configuration.randomDecay,
+            1 - configuration.radiusDecay));
 
-        if (radius < configuration.radiusThreshold)
+        if (radius < configuration.radiusThreshold * (1 + (1 - random.float) * configuration.randomThreshold))
             return this.#children;
 
         const matrix = new Matrix3(this.direction);
