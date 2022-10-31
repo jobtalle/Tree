@@ -1,2 +1,2 @@
 # Tree
-Procedural tree generator
+Procedural tree generator. [Runs in a browser.](https://jobtalle.com/Tree/)
