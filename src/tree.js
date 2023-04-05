@@ -24,6 +24,8 @@ import {Collision} from "./network/collision/collision.js";
 import {AttributesVolumes} from "./gl/attributes/attributesVolumes.js";
 import {VolumeOval} from "./network/collision/volumeOval.js";
 import {ModellerOval} from "./modellers/modellerOval.js";
+import {VolumeBox} from "./network/collision/volumeBox.js";
+import {ModellerBox} from "./modellers/modellerBox.js";
 
 export class Tree {
     static #CANVAS = document.getElementById("renderer");
@@ -192,6 +194,13 @@ export class Tree {
                                         volume.base.z),
                                     volume.radius,
                                     volume.height * .5).model();
+                            else if (volume instanceof VolumeBox)
+                                new ModellerBox(
+                                    attributes,
+                                    indices,
+                                    volume.base,
+                                    volume.height,
+                                    volume.radius).model();
                         }
 
                         Renderables.VOLUMES.upload(attributes, indices);

@@ -73,6 +73,10 @@ export class Interface {
         this.#addFieldSlider("Ellipsoid height", new Vector2(.5, Collision.SIZE), "boundsEllipsoidHeight", true, false);
         this.#addFieldSlider("Ellipsoid radius", new Vector2(.1, Collision.SIZE * .5), "boundsEllipsoidRadius", true, false);
 
+        this.#addDropdownOption("Box", BoundsType.BOX);
+        this.#addFieldSlider("Box height", new Vector2(.5, Collision.SIZE), "boundsBoxHeight", true, false);
+        this.#addFieldSlider("Box radius", new Vector2(.1, Collision.SIZE), "boundsBoxRadius", true, false);
+
         this.#endDropdown();
     }
 

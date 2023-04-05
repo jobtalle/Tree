@@ -34,4 +34,7 @@ export class Configuration {
     boundsEllipsoidBase = 0;
     boundsEllipsoidHeight = 1.5;
     boundsEllipsoidRadius = .5;
+
+    boundsBoxHeight = 1;
+    boundsBoxRadius = .5;
 }
