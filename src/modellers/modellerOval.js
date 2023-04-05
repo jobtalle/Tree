@@ -64,9 +64,10 @@ export class ModellerOval extends Modeller {
                 ring[r].y = Math.cos(angleY) * this.#radiusVertical;
                 ring[r].z = Math.sin(angleRadial) * Math.sin(angleY) * this.#radiusHorizontal;
 
-                normal.x = 2 * ring[r].x / (this.#radiusHorizontal * this.#radiusHorizontal);
-                normal.y = 2 * ring[r].y / (this.#radiusHorizontal * this.#radiusVertical);
-                normal.z = 2 * ring[r].z / (this.#radiusHorizontal * this.#radiusHorizontal);
+                normal.x = ring[r].x / (this.#radiusHorizontal * this.#radiusHorizontal);
+                normal.y = ring[r].y / (this.#radiusVertical * this.#radiusVertical);
+                normal.z = ring[r].z / (this.#radiusHorizontal * this.#radiusHorizontal);
+                normal.normalize();
 
                 ring[r].add(this.#center);
 
