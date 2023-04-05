@@ -25,8 +25,8 @@ export class VolumeBox extends Volume {
      * @returns {boolean} True if the given point is inside the volume
      */
     contains(point) {
-        return point.y > 0 &&
-            point.y < this.height &&
+        return point.y > this.base.y &&
+            point.y < this.base.y + this.height &&
             point.x > this.base.x - this.radius &&
             point.x < this.base.x + this.radius &&
             point.z > this.base.z - this.radius &&
