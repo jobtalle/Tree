@@ -4,6 +4,8 @@ import {Color} from "../../color.js";
 
 export class ShaderFloor extends Shader {
     static #COLOR = new Color("#3c5581");
+
+    // language=GLSL
     static #VERTEX = glslGlobals + `
         layout(location = 0) in vec3 vertex;
         
@@ -18,6 +20,7 @@ export class ShaderFloor extends Shader {
         }
         `;
 
+    // language=GLSL
     static #FRAGMENT = glslGlobals + `
         uniform sampler2D shadows;
 

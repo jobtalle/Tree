@@ -1,3 +1,4 @@
+// language=GLSL
 export const glslShade = `
     #ifdef SHADOWS
     uniform sampler2D shadows;

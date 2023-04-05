@@ -37,6 +37,7 @@ export class Interface {
         this.#addCheckbox("Branches", "layerBranches", false);
         this.#addCheckbox("Spheres", "layerSpheres", false);
         this.#addCheckbox("Volumes", "layerVolumes", false);
+        this.#addCheckbox("Obstructions", "layerObstructions", false);
         this.#addFieldSlider("Growth", new Vector2(0, 1), "growth", false);
 
         this.#addHeader("Structure");
@@ -87,7 +88,7 @@ export class Interface {
 
         this.#addDropdownOption("Box", ObstacleType.BOX);
         this.#addFieldSlider("Box base", new Vector2(0, Collision.SIZE), "obstacleBoxBase", true, false);
-        this.#addFieldSlider("Box height", new Vector2(.5, Collision.SIZE), "obstacleBoxHeight", true, false);
+        this.#addFieldSlider("Box height", new Vector2(.1, Collision.SIZE), "obstacleBoxHeight", true, false);
         this.#addFieldSlider("Box radius", new Vector2(.1, Collision.SIZE), "obstacleBoxRadius", true, false);
     }
 

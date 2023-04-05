@@ -5,6 +5,7 @@ import {Color} from "../../color.js";
 export class ShaderWireframe extends Shader {
     static #COLOR = new Color("#ffffff");
 
+    // language=GLSL
     static #VERTEX = glslGlobals + `
         layout(location = 0) in vec4 position;
         
@@ -16,6 +17,8 @@ export class ShaderWireframe extends Shader {
             gl_Position = vp * vec4(position.xyz, 1.);
         }
         `;
+
+    // language=GLSL
     static #FRAGMENT = glslGlobals + `
         in float distance;
         

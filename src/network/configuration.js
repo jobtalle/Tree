@@ -8,6 +8,7 @@ export class Configuration {
     layerBranches = true;
     layerSpheres = false;
     layerVolumes = true;
+    layerObstructions = true;
 
     seed = 0;
 
@@ -41,7 +42,7 @@ export class Configuration {
 
     obstacleType = ObstacleType.NONE;
 
-    obstacleBoxBase = 0;
-    obstacleBoxHeight = 1;
-    obstacleBoxRadius = .5;
+    obstacleBoxBase = .5;
+    obstacleBoxHeight = .6;
+    obstacleBoxRadius = .3;
 }

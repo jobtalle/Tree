@@ -125,7 +125,8 @@ export class Tree {
             (this.#configuration.layerBranches ? RenderLayer.BRANCHES : 0) |
             (this.#configuration.layerWireframe ? RenderLayer.WIREFRAME : 0) |
             (this.#configuration.layerSpheres ? RenderLayer.SPHERES : 0) |
-            (this.#configuration.layerVolumes ? RenderLayer.VOLUMES : 0);
+            (this.#configuration.layerVolumes ? RenderLayer.VOLUMES : 0) |
+            (this.#configuration.layerObstructions ? RenderLayer.OBSTRUCTIONS : 0);
 
         this.#model();
         this.#updateShadows();
@@ -184,26 +185,46 @@ export class Tree {
                         const indices = new AttributesIndices();
 
                         for (const volume of this.#network.collision.volumes) {
-                            if (volume instanceof VolumeOval)
-                                new ModellerOval(
-                                    attributes,
-                                    indices,
-                                    new Vector3(
-                                        volume.base.x,
-                                        volume.base.y + volume.height * .5,
-                                        volume.base.z),
-                                    volume.radius,
-                                    volume.height * .5).model();
-                            else if (volume instanceof VolumeBox)
-                                new ModellerBox(
-                                    attributes,
-                                    indices,
-                                    volume.base,
-                                    volume.height,
-                                    volume.radius).model();
+                            if (!volume.negative) {
+                                if (volume instanceof VolumeOval)
+                                    new ModellerOval(
+                                        attributes,
+                                        indices,
+                                        new Vector3(
+                                            volume.base.x,
+                                            volume.base.y + volume.height * .5,
+                                            volume.base.z),
+                                        volume.radius,
+                                        volume.height * .5).model();
+                                else if (volume instanceof VolumeBox)
+                                    new ModellerBox(
+                                        attributes,
+                                        indices,
+                                        volume.base,
+                                        volume.height,
+                                        volume.radius).model();
+                            }
                         }
 
                         Renderables.VOLUMES.upload(attributes, indices);
+                    } break;
+                    case RenderLayer.OBSTRUCTIONS: {
+                        const attributes = new AttributesVolumes();
+                        const indices = new AttributesIndices();
+
+                        for (const volume of this.#network.collision.volumes) {
+                            if (volume.negative) {
+                                if (volume instanceof VolumeBox)
+                                    new ModellerBox(
+                                        attributes,
+                                        indices,
+                                        volume.base,
+                                        volume.height,
+                                        volume.radius).model();
+                            }
+                        }
+
+                        Renderables.OBSTRUCTIONS.upload(attributes, indices);
                     } break;
                 }
             }
@@ -278,6 +299,15 @@ export class Tree {
 
             Shaders.BRANCHES.use();
             Renderables.BRANCHES.draw();
+
+            gl.disable(gl.CULL_FACE);
+        }
+
+        if (this.#layers & RenderLayer.OBSTRUCTIONS) {
+            gl.enable(gl.CULL_FACE);
+
+            Shaders.OBSTRUCTIONS.use();
+            Renderables.OBSTRUCTIONS.draw();
 
             gl.disable(gl.CULL_FACE);
         }
