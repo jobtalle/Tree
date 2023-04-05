@@ -38,9 +38,6 @@ export class ShaderObstructions extends Shader {
             if (iPosition.y < 0.)
             discard;
 
-            if (dot(iNormal, sun) > 0.)
-            color = vec4(shade(iPosition, iPositionShadow, COLOR, normalize(-iNormal), MATERIAL), 1.);
-            else
             color = vec4(shade(iPosition, iPositionShadow, COLOR, normalize(iNormal), MATERIAL), 1.);
         }
         `;

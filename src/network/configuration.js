@@ -45,4 +45,8 @@ export class Configuration {
     obstacleBoxBase = .5;
     obstacleBoxHeight = .6;
     obstacleBoxRadius = .3;
+
+    obstacleEllipsoidBase = .5;
+    obstacleEllipsoidHeight = .6;
+    obstacleEllipsoidRadius = .3;
 }

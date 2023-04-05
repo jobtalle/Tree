@@ -214,7 +214,17 @@ export class Tree {
 
                         for (const volume of this.#network.collision.volumes) {
                             if (volume.negative) {
-                                if (volume instanceof VolumeBox)
+                                if (volume instanceof VolumeOval)
+                                    new ModellerOval(
+                                        attributes,
+                                        indices,
+                                        new Vector3(
+                                            volume.base.x,
+                                            volume.base.y + volume.height * .5,
+                                            volume.base.z),
+                                        volume.radius,
+                                        volume.height * .5).model();
+                                else if (volume instanceof VolumeBox)
                                     new ModellerBox(
                                         attributes,
                                         indices,

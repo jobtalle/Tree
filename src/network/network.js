@@ -63,6 +63,13 @@ export class Network {
         }
 
         for (const start of starts) switch (configuration.obstacleType) {
+            case ObstacleType.ELLIPSOID:
+                this.#collision.subtractVolume(new VolumeOval(
+                    start.copy().add(new Vector3(0, configuration.obstacleEllipsoidBase, 0)),
+                    configuration.obstacleEllipsoidHeight,
+                    configuration.obstacleEllipsoidRadius));
+
+                break;
             case ObstacleType.BOX:
                 this.#collision.subtractVolume(new VolumeBox(
                     start.copy().add(new Vector3(0, configuration.obstacleBoxBase, 0)),

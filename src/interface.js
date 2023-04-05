@@ -86,6 +86,11 @@ export class Interface {
         this.#addDropdown("Type", "obstacleType", true);
         this.#addDropdownOption("None", ObstacleType.NONE);
 
+        this.#addDropdownOption("Ellipsoid", ObstacleType.ELLIPSOID);
+        this.#addFieldSlider("Ellipsoid base", new Vector2(0, Collision.SIZE * .5), "obstacleEllipsoidBase", true, false);
+        this.#addFieldSlider("Ellipsoid height", new Vector2(.5, Collision.SIZE), "obstacleEllipsoidHeight", true, false);
+        this.#addFieldSlider("Ellipsoid radius", new Vector2(.1, Collision.SIZE * .5), "obstacleEllipsoidRadius", true, false);
+
         this.#addDropdownOption("Box", ObstacleType.BOX);
         this.#addFieldSlider("Box base", new Vector2(0, Collision.SIZE), "obstacleBoxBase", true, false);
         this.#addFieldSlider("Box height", new Vector2(.1, Collision.SIZE), "obstacleBoxHeight", true, false);
