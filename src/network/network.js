@@ -4,6 +4,8 @@ import {Vector3} from "../math/vector3.js";
 import {Random} from "../math/random.js";
 import {BoundsType} from "../boundsType.js";
 import {VolumeOval} from "./collision/volumeOval.js";
+import {VolumeBox} from "./collision/volumeBox.js";
+import {ObstacleType} from "../obstacleType.js";
 
 export class Network {
     static #MAX_NODES = 64000;
@@ -49,6 +51,30 @@ export class Network {
                     start.copy().add(new Vector3(0, configuration.boundsEllipsoidBase, 0)),
                     configuration.boundsEllipsoidHeight,
                     configuration.boundsEllipsoidRadius));
+
+                break;
+            case BoundsType.BOX:
+                this.#collision.addVolume(new VolumeBox(
+                    start,
+                    configuration.boundsBoxHeight,
+                    configuration.boundsBoxRadius));
+
+                break;
+        }
+
+        for (const start of starts) switch (configuration.obstacleType) {
+            case ObstacleType.ELLIPSOID:
+                this.#collision.subtractVolume(new VolumeOval(
+                    start.copy().add(new Vector3(0, configuration.obstacleEllipsoidBase, 0)),
+                    configuration.obstacleEllipsoidHeight,
+                    configuration.obstacleEllipsoidRadius));
+
+                break;
+            case ObstacleType.BOX:
+                this.#collision.subtractVolume(new VolumeBox(
+                    start.copy().add(new Vector3(0, configuration.obstacleBoxBase, 0)),
+                    configuration.obstacleBoxHeight,
+                    configuration.obstacleBoxRadius));
 
                 break;
         }

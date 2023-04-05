@@ -2,6 +2,7 @@ import {Shader} from "./shader.js";
 import {glslGlobals, UniformBlockGlobals} from "../uniforms/uniformBlockGlobals.js";
 
 export class ShaderBranchesDepth extends Shader {
+    // language=GLSL
     static #VERTEX = glslGlobals + `
         layout(location = 0) in vec3 vertex;
         layout(location = 2) in float depth;
@@ -15,6 +16,7 @@ export class ShaderBranchesDepth extends Shader {
         }
         `;
 
+    // language=GLSL
     static #FRAGMENT = glslGlobals + `
         in float iDepth;
         

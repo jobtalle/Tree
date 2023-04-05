@@ -6,6 +6,7 @@ body {
     display: flex;
     flex-direction: row;
     position: relative;
+    align-items: flex-start;
 }
 
 #interface {

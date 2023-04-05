@@ -43,6 +43,13 @@ export class Renderables {
         gl.vertexAttribPointer(1, 3, gl.FLOAT, false, 24, 12);
     }, gl.TRIANGLES);
 
+    static OBSTRUCTIONS = new Renderable(() => {
+        gl.enableVertexAttribArray(0);
+        gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 24, 0);
+        gl.enableVertexAttribArray(1);
+        gl.vertexAttribPointer(1, 3, gl.FLOAT, false, 24, 12);
+    }, gl.TRIANGLES);
+
     /**
      * Create primitive shapes
      */

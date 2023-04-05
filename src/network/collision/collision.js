@@ -8,6 +8,7 @@ export class Collision {
     #spheres = [];
     #radii = [];
     #volumes = [];
+    #hasPositiveVolumes = false;
 
     /**
      * Construct a collision grid
@@ -25,6 +26,15 @@ export class Collision {
      */
     addVolume(volume) {
         this.#volumes.push(volume);
+        this.#hasPositiveVolumes = true;
+    }
+
+    /**
+     * Add a collision volume
+     * @param {Volume} volume The volume to subtract
+     */
+    subtractVolume(volume) {
+        this.#volumes.push(volume.negate());
     }
 
     /**
@@ -76,12 +86,16 @@ export class Collision {
         const volumeCount = this.#volumes.length;
 
         if (volumeCount) {
-            let contained = false;
+            let contained = !this.#hasPositiveVolumes;
 
             for (let volume = 0; volume < volumeCount; ++volume) if (this.#volumes[volume].contains(center)) {
-                contained = true;
+                if (this.#volumes[volume].negative) {
+                    contained = false;
 
-                break;
+                    break;
+                }
+                else
+                    contained = true;
             }
 
             if (!contained)

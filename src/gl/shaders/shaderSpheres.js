@@ -9,6 +9,7 @@ export class ShaderSpheres extends Shader {
     static #MATERIAL = new Vector4(.3, .7, .5, 7);
     static #TRANSPARENCY = .75;
 
+    // language=GLSL
     static #VERTEX = glslGlobals + `
         layout(location = 0) in vec3 vertex;
         layout(location = 1) in vec4 sphere;
@@ -27,6 +28,7 @@ export class ShaderSpheres extends Shader {
         }
         `;
 
+    // language=GLSL
     static #FRAGMENT = glslGlobals + glslShade + `
         in vec3 iNormal;
         in vec3 iPosition;

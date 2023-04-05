@@ -8,6 +8,7 @@ export class ShaderBranches extends Shader {
     static #COLOR = new Color("#9d8a70");
     static #MATERIAL = new Vector4(.3, .7, .2, 5);
 
+    // language=GLSL
     static #VERTEX = glslGlobals + `
         layout(location = 0) in vec3 vertex;
         layout(location = 1) in vec3 normal;
@@ -28,6 +29,7 @@ export class ShaderBranches extends Shader {
         }
         `;
 
+    // language=GLSL
     static #FRAGMENT = glslGlobals + glslShade + `
         in vec3 iNormal;
         in vec3 iPosition;

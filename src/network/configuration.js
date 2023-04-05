@@ -1,4 +1,5 @@
 import {BoundsType} from "../boundsType.js";
+import {ObstacleType} from "../obstacleType.js";
 
 export class Configuration {
     growth = 1;
@@ -7,6 +8,7 @@ export class Configuration {
     layerBranches = true;
     layerSpheres = false;
     layerVolumes = true;
+    layerObstructions = true;
 
     seed = 0;
 
@@ -37,4 +39,17 @@ export class Configuration {
     boundsEllipsoidBase = 0;
     boundsEllipsoidHeight = 1.5;
     boundsEllipsoidRadius = .5;
+
+    boundsBoxHeight = 1;
+    boundsBoxRadius = .5;
+
+    obstacleType = ObstacleType.NONE;
+
+    obstacleBoxBase = .5;
+    obstacleBoxHeight = .6;
+    obstacleBoxRadius = .3;
+
+    obstacleEllipsoidBase = .5;
+    obstacleEllipsoidHeight = .6;
+    obstacleEllipsoidRadius = .3;
 }
