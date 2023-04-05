@@ -1,6 +1,7 @@
 import {Vector2} from "./math/vector2.js";
 import {Collision} from "./network/collision/collision.js";
 import {BoundsType} from "./boundsType.js";
+import {ObstacleType} from "./obstacleType.js";
 
 export class Interface {
     static #ELEMENT = document.getElementById("interface");
@@ -74,10 +75,20 @@ export class Interface {
         this.#addFieldSlider("Ellipsoid radius", new Vector2(.1, Collision.SIZE * .5), "boundsEllipsoidRadius", true, false);
 
         this.#addDropdownOption("Box", BoundsType.BOX);
-        this.#addFieldSlider("Box height", new Vector2(.5, Collision.SIZE), "boundsBoxHeight", true, false);
-        this.#addFieldSlider("Box radius", new Vector2(.1, Collision.SIZE), "boundsBoxRadius", true, false);
+        this.#addFieldSlider("Box height", new Vector2(.5, 2), "boundsBoxHeight", true, false);
+        this.#addFieldSlider("Box radius", new Vector2(.1, 2), "boundsBoxRadius", true, false);
 
         this.#endDropdown();
+
+        this.#addHeader("Obstacle");
+
+        this.#addDropdown("Type", "obstacleType", true);
+        this.#addDropdownOption("None", ObstacleType.NONE);
+
+        this.#addDropdownOption("Box", ObstacleType.BOX);
+        this.#addFieldSlider("Box base", new Vector2(0, Collision.SIZE), "obstacleBoxBase", true, false);
+        this.#addFieldSlider("Box height", new Vector2(.5, Collision.SIZE), "obstacleBoxHeight", true, false);
+        this.#addFieldSlider("Box radius", new Vector2(.1, Collision.SIZE), "obstacleBoxRadius", true, false);
     }
 
     /**

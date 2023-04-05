@@ -1,4 +1,5 @@
 import {BoundsType} from "../boundsType.js";
+import {ObstacleType} from "../obstacleType.js";
 
 export class Configuration {
     growth = 1;
@@ -37,4 +38,10 @@ export class Configuration {
 
     boundsBoxHeight = 1;
     boundsBoxRadius = .5;
+
+    obstacleType = ObstacleType.NONE;
+
+    obstacleBoxBase = 0;
+    obstacleBoxHeight = 1;
+    obstacleBoxRadius = .5;
 }
