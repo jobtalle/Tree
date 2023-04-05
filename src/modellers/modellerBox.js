@@ -36,7 +36,7 @@ export class ModellerBox extends Modeller {
     #modelQuad(a, b, c, d) {
         const t1 = b.copy().subtract(a);
         const t2 = d.copy().subtract(a);
-        const normal = new Vector3().cross(t1, t2);
+        const normal = new Vector3().cross(t2, t1);
         const indexBase = this.#attributes.attributeCount;
 
         this.#indices.push(indexBase);
